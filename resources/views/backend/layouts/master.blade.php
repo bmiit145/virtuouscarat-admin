@@ -2,6 +2,7 @@
 <html lang="en">
 
 @include('backend.layouts.head')
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 <body id="page-top">
 

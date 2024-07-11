@@ -48,7 +48,7 @@ class ProductController extends Controller
 
 
 
-     public function store(Request $request){
+    public function store(Request $request){
         // dd($request->all());
         $this->validate($request,['category_id' => 'required|integer',
         'prod_name' => 'required|string|max:255',
@@ -70,47 +70,47 @@ class ProductController extends Controller
             $fullMainPhotoUrl = null;
         }
         $galleryPaths = [];
-    if ($request->hasFile('gallery')) {
+        if ($request->hasFile('gallery')) {
 
-        foreach ($request->file('gallery') as $galleryImage) {
-            // Store the image in the 'public' disk under the 'photos' directory
-            $path = $galleryImage->store('photos', 'public');
+            foreach ($request->file('gallery') as $galleryImage) {
+                // Store the image in the 'public' disk under the 'photos' directory
+                $path = $galleryImage->store('photos', 'public');
 
-            // Get the full URL to the stored image
-            $fullUrl = asset('storage/' . $path);
+                // Get the full URL to the stored image
+                $fullUrl = asset('storage/' . $path);
 
-            // Store the full URL in the array
-            $galleryPaths[] = $fullUrl;
+                // Store the full URL in the array
+                $galleryPaths[] = $fullUrl;
+            }
         }
-    }
 
-    $wpProduct = WpProduct::create([
-        'vendor_id' => Auth::id(),
-        'category_id' => $request->category_id,
-        'name' => $request->prod_name,
-        'description' => $request->description,
-        'short_description' => $request->short_desc,
-        'regular_price' => $request->price,
-        'sale_price' => $request->sale_price,
-        'sku' => $request->sku,
-        'stock_status' => $request->productStatus,
-        'igi_certificate' => $request->IGI_certificate,
-        'main_photo' => $fullMainPhotoUrl,
-        'photo_gallery' => json_encode($galleryPaths),
-        'quantity' => $request->quantity,
-        'document_number' => $request->document_number,
-    ]);
+        $wpProduct = WpProduct::create([
+            'vendor_id' => Auth::id(),
+            'category_id' => $request->category_id,
+            'name' => $request->prod_name,
+            'description' => $request->description,
+            'short_description' => $request->short_desc,
+            'regular_price' => $request->price,
+            'sale_price' => $request->sale_price,
+            'sku' => $request->sku,
+            'stock_status' => $request->productStatus,
+            'igi_certificate' => $request->IGI_certificate,
+            'main_photo' => $fullMainPhotoUrl,
+            'photo_gallery' => json_encode($galleryPaths),
+            'quantity' => $request->quantity,
+            'document_number' => $request->document_number,
+        ]);
 
-     // Add attributes if any
-     if ($request->has('attributes')) {
-        foreach ($request->input('attributes') as $name => $value) {
-            $wpProduct->attributes()->create([
-                'name' => $name,
-                'value' => $value,
-            ]);
+        // Add attributes if any
+        if ($request->has('attributes')) {
+            foreach ($request->input('attributes') as $name => $value) {
+                $wpProduct->attributes()->create([
+                    'name' => $name,
+                    'value' => $value,
+                ]);
+            }
         }
-    }
-    return redirect('admin/product')->with('success', 'Product created successfully.');
+        return redirect('admin/product')->with('success', 'Product created successfully.');
     }
 
 
@@ -133,8 +133,9 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
+       
         $brand=Brand::get();
-        $product=Product::findOrFail($id);
+        $product=WpProduct::findOrFail($id);
         $category=Category::where('is_parent',1)->get();
         $items=Product::where('id',$id)->get();
         // return $items;
@@ -170,42 +171,74 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $product=Product::findOrFail($id);
-        $this->validate($request,[
-            'title'=>'string|required',
-            'summary'=>'string|required',
-            'description'=>'string|nullable',
-            'photo'=>'string|required',
-            'size'=>'nullable',
-            'stock'=>"required|numeric",
-            'cat_id'=>'required|exists:categories,id',
-            'child_cat_id'=>'nullable|exists:categories,id',
-            'is_featured'=>'sometimes|in:1',
-            'brand_id'=>'nullable|exists:brands,id',
-            'status'=>'required|in:active,inactive',
-            'condition'=>'required|in:default,new,hot',
-            'price'=>'required|numeric',
-            'discount'=>'nullable|numeric'
-        ]);
+       
+    //    dd($request->all());
+        $product = WpProduct::findOrFail($id);
+    
+        if ($request->file('photo')) {
+            $mainPhotoPath = $request->file('photo')->store('photos', 'public');
+            $fullMainPhotoUrl = asset('storage/' . $mainPhotoPath);
+            $product->main_photo = $fullMainPhotoUrl;
 
-        $data=$request->all();
-        $data['is_featured']=$request->input('is_featured',0);
-        $size=$request->input('size');
-        if($size){
-            $data['size']=implode(',',$size);
         }
-        else{
-            $data['size']='';
+    
+        $galleryPaths = [];
+        if ($request->hasFile('gallery')) {
+            foreach ($request->file('gallery') as $galleryImage) {
+                $path = $galleryImage->store('photos', 'public');
+                $fullUrl = asset('storage/' . $path);
+                $galleryPaths[] = $fullUrl;
+            }
+            $product->photo_gallery = json_encode($galleryPaths);
         }
-        // return $data;
-        $status=$product->fill($data)->save();
-        if($status){
-            request()->session()->flash('success','Product updated');
+    
+
+        $product->category_id = $request->category_id;
+        $product->name = $request->prod_name;
+        $product->description = $request->description;
+        $product->short_description = $request->short_desc;
+        $product->regular_price = $request->price;
+        $product->sale_price = $request->sale_price;
+        $product->sku = $request->sku;
+        $product->stock_status = $request->productStatus;
+        $product->igi_certificate = $request->IGI_certificate;
+        $product->quantity = $request->quantity;
+        $product->document_number = $request->document_number;
+    
+        if ($request->has('attributes')) {
+            $product->attributes()->delete();
+            foreach ($request->input('attributes') as $name => $value) {
+                $product->attributes()->create([
+                    'name' => $name,
+                    'value' => $value,
+                ]);
+            }
         }
-        else{
-            request()->session()->flash('error','Please try again!!');
-        }
-        return redirect()->route('product.index');
+        $product->update();
+
+        // dd($product);
+    
+        return redirect()->route('product.index')->with('success', 'Product updated successfully.');
+    }
+
+    public function removeGalleryImage(Request $request)
+    {
+        // dd($request->all());
+        $imageUrl = $request->imageUrl;
+
+        // Logic to remove $imageUrl from $product->photo_gallery
+        $product = WpProduct::find($request->id); // Adjust this to fetch your product
+
+        $gallery = json_decode($product->photo_gallery);
+
+        // Remove the image URL from the array
+        $gallery = array_values(array_diff($gallery, [$imageUrl]));
+
+        // Update the product's photo_gallery field
+        $product->photo_gallery = json_encode($gallery);
+        $product->save();
+
+        return response()->json(['success' => true]);
     }
 
     /**
@@ -234,12 +267,15 @@ class ProductController extends Controller
         }
 
         $status=$product->delete();
+        $wooCommerceResponse = WooCommerceProductController::deleteProductFromWooCommerce($product->sku);
         if($status){
+            
             request()->session()->flash('success','Product deleted');
+            return redirect()->route('product.index');
         }
         else{
             request()->session()->flash('error','Error while deleting product');
         }
-        return redirect()->route('product.index');
+        
     }
 }

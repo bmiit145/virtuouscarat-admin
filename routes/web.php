@@ -114,6 +114,8 @@ Route::group(['prefix'=>'/admin','middleware'=>['auth','admin']],function(){
     Route::resource('/category','CategoryController');
     // Product
     Route::resource('/product','ProductController');
+    Route::post('/remove-gallery-image', 'ProductController@removeGalleryImage')->name('remove.gallery.image');
+
     // Route::post('/product','ProductController');
     // Ajax for sub category
     Route::post('/category/{id}/child','CategoryController@getChildByParent');
