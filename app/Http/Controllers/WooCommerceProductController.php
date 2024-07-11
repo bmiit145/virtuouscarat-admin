@@ -111,6 +111,11 @@ class WooCommerceProductController extends Controller
 
         try {
             $response = self::$woocommerce->post('products', $data);
+
+            //store the product id as wp_product_id
+            $product->wp_product_id = $response->id;
+            $product->save();
+
             return $response;
         } catch (\Exception $e) {
             // Handle exception or log error message

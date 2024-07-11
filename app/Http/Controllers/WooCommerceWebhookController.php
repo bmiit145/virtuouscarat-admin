@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\WpOrder;
 use Illuminate\Http\Request;
+use App\Models\WpOrderProduct;
+use App\Helpers\woocommerce_helper;
+
 
 class WooCommerceWebhookController extends Controller
 {
@@ -23,15 +26,8 @@ class WooCommerceWebhookController extends Controller
         // Process the webhook payload
         $order = $request->input('order');
 
-        WpOrder::updateOrCreate(
-            ['order_id' => $order->id],
-            [
-                'status' => $order->status,
-                'currency' => $order->currency,
-                'total' => $order->total,
-                'order_date' => $order->date_created,
-            ]
-        );
+        syncWooCommerceOrder($order);
+
 
         return response()->json(['message' => 'Order processed'], 200);
     }
