@@ -120,4 +120,26 @@ class WooCommerceProductController extends Controller
     }
 
 
+    // function to delete product from woocommerce by sku
+    public static function deleteProductFromWooCommerce($sku) {
+        if (!self::$woocommerce) {
+            self::$woocommerce = app(Client::class);
+        }
+
+        try {
+            $response = self::$woocommerce->get('products', ['sku' => $sku]);
+            if (count($response) > 0) {
+                $productId = $response[0]->id;
+                $response = self::$woocommerce->delete('products/' . $productId, ['force' => true]);
+                return $response;
+            } else {
+                return ['error' => 'Product not found'];
+            }
+        } catch (\Exception $e) {
+            // Handle exception or log error message
+            error_log('WooCommerce API Error: ' . $e->getMessage());
+            return ['error' => $e->getMessage()];
+        }
+    }
+
 }
