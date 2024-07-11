@@ -1,4 +1,6 @@
 node_modules/
-vendor/
+/vendor/
 .idea/
 .DS_Store
+
+

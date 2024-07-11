@@ -1,6 +1,7 @@
 <?php
 namespace App\Console\Commands;
 
+use App\Models\WpOrderProduct;
 use Illuminate\Console\Command;
 use Automattic\WooCommerce\Client;
 use App\Models\WpOrder;
@@ -31,6 +32,20 @@ class FetchWooCommerceOrders extends Command
                     'order_date' => $order->date_created,
                 ]
             );
+
+            // Store order products
+            foreach ($order->line_items as $item) {
+                WpOrderProduct::updateOrCreate(
+                    ['order_id' => $order->id, 'product_id' => $item->product_id],
+                    [
+                        'sku' => $item->sku,
+                        'quantity' => $item->quantity,
+                        'price' => $item->price,
+                        'total' => $item->total,
+                        'meta_data' => json_encode($item->meta_data),
+                    ]
+                );
+            }
         }
 
         $this->info('WooCommerce orders have been successfully fetched and stored.');
