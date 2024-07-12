@@ -157,12 +157,12 @@ class WooCommerceProductController extends Controller
         if (!self::$woocommerce) {
             self::$woocommerce = app(Client::class);
         }
-    
+
         try {
             $response = self::$woocommerce->get('products', ['sku' => $sku]);
             if (count($response) > 0) {
                 $productId = $response[0]->id;
-    
+
                 // Update the product details
                 $response = self::$woocommerce->put('products/' . $productId, $data);
                 return $response;
@@ -171,7 +171,7 @@ class WooCommerceProductController extends Controller
             }
         } catch (\Exception $e) {
             // Handle exception or log error message
-            error_log('WooCommerce API Error: ' . $e->getMessage());
+            \Log::error('WooCommerce API Error: ' . $e->getMessage());
             return ['error' => $e->getMessage()];
         }
     }
