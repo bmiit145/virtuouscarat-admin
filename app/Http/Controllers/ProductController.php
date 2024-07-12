@@ -75,7 +75,6 @@ class ProductController extends Controller
         }
         $galleryPaths = [];
         if ($request->hasFile('gallery')) {
-
             foreach ($request->file('gallery') as $galleryImage) {
                 // Store the image in the 'public' disk under the 'photos' directory
                 $path = $galleryImage->store('photos', 'public');
@@ -181,6 +180,8 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         $product = WpProduct::findOrFail($id);
+        $old_product = clone $product;
+        $sku = $old_product->sku;
 
         // Update main photo
         if ($request->file('photo')) {
@@ -227,37 +228,36 @@ class ProductController extends Controller
         // Save the product
         $product->save();
 
-        // Prepare data for WooCommerce update
-        $wooData = [
-            'name' => $request->prod_name,
-            'description' => $request->description,
-            'short_description' => $request->short_desc,
-            'regular_price' => $request->price,
-            'sale_price' => $request->sale_price,
-            'sku' => $request->sku,
-            'stock_status' => $request->productStatus,
-            'manage_stock' => true,
-            'stock_quantity' => $request->quantity,
-            'images' => [],
-            // Add other WooCommerce fields as necessary
-        ];
 
-        // Add main photo to WooCommerce data
-        if (isset($fullMainPhotoUrl)) {
-            $wooData['images'][] = ['src' => $fullMainPhotoUrl];
+        // Call the WooCommerce update function
+         $wooResponse = WooCommerceProductController::editProductInWooCommerce($sku, $product);
+
+        if (isset($wooResponse['error'])) {
+            // Handle WooCommerce update error
+            return redirect()->route('product.index')->with('error', 'Failed to update product in WooCommerce: ' . $wooResponse['error']);
         }
-        else{
-            $data['size']='';
-        }
-        // return $data;
-        $status=$product->fill($data)->save();
-        if($status){
-            request()->session()->flash('success','Product updated');
-        }
-        else{
-            request()->session()->flash('error','Please try again!!');
-        }
-        return redirect()->route('product.index');
+
+        return redirect()->route('product.index')->with('success', 'Product updated successfully.');
+    }
+
+    public function removeGalleryImage(Request $request)
+    {
+        // dd($request->all());
+        $imageUrl = $request->imageUrl;
+
+        // Logic to remove $imageUrl from $product->photo_gallery
+        $product = WpProduct::find($request->id); // Adjust this to fetch your product
+
+        $gallery = json_decode($product->photo_gallery);
+
+        // Remove the image URL from the array
+        $gallery = array_values(array_diff($gallery, [$imageUrl]));
+
+        // Update the product's photo_gallery field
+        $product->photo_gallery = json_encode($gallery);
+        $product->save();
+
+        return response()->json(['success' => true]);
     }
 
     /**

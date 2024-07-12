@@ -51,7 +51,7 @@
 
                 {{-- <div class="form-group">
           <label for="is_featured">Is Featured</label><br>
-          <input type="checkbox" name='is_featured' id='is_featured' value='1' checked> Yes                        
+          <input type="checkbox" name='is_featured' id='is_featured' value='1' checked> Yes
         </div> --}}
 
                 {{-- {{$categories}} --}}
@@ -239,7 +239,7 @@
                             @if ($product->photo_gallery)
                                 @foreach (json_decode($product->photo_gallery) as $image)
                                     <div class="position-relative d-inline-block mr-2 mb-2">
-                                        <img src="{{ $image }}" class="img-thumbnail">
+                                        <img src="{{ $image }}" class="img-thumbnail" style="height: 100px">
                                         <button type="button" data-productId="{{ $product->id }}" class="btn btn-sm btn-danger position-absolute"
                                             style="top: 5px; right: 5px;" onclick="removeImage(this)">
                                             <i class="fas fa-times"></i>
