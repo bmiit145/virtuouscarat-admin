@@ -153,18 +153,21 @@ class WooCommerceProductController extends Controller
         }
     }
 
+
     public static function editProductInWooCommerce($sku, $data) {
         if (!self::$woocommerce) {
             self::$woocommerce = app(Client::class);
         }
 
         try {
-            $response = self::$woocommerce->get('products', ['sku' => $sku]);
-            if (count($response) > 0) {
-                $productId = $response[0]->id;
-
+            // Retrieve the product by SKU
+            $product = self::$woocommerce->get('products', ['sku' => $sku]);
+            \Log::info("Product " , $product);
+            if (count($product) > 0) {
+                $productId = $product[0]->id;
                 // Update the product details
                 $response = self::$woocommerce->put('products/' . $productId, $data);
+                \Log::info($response);
                 return $response;
             } else {
                 return ['error' => 'Product not found'];
