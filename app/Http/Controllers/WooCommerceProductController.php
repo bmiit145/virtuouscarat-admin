@@ -112,15 +112,22 @@ class WooCommerceProductController extends Controller
         try {
             $response = self::$woocommerce->post('products', $data);
 
-            //store the product id as wp_product_id
+            // error handle for error from woocommerce
+            if($response['error']){
+                return $response;
+            }
+
+            if ($response->id){
             $product->wp_product_id = $response->id;
             $product->save();
+            }
 
             return $response;
         } catch (\Exception $e) {
             // Handle exception or log error message
             error_log('WooCommerce API Error: ' . $e->getMessage());
-            return ['error' => $e->getMessage()];
+//            return ['error' => $e->getMessage()];
+            return ['error' => "Something Wents Wrong! Product not created"];
         }
     }
 

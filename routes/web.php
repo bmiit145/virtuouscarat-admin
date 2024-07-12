@@ -147,13 +147,6 @@ Route::group(['prefix'=>'/admin','middleware'=>['auth','admin']],function(){
     Route::post('change-password', 'AdminController@changPasswordStore')->name('change.password');
 });
 
-
-//woocommerce
-Route::post('/woocommerce/products', [WooCommerceProductController::class, 'store']);
-Route::post('/webhook/woocommerce', [WooCommerceWebhookController::class, 'handle']);
-
-
-
 // User section start
 Route::group(['prefix'=>'/user','middleware'=>['user']],function(){
     Route::get('/','HomeController@index')->name('user');
@@ -185,3 +178,10 @@ Route::group(['prefix'=>'/user','middleware'=>['user']],function(){
 Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']], function () {
     \UniSharp\LaravelFilemanager\Lfm::routes();
 });
+
+
+
+//woocommerce
+Route::post('/woocommerce/products', [WooCommerceProductController::class, 'store']);
+Route::post('/webhook/woocommerce', [WooCommerceWebhookController::class, 'handle']);
+
