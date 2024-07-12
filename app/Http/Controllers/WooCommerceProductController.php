@@ -103,7 +103,6 @@ class WooCommerceProductController extends Controller
                 ];
             })->toArray(),
         ];
-//        dd($data);
 
         if (!self::$woocommerce) {
             self::$woocommerce = app(Client::class);
@@ -131,6 +130,30 @@ class WooCommerceProductController extends Controller
             if (count($response) > 0) {
                 $productId = $response[0]->id;
                 $response = self::$woocommerce->delete('products/' . $productId, ['force' => true]);
+                return $response;
+            } else {
+                return ['error' => 'Product not found'];
+            }
+        } catch (\Exception $e) {
+            // Handle exception or log error message
+            error_log('WooCommerce API Error: ' . $e->getMessage());
+            return ['error' => $e->getMessage()];
+        }
+    }
+
+    public static function editProductInWooCommerce($sku, $data) {
+        if (!self::$woocommerce) {
+            self::$woocommerce = app(Client::class);
+        }
+    
+        try {
+            // Retrieve the product by SKU
+            $response = self::$woocommerce->get('products', ['sku' => $sku]);
+            if (count($response) > 0) {
+                $productId = $response[0]->id;
+    
+                // Update the product details
+                $response = self::$woocommerce->put('products/' . $productId, $data);
                 return $response;
             } else {
                 return ['error' => 'Product not found'];

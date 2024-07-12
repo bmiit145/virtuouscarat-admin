@@ -171,17 +171,16 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-       
-    //    dd($request->all());
         $product = WpProduct::findOrFail($id);
-    
+
+        // Update main photo
         if ($request->file('photo')) {
             $mainPhotoPath = $request->file('photo')->store('photos', 'public');
             $fullMainPhotoUrl = asset('storage/' . $mainPhotoPath);
             $product->main_photo = $fullMainPhotoUrl;
-
         }
-    
+
+        // Update photo gallery
         $galleryPaths = [];
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $galleryImage) {
@@ -191,8 +190,8 @@ class ProductController extends Controller
             }
             $product->photo_gallery = json_encode($galleryPaths);
         }
-    
 
+        // Update product fields
         $product->category_id = $request->category_id;
         $product->name = $request->prod_name;
         $product->description = $request->description;
@@ -204,7 +203,8 @@ class ProductController extends Controller
         $product->igi_certificate = $request->IGI_certificate;
         $product->quantity = $request->quantity;
         $product->document_number = $request->document_number;
-    
+
+        // Update product attributes
         if ($request->has('attributes')) {
             $product->attributes()->delete();
             foreach ($request->input('attributes') as $name => $value) {
@@ -214,10 +214,45 @@ class ProductController extends Controller
                 ]);
             }
         }
-        $product->update();
 
-        // dd($product);
-    
+        // Save the product
+        $product->save();
+
+        // Prepare data for WooCommerce update
+        $wooData = [
+            'name' => $request->prod_name,
+            'description' => $request->description,
+            'short_description' => $request->short_desc,
+            'regular_price' => $request->price,
+            'sale_price' => $request->sale_price,
+            'sku' => $request->sku,
+            'stock_status' => $request->productStatus,
+            'manage_stock' => true,
+            'stock_quantity' => $request->quantity,
+            'images' => [],
+            // Add other WooCommerce fields as necessary
+        ];
+
+        // Add main photo to WooCommerce data
+        if (isset($fullMainPhotoUrl)) {
+            $wooData['images'][] = ['src' => $fullMainPhotoUrl];
+        }
+
+        // Add gallery photos to WooCommerce data
+        if (!empty($galleryPaths)) {
+            foreach ($galleryPaths as $galleryImage) {
+                $wooData['images'][] = ['src' => $galleryImage];
+            }
+        }
+
+        // Call the WooCommerce update function
+        $wooResponse = self::editProductInWooCommerce($request->sku, $wooData);
+
+        if (isset($wooResponse['error'])) {
+            // Handle WooCommerce update error
+            return redirect()->route('product.index')->with('error', 'Failed to update product in WooCommerce: ' . $wooResponse['error']);
+        }
+
         return redirect()->route('product.index')->with('success', 'Product updated successfully.');
     }
 
