@@ -25,16 +25,25 @@ class WooCommerceWebhookController extends Controller
             }
         }
         // Log signatures for debugging
-        \Log::info('Received Signature: ' . $signature);
-        \Log::info('Calculated Signature: ' . $calculatedSignature);
-        \Log::info('Request Content: ' . $request->getContent());
+//         \Log::info('Received Signature: ' . $signature);
+//         \Log::info('Calculated Signature: ' . $calculatedSignature);
+//         \Log::info('Request Content: ' . $request->getContent());
 
         // Process the webhook payload
-        $order = $request->input('order');
+        $order = $request->all();
 
-        syncWooCommerceOrder($order);
+        // Log order data for debugging
+        \Log::info('Order Data: ' . json_encode($order));
+
+        $orderObject = $this->arrayToObject($order);
+        syncWooCommerceOrder($orderObject);
 
 
         return response()->json(['message' => 'Order processed'], 200);
     }
+
+    function arrayToObject($array) {
+        return json_decode(json_encode($array), false);
+    }
 }
+
