@@ -181,6 +181,8 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         $product = WpProduct::findOrFail($id);
+        $old_product = clone $product;
+        $sku = $old_product->sku;
 
         // Update main photo
         if ($request->file('photo')) {
@@ -227,8 +229,9 @@ class ProductController extends Controller
         // Save the product
         $product->save();
 
+
         // Call the WooCommerce update function
-         $wooResponse = WooCommerceProductController::editProductInWooCommerce($product->sku, $product);
+         $wooResponse = WooCommerceProductController::editProductInWooCommerce($sku, $product);
 
         if (isset($wooResponse['error'])) {
             // Handle WooCommerce update error

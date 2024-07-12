@@ -190,6 +190,7 @@ class WooCommerceProductController extends Controller
                 ];
             })->toArray(),
         ];
+
         if (!self::$woocommerce) {
             self::$woocommerce = app(Client::class);
         }
@@ -197,13 +198,15 @@ class WooCommerceProductController extends Controller
         try {
             // Retrieve the product by SKU
             $product = self::$woocommerce->get('products', ['sku' => $sku]);
-            \Log::info("Product " , $product);
+            \Log::info("Product" , $product);
             if (count($product) > 0) {
                 $productId = $product[0]->id;
-                // Update the product details
-                $response = self::$woocommerce->put('products/' . $productId, $data);
-                \Log::info($response);
-                return $response;
+                // Update the product details by ittercting data and update
+
+                    $response = self::$woocommerce->put('products/' . $productId, $data , ['force' => true]);
+
+                    \Log::info("Response");
+                return ['success' => 'Product updated successfully.'];
             } else {
                 return ['error' => 'Product not found'];
             }
