@@ -75,7 +75,6 @@ class ProductController extends Controller
         }
         $galleryPaths = [];
         if ($request->hasFile('gallery')) {
-
             foreach ($request->file('gallery') as $galleryImage) {
                 // Store the image in the 'public' disk under the 'photos' directory
                 $path = $galleryImage->store('photos', 'public');
@@ -228,35 +227,8 @@ class ProductController extends Controller
         // Save the product
         $product->save();
 
-        // Prepare data for WooCommerce update
-        $wooData = [
-            'name' => $request->prod_name,
-            'description' => $request->description,
-            'short_description' => $request->short_desc,
-            'regular_price' => $request->price,
-            'sale_price' => $request->sale_price,
-            'sku' => $request->sku,
-            'stock_status' => $request->productStatus,
-            'manage_stock' => true,
-            'stock_quantity' => $request->quantity,
-            'images' => [],
-            // Add other WooCommerce fields as necessary
-        ];
-
-        // Add main photo to WooCommerce data
-        if (isset($fullMainPhotoUrl)) {
-            $wooData['images'][] = ['src' => $fullMainPhotoUrl];
-        }
-
-        // Add gallery photos to WooCommerce data
-        if (!empty($galleryPaths)) {
-            foreach ($galleryPaths as $galleryImage) {
-                $wooData['images'][] = ['src' => $galleryImage];
-            }
-        }
-
         // Call the WooCommerce update function
-         $wooResponse = WooCommerceProductController::editProductInWooCommerce($product->sku, $wooData);
+         $wooResponse = WooCommerceProductController::editProductInWooCommerce($product->sku, $product);
 
         if (isset($wooResponse['error'])) {
             // Handle WooCommerce update error

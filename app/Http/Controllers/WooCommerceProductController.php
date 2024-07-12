@@ -154,7 +154,42 @@ class WooCommerceProductController extends Controller
     }
 
 
-    public static function editProductInWooCommerce($sku, $data) {
+    public static function editProductInWooCommerce($sku, WpProduct $product) {
+        $data = [
+            'name' => $product->name,
+            'type' => 'simple',
+            'regular_price' => (string) $product->regular_price,
+            'sale_price' => isset($product->sale_price) ? (string) $product->sale_price : '',
+            'description' => $product->description,
+            'short_description' => $product->short_description,
+            'sku' => $product->sku,
+            'stock_status' => $product->stock_status === 1 ? 'instock' : ($product->stock_status === 0 ? 'outofstock' : 'onbackorder'),
+            'categories' => [
+                ['id' => $product->category_id]
+            ],
+            'images' => array_merge(
+                [['src' => $product->main_photo]],
+                array_map(function($photo) {
+                    return ['src' => $photo];
+                }, json_decode($product->photo_gallery) ?? [])
+            ),
+            'meta_data' => [
+                ['key' => 'igi_certificate', 'value' => $product->igi_certificate],
+                ['key' => 'vendor_id', 'value' => $product->vendor_id]
+            ],
+            'stock_quantity' => $product->quantity,
+
+            // attributes
+            'attributes' => $product->attributes->map(function($attribute) {
+                return [
+                    'name' => $attribute->name,
+                    'options' => [$attribute->value],
+                    'position' => 0,  // Adjust position as needed
+                    'visible' => true,  // Adjust visibility as needed
+                    'variation' => false,  // Adjust variation as needed
+                ];
+            })->toArray(),
+        ];
         if (!self::$woocommerce) {
             self::$woocommerce = app(Client::class);
         }
