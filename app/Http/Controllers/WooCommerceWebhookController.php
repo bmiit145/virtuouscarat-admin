@@ -25,9 +25,9 @@ class WooCommerceWebhookController extends Controller
             }
         }
         // Log signatures for debugging
-        // \Log::info('Received Signature: ' . $signature);
-        // \Log::info('Calculated Signature: ' . $calculatedSignature);
-        // \Log::info('Request Content: ' . $request->getContent());
+//         \Log::info('Received Signature: ' . $signature);
+//         \Log::info('Calculated Signature: ' . $calculatedSignature);
+//         \Log::info('Request Content: ' . $request->getContent());
 
         // Process the webhook payload
         $order = $request->all();
