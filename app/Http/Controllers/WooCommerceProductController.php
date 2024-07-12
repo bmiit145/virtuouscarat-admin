@@ -124,7 +124,7 @@ class WooCommerceProductController extends Controller
             return $response;
         } catch (\Exception $e) {
             // Handle exception or log error message
-            \log::error('WooCommerce API Error: ' . $e->getMessage());
+            \Log::error('WooCommerce API Error: ' . $e->getMessage());
             return ['error' => $e->getMessage()];
             return ['error' => "Something Wents Wrong! Product not created"];
         }
