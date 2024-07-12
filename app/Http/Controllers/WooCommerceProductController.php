@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\UpdateWooCommerceProduct;
 use App\Models\WpProduct;
 use Automattic\WooCommerce\Client;
 use Illuminate\Http\Request;
@@ -197,19 +198,24 @@ class WooCommerceProductController extends Controller
 
         try {
             // Retrieve the product by SKU
-            $product = self::$woocommerce->get('products', ['sku' => $sku]);
-            \Log::info("Product" , $product);
-            if (count($product) > 0) {
-                $productId = $product[0]->id;
-                // Update the product details by ittercting data and update
+//            $product = self::$woocommerce->get('products', ['sku' => $sku]);
+//            \Log::info("Product" , $product);
+//            if (count($product) > 0) {
+//                $productId = $product[0]->id;
+//                // Update the product details by ittercting data and update
+//
+//                    $response = self::$woocommerce->put('products/' . $productId, $data , ['force' => true]);
+//
+//                    \Log::info("Response");
+//                return ['success' => 'Product updated successfully.'];
+//            } else {
+//                return ['error' => 'Product not found'];
+//            }
 
-                    $response = self::$woocommerce->put('products/' . $productId, $data , ['force' => true]);
+            UpdateWooCommerceProduct::dispatch($sku, $data);
 
-                    \Log::info("Response");
-                return ['success' => 'Product updated successfully.'];
-            } else {
-                return ['error' => 'Product not found'];
-            }
+            return ['success' => 'Product update job has been dispatched.'];
+
         } catch (\Exception $e) {
             // Handle exception or log error message
             \Log::error('WooCommerce API Error: ' . $e->getMessage());
