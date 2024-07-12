@@ -117,6 +117,10 @@ class WooCommerceProductController extends Controller
                 return ['error' => $response->error];
             }
 
+            if (is_array($response) && isset($response['error'])) {
+                return ['error' => $response['error']];
+            }
+
             if (is_array($response) || (is_object($response) && property_exists($response, 'id'))) {
                 if (isset($response->id)) {
                     $product->wp_product_id = $response->id;

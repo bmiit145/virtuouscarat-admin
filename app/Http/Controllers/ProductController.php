@@ -154,18 +154,14 @@ class ProductController extends Controller
         if ($aprovel) { // Check if the product exists
             if ($aprovel->is_approvel == 0) {
                 $aprovel->is_approvel = 1;
-                $aprovel->save();
                 $response =  WooCommerceProductController::sendDataToWooCommerce($aprovel);
 
                 // check if there is an error
-                if (isset($response['error'])) { // Ensure you check if 'error' key exists in $response array
-                    $aprovel->is_approvel = 0;
-                    $aprovel->save();
-                    return back()->with('error', $response['error']);
+                if (is_array($response) && isset($response['error'])) {
+                    return back()->with('error', 'Failed to send product to WooCommerce: ' . $response['error']);
                 }
             } else {
                 $aprovel->is_approvel = 0;
-                $aprovel->save();
             }
 
             $aprovel->save(); // Save the changes to the database
