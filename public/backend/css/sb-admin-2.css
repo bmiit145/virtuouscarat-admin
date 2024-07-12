@@ -11221,3 +11221,24 @@ footer.sticky-footer .copyright {
 body.sidebar-toggled footer.sticky-footer {
   width: 100%;
 }
+
+table tr th{
+  background: #efefef;
+  color: #000;
+}
+.card-header .btn-primary{
+  padding: 10px 30px;
+  align-items: center;
+      display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+.card-header{
+      display: flex;
+      justify-content: space-between;
+  gap: 10px;
+  align-items: end;
+}
+.card-header h6{
+  font-size: 22px;
+}
