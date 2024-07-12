@@ -86,3 +86,13 @@ function syncWooCommerceOrderProducts($order)
         );
     }
 }
+
+function deleteWooCommerceOrder($orderId)
+{
+    WpOrderProduct::where('order_id', $orderId)->delete();
+    WpOrder::where('order_id', $orderId)->delete();
+
+    return true;
+}
+
+

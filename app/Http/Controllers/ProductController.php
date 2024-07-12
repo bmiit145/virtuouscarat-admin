@@ -138,7 +138,6 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-       
         $brand=Brand::get();
         $product=WpProduct::findOrFail($id);
         $category=Category::where('is_parent',1)->get();
@@ -246,43 +245,18 @@ class ProductController extends Controller
         if (isset($fullMainPhotoUrl)) {
             $wooData['images'][] = ['src' => $fullMainPhotoUrl];
         }
-
-        // Add gallery photos to WooCommerce data
-        if (!empty($galleryPaths)) {
-            foreach ($galleryPaths as $galleryImage) {
-                $wooData['images'][] = ['src' => $galleryImage];
-            }
+        else{
+            $data['size']='';
         }
-
-        // Call the WooCommerce update function
-        // $wooResponse = self::editProductInWooCommerce($request->sku, $wooData);
-
-        if (isset($wooResponse['error'])) {
-            // Handle WooCommerce update error
-            return redirect()->route('product.index')->with('error', 'Failed to update product in WooCommerce: ' . $wooResponse['error']);
+        // return $data;
+        $status=$product->fill($data)->save();
+        if($status){
+            request()->session()->flash('success','Product updated');
         }
-
-        return redirect()->route('product.index')->with('success', 'Product updated successfully.');
-    }
-
-    public function removeGalleryImage(Request $request)
-    {
-        // dd($request->all());
-        $imageUrl = $request->imageUrl;
-
-        // Logic to remove $imageUrl from $product->photo_gallery
-        $product = WpProduct::find($request->id); // Adjust this to fetch your product
-
-        $gallery = json_decode($product->photo_gallery);
-
-        // Remove the image URL from the array
-        $gallery = array_values(array_diff($gallery, [$imageUrl]));
-
-        // Update the product's photo_gallery field
-        $product->photo_gallery = json_encode($gallery);
-        $product->save();
-
-        return response()->json(['success' => true]);
+        else{
+            request()->session()->flash('error','Please try again!!');
+        }
+        return redirect()->route('product.index');
     }
 
     /**
@@ -313,13 +287,12 @@ class ProductController extends Controller
         $status=$product->delete();
         $wooCommerceResponse = WooCommerceProductController::deleteProductFromWooCommerce($product->sku);
         if($status){
-            
             request()->session()->flash('success','Product deleted');
             return redirect()->route('product.index');
         }
         else{
             request()->session()->flash('error','Error while deleting product');
         }
-        
+        return redirect()->route('product.index');
     }
 }
