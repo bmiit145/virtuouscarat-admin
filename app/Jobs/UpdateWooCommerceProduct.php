@@ -13,6 +13,8 @@ class UpdateWooCommerceProduct implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $timeout = 600;
+
     protected $sku;
     protected $data;
 
@@ -44,7 +46,7 @@ class UpdateWooCommerceProduct implements ShouldQueue
                 $productId = $product[0]->id;
                 // Update the product details
                 $response = $woocommerce->put('products/' . $productId, $this->data, ['force' => true]);
-                Log::info("Response", $response);
+                Log::info("Response");
             } else {
                 Log::error('Product not found');
             }

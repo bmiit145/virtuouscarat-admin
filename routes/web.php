@@ -152,7 +152,7 @@ Route::group(['prefix'=>'/admin','middleware'=>['auth','admin']],function(){
 // User section start
 Route::group(['prefix'=>'/user','middleware'=>['user']],function(){
     Route::get('/','HomeController@index')->name('user');
-     // Profile
+     // Profile 
      Route::get('/profile','HomeController@profile')->name('user-profile');
      Route::post('/profile/{id}','HomeController@profileUpdate')->name('user-profile-update');
     //  Order

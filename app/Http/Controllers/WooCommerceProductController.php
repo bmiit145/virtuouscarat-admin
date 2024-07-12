@@ -197,24 +197,29 @@ class WooCommerceProductController extends Controller
         }
 
         try {
-            // Retrieve the product by SKU
-//            $product = self::$woocommerce->get('products', ['sku' => $sku]);
-//            \Log::info("Product" , $product);
-//            if (count($product) > 0) {
-//                $productId = $product[0]->id;
-//                // Update the product details by ittercting data and update
-//
-//                    $response = self::$woocommerce->put('products/' . $productId, $data , ['force' => true]);
-//
-//                    \Log::info("Response");
-//                return ['success' => 'Product updated successfully.'];
-//            } else {
-//                return ['error' => 'Product not found'];
-//            }
+//             Retrieve the product by SKU
 
-            UpdateWooCommerceProduct::dispatch($sku, $data);
+            // check env variable UPDATE_PRODUCT_METHOD is set to JOB or not by case insensitive
+            if (strtolower(env('WOOCOMMERCE_UPDATE_METHOD')) == 'job') {
+                UpdateWooCommerceProduct::dispatch($sku, $data);
+                return ['success' => 'Product update job has been dispatched.'];
+            }
 
-            return ['success' => 'Product update job has been dispatched.'];
+            $product = self::$woocommerce->get('products', ['sku' => $sku]);
+            \Log::info("Product" , $product);
+            if (count($product) > 0) {
+                $productId = $product[0]->id;
+                // Update the product details by ittercting data and update
+
+                    $response = self::$woocommerce->put('products/' . $productId, $data , ['force' => true]);
+
+                    \Log::info("Response");
+                return ['success' => 'Product updated successfully.'];
+            } else {
+                return ['error' => 'Product not found'];
+            }
+
+            return ['success' => 'Process done'];
 
         } catch (\Exception $e) {
             // Handle exception or log error message

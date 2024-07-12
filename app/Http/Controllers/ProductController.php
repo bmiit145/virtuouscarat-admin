@@ -137,7 +137,6 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-
         $brand=Brand::get();
         $product=WpProduct::findOrFail($id);
         $category=Category::where('is_parent',1)->get();
@@ -289,13 +288,12 @@ class ProductController extends Controller
         $status=$product->delete();
         $wooCommerceResponse = WooCommerceProductController::deleteProductFromWooCommerce($product->sku);
         if($status){
-
             request()->session()->flash('success','Product deleted');
             return redirect()->route('product.index');
         }
         else{
             request()->session()->flash('error','Error while deleting product');
         }
-
+        return redirect()->route('product.index');
     }
 }
