@@ -22,46 +22,56 @@
               <th>Name</th>
               <th>Email</th>
               <th>Qty.</th>
-              <th>Charge</th>
+{{--              <th>Charge</th>--}}
               <th>Total</th>
               <th>Status</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            @foreach($orders as $order)  
+            @foreach($orders as $order)
             @php
                 $shipping_charge=DB::table('shippings')->where('id',$order->shipping_id)->pluck('price');
-            @endphp 
+            @endphp
                 <tr>
                     <td>{{$order->id}}</td>
-                    <td>{{$order->order_number}}</td>
-                    <td>{{$order->first_name}} {{$order->last_name}}</td>
-                    <td>{{$order->email}}</td>
-                    <td>{{$order->quantity}}</td>
-                    <td>@foreach($shipping_charge as $data) $ {{number_format($data,2)}} @endforeach</td>
-                    <td>${{number_format($order->total_amount,2)}}</td>
+                    <td>{{$order->order_id}}</td>
+                    <td>{{$order->billing_first_name}} {{$order->billing_last_name}}</td>
+                    <td>{{$order->billing_email}}</td>
+                    <td>{{$order->products->sum('quantity')}}</td>
+{{--                    <td>@foreach($shipping_charge as $data) $ {{number_format($data,2)}} @endforeach</td>--}}
+                    <td>${{number_format($order->total,2)}}</td>
                     <td>
-                        @if($order->status=='new')
-                          <span class="badge badge-primary">NEW</span>
-                        @elseif($order->status=='process')
+                        @if($order->status=='pending-payment' || $order->status=='pending')
+                          <span class="badge badge-primary">Pending payment</span>
+                        @elseif($order->status=='processing')
                           <span class="badge badge-warning">Processing</span>
-                        @elseif($order->status=='delivered')
-                          <span class="badge badge-success">Delivered</span>
+                        @elseif($order->status=='completed')
+                          <span class="badge badge-success">Completed</span>
+                        @elseif($order->status=='on-hold')
+                          <span class="badge badge-danger">On hold</span>
+                        @elseif($order->status=='failed')
+                          <span class="badge badge-danger">Failed</span>
+                        @elseif($order->status=='draft'|| $order->status=='checkout-draft')
+                          <span class="badge badge-dark">Draft</span>
+                        @elseif($order->status=='canceled')
+                          <span class="badge badge-warning">Canceled</span>
+                        @elseif($order->status=='refunded')
+                          <span class="badge badge-info">Refunded</span>
                         @else
                           <span class="badge badge-danger">{{$order->status}}</span>
                         @endif
                     </td>
                     <td>
                         <a href="{{route('order.show',$order->id)}}" class="btn btn-warning btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="view" data-placement="bottom"><i class="fas fa-eye"></i></a>
-                        <a href="{{route('order.edit',$order->id)}}" class="btn btn-primary btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="edit" data-placement="bottom"><i class="fas fa-edit"></i></a>
-                        <form method="POST" action="{{route('order.destroy',[$order->id])}}">
-                          @csrf 
-                          @method('delete')
-                              <button class="btn btn-danger btn-sm dltBtn" data-id={{$order->id}} style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" data-placement="bottom" title="Delete"><i class="fas fa-trash-alt"></i></button>
-                        </form>
+{{--                        <a href="{{route('order.edit',$order->id)}}" class="btn btn-primary btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="edit" data-placement="bottom"><i class="fas fa-edit"></i></a>--}}
+{{--                        <form method="POST" action="{{route('order.destroy',[$order->id])}}">--}}
+{{--                          @csrf--}}
+{{--                          @method('delete')--}}
+{{--                              <button class="btn btn-danger btn-sm dltBtn" data-id={{$order->id}} style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" data-placement="bottom" title="Delete"><i class="fas fa-trash-alt"></i></button>--}}
+{{--                        </form>--}}
                     </td>
-                </tr>  
+                </tr>
             @endforeach
           </tbody>
         </table>
@@ -94,7 +104,7 @@
   <!-- Page level custom scripts -->
   <script src="{{asset('backend/js/demo/datatables-demo.js')}}"></script>
   <script>
-      
+
       $('#order-dataTable').DataTable( {
             "columnDefs":[
                 {
@@ -107,7 +117,7 @@
         // Sweet alert
 
         function deleteData(id){
-            
+
         }
   </script>
   <script>

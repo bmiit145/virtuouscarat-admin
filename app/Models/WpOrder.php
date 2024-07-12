@@ -74,4 +74,10 @@ class WpOrder extends Model
 
     public $timestamps = true;
 
+
+    public function products()
+    {
+        return $this->hasMany(WpOrderProduct::class, 'order_id', 'order_id');
+    }
+
 }

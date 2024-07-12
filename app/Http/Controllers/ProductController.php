@@ -152,6 +152,10 @@ class ProductController extends Controller
             if ($aprovel->is_approvel == 0) {
                 $aprovel->is_approvel = 1;
                 $response =  WooCommerceProductController::sendDataToWooCommerce($aprovel);
+
+                if($response['error']){
+                    return back()->with('error', $response['error']);
+                }
             } else {
                 $aprovel->is_approvel = 0;
             }
