@@ -50,19 +50,23 @@ class ProductController extends Controller
 
     public function store(Request $request){
         // dd($request->all());
-        $this->validate($request,['category_id' => 'required|integer',
-        'prod_name' => 'required|string|max:255',
-        'description' => 'required|string',
-        'short_desc' => 'nullable|string',
-        'price' => 'nullable|numeric',
-        'sale_price' => 'nullable|numeric',
-        'sku' => 'nullable|string|max:255',
-        'quantity' => 'nullable|integer',
-        'IGI_certificate' => 'nullable|string|max:255',
-        'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        'gallery' => 'nullable|array',
-        'gallery.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        'attributes' => 'nullable|array']);
+        // $this->validate($request,['category_id' => 'required|integer',
+        // 'prod_name' => 'required|string|max:255',
+        // 'description' => 'required|string',
+        // 'short_desc' => 'nullable|string',
+        // 'price' => 'nullable|numeric',
+        // 'sale_price' => 'nullable|numeric',
+        // 'sku' => 'nullable|string|max:255',
+        // 'quantity' => 'nullable|integer',
+        // 'IGI_certificate' => 'nullable|string|max:255',
+        // 'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        // 'gallery' => 'nullable|array',
+        // 'gallery.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        // 'attributes' => 'nullable|array']);
+
+
+
+        
         if ($request->hasFile('photo')) {
             $mainPhotoPath = $request->file('photo')->store('photos', 'public');
             $fullMainPhotoUrl = asset('storage/' . $mainPhotoPath);
@@ -110,6 +114,7 @@ class ProductController extends Controller
                 ]);
             }
         }
+        // dd($product);
         return redirect('admin/product')->with('success', 'Product created successfully.');
     }
 
