@@ -113,15 +113,20 @@ class WooCommerceProductController extends Controller
             $response = self::$woocommerce->post('products', $data);
 
             // error handle for error from woocommerce
-            if($response['error']){
+            if (is_object($response) && property_exists($response, 'error')) {
+                return ['error' => $response->error];
+            }
+
+            if (is_array($response) || (is_object($response) && property_exists($response, 'id'))) {
+                if (isset($response->id)) {
+                    $product->wp_product_id = $response->id;
+                    $product->save();
+                }
                 return $response;
+            } else {
+                // Handle unexpected response format
+                return ['error' => 'Unexpected response format from WooCommerce API'];
             }
-
-            if ($response->id){
-            $product->wp_product_id = $response->id;
-            $product->save();
-            }
-
             return $response;
         } catch (\Exception $e) {
             // Handle exception or log error message
@@ -164,7 +169,7 @@ class WooCommerceProductController extends Controller
             'description' => $product->description,
             'short_description' => $product->short_description,
             'sku' => $product->sku,
-            'stock_status' => $product->stock_status === 1 ? 'instock' : ($product->stock_status === 0 ? 'outofstock' : 'onbackorder'),
+            'stock_status' => $product->stock_status == 1 ? 'instock' : ($product->stock_status == 0 ? 'outofstock' : 'onbackorder'),
             'categories' => [
                 ['id' => $product->category_id]
             ],
