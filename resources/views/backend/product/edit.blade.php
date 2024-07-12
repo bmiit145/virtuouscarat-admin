@@ -183,7 +183,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label
-                                        for="{{ str_replace(' ', '_', strtolower($attribute['name'])) }}">{{ $attribute['value'] }}</label>
+                                        for="{{ str_replace(' ', '_', strtolower($attribute['name'])) }}">{{ $attribute['name'] }}</label>
                                     <input type="text" class="form-control"
                                         name="attributes[{{ $attribute['name'] }}]"
                                         id="{{ str_replace(' ', '_', strtolower($attribute['name'])) }}"
