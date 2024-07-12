@@ -66,7 +66,7 @@ class ProductController extends Controller
 
 
 
-        
+
         if ($request->hasFile('photo')) {
             $mainPhotoPath = $request->file('photo')->store('photos', 'public');
             $fullMainPhotoUrl = asset('storage/' . $mainPhotoPath);
@@ -255,7 +255,7 @@ class ProductController extends Controller
         }
 
         // Call the WooCommerce update function
-        $wooResponse = self::editProductInWooCommerce($request->sku, $wooData);
+        // $wooResponse = self::editProductInWooCommerce($request->sku, $wooData);
 
         if (isset($wooResponse['error'])) {
             // Handle WooCommerce update error

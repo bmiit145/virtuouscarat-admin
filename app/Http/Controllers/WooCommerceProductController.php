@@ -159,7 +159,6 @@ class WooCommerceProductController extends Controller
         }
     
         try {
-            // Retrieve the product by SKU
             $response = self::$woocommerce->get('products', ['sku' => $sku]);
             if (count($response) > 0) {
                 $productId = $response[0]->id;
