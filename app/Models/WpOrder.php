@@ -14,6 +14,7 @@ class WpOrder extends Model
     protected $fillable = [
         'order_id',
         'status',
+        'fullfilled_status',
         'currency',
         'total',
         'order_date',

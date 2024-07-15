@@ -152,7 +152,7 @@ Route::group(['prefix'=>'/admin','middleware'=>['auth','admin']],function(){
 // User section start
 Route::group(['prefix'=>'/user','middleware'=>['user']],function(){
     Route::get('/','HomeController@index')->name('user');
-     // Profile 
+     // Profile
      Route::get('/profile','HomeController@profile')->name('user-profile');
      Route::post('/profile/{id}','HomeController@profileUpdate')->name('user-profile-update');
     //  Order
@@ -181,6 +181,9 @@ Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']
     \UniSharp\LaravelFilemanager\Lfm::routes();
 });
 
+Route::group(['middleware' => 'auth'], function () {
+    Route::post('order/update/status' , 'OrderController@updateStatus')->name('order.update.status');
+});
 
 
 //woocommerce

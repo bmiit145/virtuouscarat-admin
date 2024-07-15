@@ -315,4 +315,18 @@ class OrderController extends Controller
         }
         return $data;
     }
+
+
+    // update order Status
+    public function updateStatus(Request $request){
+        $order=WpOrder::where('order_id' , $request->order_id)->first();
+        $order->fullfilled_status=$request->status;
+        $status=$order->save();
+        if($status){
+            return response()->json(['status'=>'success','message'=>'Order status updated successfully']);
+        }
+        else{
+            return response()->json(['status'=>'error','message'=>'Error while updating order status']);
+        }
+    }
 }
