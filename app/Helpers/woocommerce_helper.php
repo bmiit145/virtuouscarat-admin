@@ -97,8 +97,9 @@ function deleteWooCommerceOrder($orderId)
 
 
 //update order status in woocommerce
-function updateOrderStatusInWooCommerce(Client $woocommerce, $orderId, $status)
+function updateOrderStatusInWooCommerce($orderId, $status)
 {
+    $woocommerce = app(Client::class);
     $woocommerce->put('orders/' . $orderId, ['status' => $status]);
 }
 

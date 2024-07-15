@@ -13,6 +13,7 @@ use Notification;
 use Helper;
 use Illuminate\Support\Str;
 use App\Notifications\StatusNotification;
+use Automattic\WooCommerce\Client;
 
 class OrderController extends Controller
 {
@@ -330,9 +331,7 @@ class OrderController extends Controller
        }
 
        if ($request->status == 1 || $request->status == 4) {
-           // call woocommerce helper function to update order status
-           $woocommerce = app(Client::class);
-           updateOrderStatusInWooCommerce($woocommerce, $request->order_id, $request->status);
+           updateOrderStatusInWooCommerce($request->order_id, $status_woocommerce);
        }
        
         if($status){
