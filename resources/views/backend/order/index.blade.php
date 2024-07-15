@@ -38,12 +38,27 @@
                     <td>{{\Carbon\Carbon::parse($order->order_date)->format('Y-m-d') }}</td>
                     <td>{{$order->order_id}}</td>
                     <td>{{$order->billing_first_name}} {{$order->billing_last_name}}</td>
-                    <td>@foreach($order->products as $product)
-                            {{$product->toArray()}}
+                    <td>
+                        @foreach($order->products as $product)
+                            @if(!$product->product)
+                                @continue
+                            @endif
+                            <span>{{  $product->product? $product->product->name : '' }}
+                                <sub>{{  $product->product? $product->product->sku : '' }}</sub>
+                            </span><br/>
+                        @endforeach
+                    </td>
+                    <td>
+                        @foreach($order->products as $product)
+                            @if(!$product->product)
+                                @continue
+                            @endif
+                            <span>{{  $product->product? $product->product->vendor->name : '' }}
+                            </span><br/>
                         @endforeach
                     </td>
 {{--                    <td>{{$order->billing_email}}</td>--}}
-                    <td>{{$order->products->sum('quantity')}}</td>
+{{--                    <td>{{$order->products->sum('quantity')}}</td>--}}
 {{--                    <td>@foreach($shipping_charge as $data) $ {{number_format($data,2)}} @endforeach</td>--}}
                     <td>${{number_format($order->total,2)}}</td>
                     <td>
@@ -68,7 +83,7 @@
                         @endif
                     </td>
                     <td>
-                        <a href="{{route('order.show',$order->id)}}" class="btn btn-warning btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="view" data-placement="bottom"><i class="fas fa-eye"></i></a>
+{{--                        <a href="{{route('order.show',$order->id)}}" class="btn btn-warning btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="view" data-placement="bottom"><i class="fas fa-eye"></i></a>--}}
 {{--                        <a href="{{route('order.edit',$order->id)}}" class="btn btn-primary btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="edit" data-placement="bottom"><i class="fas fa-edit"></i></a>--}}
 {{--                        <form method="POST" action="{{route('order.destroy',[$order->id])}}">--}}
 {{--                          @csrf--}}
