@@ -322,6 +322,19 @@ class OrderController extends Controller
         $order=WpOrder::where('order_id' , $request->order_id)->first();
         $order->fullfilled_status=$request->status;
         $status=$order->save();
+
+        if($request->status == 1){
+            $status_woocommerce = 'completed';
+       }else{
+           $status_woocommerce = 'cancelled';
+       }
+
+       if ($request->status == 1 || $request->status == 4) {
+           // call woocommerce helper function to update order status
+           $woocommerce = app(Client::class);
+           updateOrderStatusInWooCommerce($woocommerce, $request->order_id, $request->status);
+       }
+       
         if($status){
             return response()->json(['status'=>'success','message'=>'Order status updated successfully']);
         }
