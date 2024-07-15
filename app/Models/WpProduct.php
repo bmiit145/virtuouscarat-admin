@@ -13,6 +13,7 @@ class WpProduct extends Model
     // Define the fillable attributes for mass assignment
     protected $fillable = [
         'name',
+        'product_id',
         'description',
         'short_description',
         'regular_price',
@@ -27,12 +28,12 @@ class WpProduct extends Model
         'quantity',
         'document_number',
     ];
-    
+
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
-    
+
 
     /**
      * Get the attributes for the product.

@@ -17,13 +17,14 @@
         <table class="table table-bordered table-hover" id="order-dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
-              <th>#</th>
+                <th>Order Date</th>
               <th>Order No.</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Qty.</th>
+              <th>Customer Name</th>
+                <th>Product Name</th>
+                <th>Vendor Name</th>
+{{--              <th>Email</th>--}}
 {{--              <th>Charge</th>--}}
-              <th>Total</th>
+              <th>Order Value</th>
               <th>Status</th>
               <th>Action</th>
             </tr>
@@ -34,10 +35,14 @@
                 $shipping_charge=DB::table('shippings')->where('id',$order->shipping_id)->pluck('price');
             @endphp
                 <tr>
-                    <td>{{$order->id}}</td>
+                    <td>{{\Carbon\Carbon::parse($order->order_date)->format('Y-m-d') }}</td>
                     <td>{{$order->order_id}}</td>
                     <td>{{$order->billing_first_name}} {{$order->billing_last_name}}</td>
-                    <td>{{$order->billing_email}}</td>
+                    <td>@foreach($order->products as $product)
+                            {{$product->toArray()}}
+                        @endforeach
+                    </td>
+{{--                    <td>{{$order->billing_email}}</td>--}}
                     <td>{{$order->products->sum('quantity')}}</td>
 {{--                    <td>@foreach($shipping_charge as $data) $ {{number_format($data,2)}} @endforeach</td>--}}
                     <td>${{number_format($order->total,2)}}</td>

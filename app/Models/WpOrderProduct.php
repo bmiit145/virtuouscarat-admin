@@ -18,4 +18,14 @@ class WpOrderProduct extends Model
         'total',
         'meta_data',
     ];
+
+    public function order()
+    {
+        return $this->belongsTo(WpOrder::class, 'order_id', 'order_id');
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(WpProduct::class, 'product_id', 'id');
+    }
 }

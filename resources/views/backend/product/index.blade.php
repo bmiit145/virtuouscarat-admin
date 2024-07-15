@@ -26,8 +26,8 @@
               <th>SKU ID</th>
               <th>Stock Status</th>
               <th>Stock</th>
-              <th>photo</th>
-              <th>Status</th>
+{{--              <th>photo</th>--}}
+{{--              <th>Status</th>--}}
               <th>Status</th>
               <th>Action</th>
             </tr>
@@ -47,36 +47,36 @@
                     <td>{{$product->id}}</td>
                     <td>{{$product->name}}</td>
                     <td>{{$product->Category->title}}
-                      <sub>
-                          {{$product->Category->slug ?? ''}}
-                      </sub>
+{{--                      <sub>--}}
+{{--                          {{$product->Category->slug ?? ''}}--}}
+{{--                      </sub>--}}
                     </td>
-                    <td>{{$product->regular_price}}$</td>
-                    <td>{{$product->sale_price}}$</td>
+                    <td>${{$product->regular_price}}</td>
+                    <td>${{$product->sale_price}}</td>
                     <td>{{$product->sku}}</td>
                     <td>{{$stock_status}}</td>
-                    
+
                     <td>  {{$product->quantity }}</td>
                     {{-- <td>{{$product->condition}}</td> --}}
                     {{-- <td> {{ucfirst($product->brand->title)}}</td> --}}
-                    <td>
-                        @if($product->main_photo)
-                            @php
-                              $photo=explode(',',$product->main_photo);
-                              // dd($photo);
-                            @endphp
-                            <img src="{{$photo[0]}}" class="img-fluid zoom" style="max-width:80px" alt="{{$product->main_photo}}">
-                        @else
-                            <img src="{{asset('backend/img/thumbnail-default.jpg')}}" class="img-fluid" style="max-width:80px" alt="avatar.png">
-                        @endif
-                    </td>
-                    <td>
-                        @if($product->status=='active')
-                            <span class="badge badge-success">{{$product->status}}</span>
-                        @else
-                            <span class="badge badge-warning">{{$product->status}}</span>
-                        @endif
-                    </td>
+{{--                    <td>--}}
+{{--                        @if($product->main_photo)--}}
+{{--                            @php--}}
+{{--                              $photo=explode(',',$product->main_photo);--}}
+{{--                              // dd($photo);--}}
+{{--                            @endphp--}}
+{{--                            <img src="{{$photo[0]}}" class="img-fluid zoom" style="max-width:80px" alt="{{$product->main_photo}}">--}}
+{{--                        @else--}}
+{{--                            <img src="{{asset('backend/img/thumbnail-default.jpg')}}" class="img-fluid" style="max-width:80px" alt="avatar.png">--}}
+{{--                        @endif--}}
+{{--                    </td>--}}
+{{--                    <td>--}}
+{{--                        @if($product->status=='active')--}}
+{{--                            <span class="badge badge-success">{{$product->status}}</span>--}}
+{{--                        @else--}}
+{{--                            <span class="badge badge-warning">{{$product->status}}</span>--}}
+{{--                        @endif--}}
+{{--                    </td>--}}
                     <td>
                       @if($product->is_approvel == 0)
                           <form action="{{ route('Approvel', $product->id) }}" method="POST" style="display: inline;">
