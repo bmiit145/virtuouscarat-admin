@@ -95,5 +95,7 @@ class FetchWooCommerceOrders extends Command
         $orderCount = fetchAndSyncWooCommerceOrders($this->woocommerce);
 
         $this->info($orderCount . ' WooCommerce orders have been successfully fetched and stored.');
+
+        return $orderCount . ' WooCommerce orders have been successfully fetched and stored.';
     }
 }

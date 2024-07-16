@@ -13,6 +13,7 @@ class WpProduct extends Model
     // Define the fillable attributes for mass assignment
     protected $fillable = [
         'name',
+        'wp_product_id',
         'description',
         'short_description',
         'regular_price',
@@ -27,12 +28,12 @@ class WpProduct extends Model
         'quantity',
         'document_number',
     ];
-    
+
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
-    
+
 
     /**
      * Get the attributes for the product.
@@ -47,8 +48,13 @@ class WpProduct extends Model
         return $this->belongsTo(User::class, 'vendor_id');
     }
 
+    public  function orderProduct(){
+        return $this->hasMany(WpOrderProduct::class, 'product_id', 'wp_product_id');
+    }
+
     public static function getAllProduct(){
         return WpProduct::with(['attributes',  'vendor' , 'category'])->orderBy('id','desc')->paginate(10);
     }
+
 
 }

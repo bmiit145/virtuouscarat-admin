@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\ProductImport;
+use App\Models\ProductAttribute;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Brand;
 use App\Models\WpProduct;
 use Auth;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -295,5 +298,92 @@ class ProductController extends Controller
             request()->session()->flash('error','Error while deleting product');
         }
         return redirect()->route('product.index');
+    }
+
+
+    public function  import(Request $request){
+        $request->validate([
+            'import_file' => 'required|mimes:csv,xlsx|max:2048', // Validate file type and size
+        ]);
+
+        // read and store data in database as field as name , vendor , quantity
+        $file = $request->file('import_file');
+
+
+        if ($file->getClientOriginalExtension() == 'xlsx' || $file->getClientOriginalExtension() == 'xls') {
+            if ($file->getClientOriginalExtension() == 'xls') {
+                $reader = IOFactory::createReader('Xls');
+            } else {
+                $reader = IOFactory::createReader('Xlsx');
+            }
+            $spreadsheet = $reader->load($file);
+            $sheet = $spreadsheet->getActiveSheet();
+            $rows = $sheet->toArray(null, true, true, true);
+
+            if (empty($rows)) {
+                return redirect()->route('product.index')->with('error', 'No data found in the file.');
+            }
+
+            $headers = array_shift($rows);
+
+            foreach ($rows as $row) {
+                $data = array_combine($headers, $row);
+                $productData = [
+                    'name' => $data['RE FNO.'],
+                    'vendor_id' => Auth::id(),
+                    'description' => null,
+                    'short_description' => null,
+                    'regular_price' => null,
+                    'sale_price' => $data['RAP'],
+                    'sku' => null,
+                    'stock_status' => 'in_stock',
+                    'igi_certificate' => $data['CERTI LINK'],
+                    'main_photo' => null,
+                    'photo_gallery' => $data['360 VIDEO LINKS'],
+                    'category_id' => null, // You need to determine the category ID based on your logic
+                    'vendor_id' => null, // You need to determine the vendor ID based on your logic
+                    'quantity' => $data['CTS'],
+                    'document_number' => $data['REPORTNO'],
+                ];
+
+                // Create the product
+                $product = WpProduct::create($productData);
+
+                // Map data to product attributes
+                $attributes = [
+                    'LOC' => $data['LOC'],
+                    'LAB' => $data['LAB'],
+                    'SHAPE' => $data['SHAPE'],
+                    'COLOR' => $data['COLOR'],
+                    'CLARITY' => $data['CLARITY'],
+                    'CUT' => $data['CUT'],
+                    'POLISH' => $data['POLISH'],
+                    'SYM' => $data['SYM'],
+                    'FL' => $data['FL'],
+                    'MEASUREMENT' => $data['MEASUREMENT'],
+                    'TBL' => $data['TBL'],
+                    'T.DEPTH' => $data['T.DEPTH'],
+                    'TYPE' => $data['TYPE'],
+                    'COMMENT' => $data['COMMENT'],
+                ];
+
+                foreach ($attributes as $name => $value) {
+                    ProductAttribute::create([
+                        'product_id' => $product->id,
+                        'name' => $name,
+                        'value' => $value,
+                    ]);
+                }
+            }
+        }
+        elseif ($file->getClientOriginalExtension() == 'csv') {
+            $rows = array_map('str_getcsv', file($file));
+            $headers = array_shift($rows);
+
+            dd($headers , $rows);
+        }
+
+
+        return redirect()->route('product.index')->with('success', 'Products imported successfully.');
     }
 }

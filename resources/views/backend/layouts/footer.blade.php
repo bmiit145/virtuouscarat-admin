@@ -1,12 +1,12 @@
 
       <!-- Footer -->
-      <footer class="sticky-footer bg-white">
-        <div class="container my-auto">
-          <div class="copyright text-center my-auto">
-            <span>&copy; {{date('Y')}} Developed By Prajwal R.</span>
-          </div>
-        </div>
-      </footer>
+{{--      <footer class="sticky-footer bg-white">--}}
+{{--        <div class="container my-auto">--}}
+{{--          <div class="copyright text-center my-auto">--}}
+{{--            <span>&copy; {{date('Y')}} Developed By Prajwal R.</span>--}}
+{{--          </div>--}}
+{{--        </div>--}}
+{{--      </footer>--}}
       <!-- End of Footer -->
 
     </div>

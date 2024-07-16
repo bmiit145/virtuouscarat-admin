@@ -9,7 +9,16 @@
      </div>
     <div class="card-header py-3">
       <h6 class="m-0 font-weight-bold text-primary float-left">Product Lists</h6>
-      <a href="{{route('product.create')}}" class="btn btn-primary btn-sm float-right" data-toggle="tooltip" data-placement="bottom" title="Add User"><i class="fas fa-plus"></i> Add Product</a>
+        <div class="float-right d-flex">
+            <form action="{{ route('product.import') }}" method="POST" enctype="multipart/form-data" class="mr-1">
+                @csrf
+                <label for="importFile" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Import Products">
+                    <i class="fas fa-file"></i> Import File
+                    <input id="importFile" type="file" name="import_file" accept=".csv,.xlsx" style="display: none;" onchange="this.form.submit()">
+                </label>
+            </form>
+        <a href="{{route('product.create')}}" class="btn btn-primary btn-sm mx-1" data-toggle="tooltip" data-placement="bottom" title="Add Product"><i class="fas fa-plus"></i> Add Product</a>
+        </div>
     </div>
     <div class="card-body">
       <div class="table-responsive">
@@ -26,8 +35,8 @@
               <th>SKU ID</th>
               <th>Stock Status</th>
               <th>Stock</th>
-              <th>photo</th>
-              <th>Status</th>
+{{--              <th>photo</th>--}}
+{{--              <th>Status</th>--}}
               <th>Status</th>
               <th>Action</th>
             </tr>
@@ -47,36 +56,36 @@
                     <td>{{$product->id}}</td>
                     <td>{{$product->name}}</td>
                     <td>{{$product->Category->title}}
-                      <sub>
-                          {{$product->Category->slug ?? ''}}
-                      </sub>
+{{--                      <sub>--}}
+{{--                          {{$product->Category->slug ?? ''}}--}}
+{{--                      </sub>--}}
                     </td>
-                    <td>{{$product->regular_price}}$</td>
-                    <td>{{$product->sale_price}}$</td>
+                    <td>${{$product->regular_price}}</td>
+                    <td>${{$product->sale_price}}</td>
                     <td>{{$product->sku}}</td>
                     <td>{{$stock_status}}</td>
-                    
+
                     <td>  {{$product->quantity }}</td>
                     {{-- <td>{{$product->condition}}</td> --}}
                     {{-- <td> {{ucfirst($product->brand->title)}}</td> --}}
-                    <td>
-                        @if($product->main_photo)
-                            @php
-                              $photo=explode(',',$product->main_photo);
-                              // dd($photo);
-                            @endphp
-                            <img src="{{$photo[0]}}" class="img-fluid zoom" style="max-width:80px" alt="{{$product->main_photo}}">
-                        @else
-                            <img src="{{asset('backend/img/thumbnail-default.jpg')}}" class="img-fluid" style="max-width:80px" alt="avatar.png">
-                        @endif
-                    </td>
-                    <td>
-                        @if($product->status=='active')
-                            <span class="badge badge-success">{{$product->status}}</span>
-                        @else
-                            <span class="badge badge-warning">{{$product->status}}</span>
-                        @endif
-                    </td>
+{{--                    <td>--}}
+{{--                        @if($product->main_photo)--}}
+{{--                            @php--}}
+{{--                              $photo=explode(',',$product->main_photo);--}}
+{{--                              // dd($photo);--}}
+{{--                            @endphp--}}
+{{--                            <img src="{{$photo[0]}}" class="img-fluid zoom" style="max-width:80px" alt="{{$product->main_photo}}">--}}
+{{--                        @else--}}
+{{--                            <img src="{{asset('backend/img/thumbnail-default.jpg')}}" class="img-fluid" style="max-width:80px" alt="avatar.png">--}}
+{{--                        @endif--}}
+{{--                    </td>--}}
+{{--                    <td>--}}
+{{--                        @if($product->status=='active')--}}
+{{--                            <span class="badge badge-success">{{$product->status}}</span>--}}
+{{--                        @else--}}
+{{--                            <span class="badge badge-warning">{{$product->status}}</span>--}}
+{{--                        @endif--}}
+{{--                    </td>--}}
                     <td>
                       @if($product->is_approvel == 0)
                           <form action="{{ route('Approvel', $product->id) }}" method="POST" style="display: inline;">
