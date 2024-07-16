@@ -9,7 +9,16 @@
      </div>
     <div class="card-header py-3">
       <h6 class="m-0 font-weight-bold text-primary float-left">Product Lists</h6>
-      <a href="{{route('product.create')}}" class="btn btn-primary btn-sm float-right" data-toggle="tooltip" data-placement="bottom" title="Add User"><i class="fas fa-plus"></i> Add Product</a>
+        <div class="float-right d-flex">
+            <form action="{{ route('product.import') }}" method="POST" enctype="multipart/form-data" class="mr-1">
+                @csrf
+                <label for="importFile" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Import Products">
+                    <i class="fas fa-file"></i> Import File
+                    <input id="importFile" type="file" name="import_file" accept=".csv,.xlsx" style="display: none;" onchange="this.form.submit()">
+                </label>
+            </form>
+        <a href="{{route('product.create')}}" class="btn btn-primary btn-sm mx-1" data-toggle="tooltip" data-placement="bottom" title="Add Product"><i class="fas fa-plus"></i> Add Product</a>
+        </div>
     </div>
     <div class="card-body">
       <div class="table-responsive">

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WooCommerceProductController;
 use App\Http\Controllers\WooCommerceWebhookController;
+use App\Http\Controllers\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +25,7 @@ Route::get('user/logout','FrontendController@logout')->name('user.logout');
 Route::get('user/register','FrontendController@register')->name('register.form');
 Route::post('user/register','FrontendController@registerSubmit')->name('register.submit');
 // Reset password
-Route::post('password-reset', 'FrontendController@showResetForm')->name('password.reset');
+//Route::post('password-reset', 'FrontendController@showResetForm')->name('password.reset');
 // Socialite
 Route::get('login/{provider}/', 'Auth\LoginController@redirect')->name('login.redirect');
 Route::get('login/{provider}/callback/', 'Auth\LoginController@Callback')->name('login.callback');
@@ -84,7 +85,7 @@ Route::post('/subscribe','FrontendController@subscribe')->name('subscribe');
 
 // Product Review
 Route::resource('/review','ProductReviewController');
-Route::post('product/{slug}/review','ProductReviewController@store')->name('review.store');
+//Route::post('product/{slug}/review','ProductReviewController@store')->name('review.store');
 
 // Post Comment
 Route::post('post/{slug}/comment','PostCommentController@store')->name('post-comment.store');
@@ -117,6 +118,7 @@ Route::group(['prefix'=>'/admin','middleware'=>['auth','admin']],function(){
     Route::resource('/category','CategoryController');
     // Product
     Route::resource('/product','ProductController');
+    Route::post('/product/import' , 'ProductController@import')->name('product.import');
     Route::post('/remove-gallery-image', 'ProductController@removeGalleryImage')->name('remove.gallery.image');
 
     // Route::post('/product','ProductController');
@@ -180,9 +182,9 @@ Route::group(['prefix'=>'/admin','middleware'=>['auth','admin']],function(){
 //
 //});
 
-Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']], function () {
-    \UniSharp\LaravelFilemanager\Lfm::routes();
-});
+//Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']], function () {
+//    \UniSharp\LaravelFilemanager\Lfm::routes();
+//});
 
 Route::group(['middleware' => 'auth'], function () {
     Route::post('order/update/status' , 'OrderController@updateStatus')->name('order.update.status');
