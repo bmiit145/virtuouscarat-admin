@@ -25,7 +25,8 @@
 {{--              <th>Email</th>--}}
 {{--              <th>Charge</th>--}}
               <th>Order Value</th>
-              <th>Status</th>
+{{--              <th>Wp Status</th>--}}
+                <th>Status</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -34,7 +35,7 @@
             @php
                 $shipping_charge=DB::table('shippings')->where('id',$order->shipping_id)->pluck('price');
             @endphp
-                <tr>
+                <tr data-order_id = {{ $order->order_id }}>
                     <td>{{\Carbon\Carbon::parse($order->order_date)->format('Y-m-d') }}</td>
                     <td>{{$order->order_id}}</td>
                     <td>{{$order->billing_first_name}} {{$order->billing_last_name}}</td>
@@ -61,35 +62,47 @@
 {{--                    <td>{{$order->products->sum('quantity')}}</td>--}}
 {{--                    <td>@foreach($shipping_charge as $data) $ {{number_format($data,2)}} @endforeach</td>--}}
                     <td>${{number_format($order->total,2)}}</td>
+{{--                    <td>--}}
+{{--                        @if($order->status=='pending-payment' || $order->status=='pending')--}}
+{{--                          <span class="badge badge-primary">Pending payment</span>--}}
+{{--                        @elseif($order->status=='processing')--}}
+{{--                          <span class="badge badge-warning">Processing</span>--}}
+{{--                        @elseif($order->status=='completed')--}}
+{{--                          <span class="badge badge-success">Completed</span>--}}
+{{--                        @elseif($order->status=='on-hold')--}}
+{{--                          <span class="badge badge-danger">On hold</span>--}}
+{{--                        @elseif($order->status=='failed')--}}
+{{--                          <span class="badge badge-danger">Failed</span>--}}
+{{--                        @elseif($order->status=='draft'|| $order->status=='checkout-draft')--}}
+{{--                          <span class="badge badge-dark">Draft</span>--}}
+{{--                        @elseif($order->status=='canceled')--}}
+{{--                          <span class="badge badge-warning">Canceled</span>--}}
+{{--                        @elseif($order->status=='refunded')--}}
+{{--                          <span class="badge badge-info">Refunded</span>--}}
+{{--                        @else--}}
+{{--                          <span class="badge badge-danger">{{$order->status}}</span>--}}
+{{--                        @endif--}}
+{{--                    </td>--}}
                     <td>
-                        @if($order->status=='pending-payment' || $order->status=='pending')
-                          <span class="badge badge-primary">Pending payment</span>
-                        @elseif($order->status=='processing')
-                          <span class="badge badge-warning">Processing</span>
-                        @elseif($order->status=='completed')
-                          <span class="badge badge-success">Completed</span>
-                        @elseif($order->status=='on-hold')
-                          <span class="badge badge-danger">On hold</span>
-                        @elseif($order->status=='failed')
-                          <span class="badge badge-danger">Failed</span>
-                        @elseif($order->status=='draft'|| $order->status=='checkout-draft')
-                          <span class="badge badge-dark">Draft</span>
-                        @elseif($order->status=='canceled')
-                          <span class="badge badge-warning">Canceled</span>
-                        @elseif($order->status=='refunded')
-                          <span class="badge badge-info">Refunded</span>
+                        @if($order->fullfilled_status == 1)
+                            <span class="badge badge-success">Fullfilled</span>
+                        @elseif($order->fullfilled_status == 2)
+                            <span class="badge badge-info">Passed to Vendor</span>
+                        @elseif($order->fullfilled_status == 3)
+                            <span class="badge badge-secondary">Processed by Vendor </span>
+                        @elseif($order->fullfilled_status == 4)
+                            <span class="badge badge-danger">Rejected</span>
+                        @elseif($order->fullfilled_status == 5)
+                            <span class="badge badge-warning">Rejected by Vendor</span>
                         @else
-                          <span class="badge badge-danger">{{$order->status}}</span>
+                            <span class="badge badge-dark ">Not Fullfilled</span>
                         @endif
                     </td>
                     <td>
-{{--                        <a href="{{route('order.show',$order->id)}}" class="btn btn-warning btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="view" data-placement="bottom"><i class="fas fa-eye"></i></a>--}}
-{{--                        <a href="{{route('order.edit',$order->id)}}" class="btn btn-primary btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="edit" data-placement="bottom"><i class="fas fa-edit"></i></a>--}}
-{{--                        <form method="POST" action="{{route('order.destroy',[$order->id])}}">--}}
-{{--                          @csrf--}}
-{{--                          @method('delete')--}}
-{{--                              <button class="btn btn-danger btn-sm dltBtn" data-id={{$order->id}} style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" data-placement="bottom" title="Delete"><i class="fas fa-trash-alt"></i></button>--}}
-{{--                        </form>--}}
+{{--                        button in badge for approve , reject and fullfill--}}
+                        <button type="button" class="btn badge badge-success order-action-btn" data-action="approve"> Approve </button>
+                        <button type="button" class="btn badge badge-danger order-action-btn" data-action="reject"> Reject </button>
+{{--                        <button type="button" class="btn badge badge-info order-action-btn" data-action="fullfilled"> FullField </button>--}}
                     </td>
                 </tr>
             @endforeach
@@ -169,4 +182,37 @@
           })
       })
   </script>
+{{--  Order status--}}
+    <script>
+        $(document).ready(function(){
+            $('.order-action-btn').click(function(){
+                var action = $(this).data('action');
+                var order_id = $(this).closest('tr').data('order_id');
+                var status = 0;
+                if(action == 'approve'){
+                    status = 2;
+                }else if(action == 'reject'){
+                    status = 4;
+                }else if(action == 'fullfilled') {
+                    status = 1;
+                }
+
+                var url = "{{ route('order.update.status') }}";
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        action: action,
+                        order_id: order_id,
+                        status: status
+                    },
+                    success: function(data){
+                        if(data.status){
+                            location.reload();
+                        }
+                    }
+                });
+            });
+        });
+    </script>
 @endpush

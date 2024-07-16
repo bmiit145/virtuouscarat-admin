@@ -13,6 +13,7 @@ use Notification;
 use Helper;
 use Illuminate\Support\Str;
 use App\Notifications\StatusNotification;
+use Automattic\WooCommerce\Client;
 
 class OrderController extends Controller
 {
@@ -314,5 +315,30 @@ class OrderController extends Controller
             $data[$monthName] = (!empty($result[$i]))? number_format((float)($result[$i]), 2, '.', '') : 0.0;
         }
         return $data;
+    }
+
+
+    // update order Status
+    public function updateStatus(Request $request){
+        $order=WpOrder::where('order_id' , $request->order_id)->first();
+        $order->fullfilled_status=$request->status;
+        $status=$order->save();
+
+        if($request->status == 1){
+            $status_woocommerce = 'completed';
+       }else{
+           $status_woocommerce = 'cancelled';
+       }
+
+       if ($request->status == 1 || $request->status == 4) {
+           $res = updateOrderStatusInWooCommerce($request->order_id, $status_woocommerce);
+       }
+       
+        if($status){
+            return response()->json(['status'=>'success','message'=>'Order status updated successfully']);
+        }
+        else{
+            return response()->json(['status'=>'error','message'=>'Error while updating order status']);
+        }
     }
 }

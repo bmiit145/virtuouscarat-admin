@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\WpOrder;
 use Illuminate\Http\Request;
 use App\User;
 use App\Models\Order;
@@ -55,7 +56,7 @@ class HomeController extends Controller
 
     // Order
     public function orderIndex(){
-        $orders=Order::orderBy('id','DESC')->where('user_id',auth()->user()->id)->paginate(10);
+        $orders=WpOrder::orderBy('id','DESC')->where('user_id',auth()->user()->id)->paginate(10);
         return view('user.order.index')->with('orders',$orders);
     }
     public function userOrderDelete($id)
