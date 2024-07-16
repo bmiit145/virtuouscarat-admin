@@ -331,7 +331,7 @@ class OrderController extends Controller
        }
 
        if ($request->status == 1 || $request->status == 4) {
-           updateOrderStatusInWooCommerce($request->order_id, $status_woocommerce);
+           $res = updateOrderStatusInWooCommerce($request->order_id, $status_woocommerce);
        }
        
         if($status){

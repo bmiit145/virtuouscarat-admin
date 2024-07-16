@@ -9,3 +9,7 @@
 
 ## COMPOSER COMMAND
 1. ``` composer dump-auto```
+
+
+### cron job
+1. php artisan fetch:woocommerce-orders
