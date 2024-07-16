@@ -20,9 +20,16 @@
               <th>#</th>
               <th>Name</th>
               <th>Email</th>
+              <th>Mobile Number</th>
+              <th>Company Name</th>
               <th>Photo</th>
               <th>Join Date</th>
-              <th>Role</th>
+              <th>Address</th>
+              <th>Pincode</th>
+              <th>State</th>
+              <th>City</th>
+              <th>Website</th>
+              <th>GST</th>
               <th>Status</th>
               <th>Action</th>
             </tr>
@@ -33,6 +40,8 @@
                     <td>{{$user->id}}</td>
                     <td>{{$user->name}}</td>
                     <td>{{$user->email}}</td>
+                    <td>{{$user->phone}}</td>
+                    <td>{{$user->company_name}}</td>
                     <td>
                         @if($user->photo)
                             <img src="{{$user->photo}}" class="img-fluid rounded-circle" style="max-width:50px" alt="{{$user->photo}}">
@@ -41,42 +50,35 @@
                         @endif
                     </td>
                     <td>{{(($user->created_at)? $user->created_at->diffForHumans() : '')}}</td>
-                    <td>{{$user->role}}</td>
+                    <td>{{$user->address}}</td>
+                    <td>{{$user->pincode}}</td>
+                    <td>{{$user->state}}</td>
+                    <td>{{$user->city}}</td>
+                    <td>{{$user->website}}</td>
+                    <td>{{$user->gst_number}}</td>
                     <td>
-                        @if($user->status=='active')
-                            <span class="badge badge-success">{{$user->status}}</span>
+                      <form action="{{ route('admin-status_active', $user->id) }}" method="POST">
+                        @csrf
+                        @if($user->status == 'inactive')
+                            <button type="submit" style="background: red; border-radius: 10px; color: black;">
+                                {{ $user->status }} 
+                            </button>
                         @else
-                            <span class="badge badge-warning">{{$user->status}}</span>
+                          <button type="submit" style="background: green; border-radius: 10px; color: black;" disabled >
+                            {{ $user->status }} 
+                        </button>
                         @endif
+                    </form>
                     </td>
+                   
                     <td>
-                        <a href="{{route('users.edit',$user->id)}}" class="btn btn-primary btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="edit" data-placement="bottom"><i class="fas fa-edit"></i></a>
-                    <form method="POST" action="{{route('users.destroy',[$user->id])}}">
+                        {{-- <a href="{{route('users.edit',$user->id)}}" class="btn btn-primary btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="edit" data-placement="bottom"><i class="fas fa-edit"></i></a> --}}
+                      <form method="POST" action="{{route('users.destroy',[$user->id])}}">
                       @csrf 
                       @method('delete')
                           <button class="btn btn-danger btn-sm dltBtn" data-id={{$user->id}} style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" data-placement="bottom" title="Delete"><i class="fas fa-trash-alt"></i></button>
                         </form>
                     </td>
-                    {{-- Delete Modal --}}
-                    {{-- <div class="modal fade" id="delModal{{$user->id}}" tabindex="-1" role="dialog" aria-labelledby="#delModal{{$user->id}}Label" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <h5 class="modal-title" id="#delModal{{$user->id}}Label">Delete user</h5>
-                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                              </button>
-                            </div>
-                            <div class="modal-body">
-                              <form method="post" action="{{ route('users.destroy',$user->id) }}">
-                                @csrf 
-                                @method('delete')
-                                <button type="submit" class="btn btn-danger" style="margin:auto; text-align:center">Parmanent delete user</button>
-                              </form>
-                            </div>
-                          </div>
-                        </div>
-                    </div> --}}
                 </tr>  
             @endforeach
           </tbody>

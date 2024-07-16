@@ -5,6 +5,10 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\User;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\InviteMail;
+
 class UsersController extends Controller
 {
     /**
@@ -14,7 +18,7 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $users=User::orderBy('id','ASC')->paginate(10);
+        $users=User::orderBy('id','ASC')->where('role', 'user')->paginate(10);
         return view('backend.users.index')->with('users',$users);
     }
 
@@ -27,6 +31,8 @@ class UsersController extends Controller
     {
         return view('backend.users.create');
     }
+
+    
 
     /**
      * Store a newly created resource in storage.
@@ -84,6 +90,25 @@ class UsersController extends Controller
         return view('backend.users.edit')->with('user',$user);
     }
 
+    public function status_active($id)
+    {
+        // Retrieve the user object by ID
+        $user = User::findOrFail($id);
+        
+     
+        $user->update(['status' => 'active']);
+        
+
+        $email = $user->email;
+ 
+        $link = route('login.showPassword', ['id' => $id]);
+        
+       
+        Mail::to($email)->send(new InviteMail($link));
+        
+        // Redirect back
+        return back();
+    }
     /**
      * Update the specified resource in storage.
      *

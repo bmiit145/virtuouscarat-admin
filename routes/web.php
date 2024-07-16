@@ -29,6 +29,8 @@ Route::post('password-reset', 'FrontendController@showResetForm')->name('passwor
 Route::get('login/{provider}/', 'Auth\LoginController@redirect')->name('login.redirect');
 Route::get('login/{provider}/callback/', 'Auth\LoginController@Callback')->name('login.callback');
 Route::post('logout', 'Auth\LoginController@logout')->name('login.logout');
+Route::get('/showPassword/{id}', 'Auth\LoginController@showPassword')->name('login.showPassword');
+Route::post('/updatePassword/{id}', 'Auth\LoginController@updatePassword')->name('login.updatePassword');
 
 Route::get('/','FrontendController@home')->name('home');
 
@@ -103,12 +105,15 @@ Route::group(['prefix'=>'/admin','middleware'=>['auth','admin']],function(){
     })->name('file-manager');
     // user route
     Route::resource('users','UsersController');
+    Route::post('/status_active/{id}','UsersController@status_active')->name('admin-status_active');
+    
     // Banner
     Route::resource('banner','BannerController');
     // Brand
     Route::resource('brand','BrandController');
     // Profile
     Route::get('/profile','AdminController@profile')->name('admin-profile');
+
     Route::post('/profile/{id}','AdminController@profileUpdate')->name('profile-update');
     // Category
     Route::resource('/category','CategoryController');

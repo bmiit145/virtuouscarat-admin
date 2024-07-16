@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Socialite;
 use App\User;
 use Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 class LoginController extends Controller
 {
     /*
@@ -81,5 +83,34 @@ class LoginController extends Controller
             ]);
          return redirect()->route('home');
         }
+    }
+
+    public function showPassword( $id)
+    {   
+        $user = User::find($id);
+        return view('auth.password', compact('user'));
+
+    }
+
+    public function updatePassword(Request $request , $id)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $user = User::findOrFail($id);
+
+        // Update the password
+        $user->password = Hash::make($request->password);
+        $user->update();
+        return redirect()->route('login');
+
     }
 }
