@@ -324,6 +324,13 @@ class OrderController extends Controller
         $order->fullfilled_status=$request->status;
         $status=$order->save();
 
+        if ($request->status == 4) {
+            foreach ($order->products as $product) {
+                $product->is_fulfilled = 0;
+                $product->save();
+            }
+        }
+        
         if($request->status == 1){
             $status_woocommerce = 'completed';
        }else{
@@ -333,7 +340,7 @@ class OrderController extends Controller
        if ($request->status == 1 || $request->status == 4) {
            $res = updateOrderStatusInWooCommerce($request->order_id, $status_woocommerce);
        }
-       
+
         if($status){
             return response()->json(['status'=>'success','message'=>'Order status updated successfully']);
         }
