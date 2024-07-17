@@ -1,9 +1,9 @@
 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
     <!-- Sidebar Toggle (Topbar) -->
-    <button id="sidebarToggleTop" class="btn btn-link  rounded-circle mr-3">
-      <i class="fa fa-bars"></i>
-    </button>
+
+    <span style="color: #2f3037;font-weight: 900 !important;">ADMIN PANEL</span>
+    
 
 
     <!-- Topbar Navbar -->
@@ -29,22 +29,7 @@
         </div>
       </li>
 
-      {{-- Home page --}}
-      <li class="nav-item dropdown no-arrow mx-1">
-        <a class="nav-link dropdown-toggle" href="{{route('home')}}" target="_blank" data-toggle="tooltip" data-placement="bottom" title="home"  role="button">
-          <i class="fas fa-home fa-fw"></i>
-        </a>
-      </li>
-
-      <!-- Nav Item - Alerts -->
-      <li class="nav-item dropdown no-arrow mx-1">
-       @include('backend.notification.show')
-      </li>
-
-      <!-- Nav Item - Messages -->
-      <li class="nav-item dropdown no-arrow mx-1" id="messageT" data-url="{{route('messages.five')}}">
-        @include('backend.message.message')
-      </li>
+      
 
       <div class="topbar-divider d-none d-sm-block"></div>
 

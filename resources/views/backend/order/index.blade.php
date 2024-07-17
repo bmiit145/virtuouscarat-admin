@@ -11,9 +11,12 @@
     <div class="card-header py-3">
       <h6 class="m-0 font-weight-bold text-primary float-left">Order Lists</h6>
     </div>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
     <div class="card-body">
       <div class="table-responsive">
-        @if(count($orders)>0)
+     
         <table class="table table-bordered table-hover" id="order-dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
@@ -22,11 +25,9 @@
               <th>Customer Name</th>
                 <th>Product Name</th>
                 <th>Vendor Name</th>
-{{--              <th>Email</th>--}}
-{{--              <th>Charge</th>--}}
               <th>Order Value</th>
-{{--              <th>Wp Status</th>--}}
-                <th>Status</th>
+              <th>Customer Status</th>
+                <th>Vendor Status</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -58,31 +59,9 @@
                             </span><br/>
                         @endforeach
                     </td>
-{{--                    <td>{{$order->billing_email}}</td>--}}
-{{--                    <td>{{$order->products->sum('quantity')}}</td>--}}
-{{--                    <td>@foreach($shipping_charge as $data) $ {{number_format($data,2)}} @endforeach</td>--}}
+
                     <td>${{number_format($order->total,2)}}</td>
-{{--                    <td>--}}
-{{--                        @if($order->status=='pending-payment' || $order->status=='pending')--}}
-{{--                          <span class="badge badge-primary">Pending payment</span>--}}
-{{--                        @elseif($order->status=='processing')--}}
-{{--                          <span class="badge badge-warning">Processing</span>--}}
-{{--                        @elseif($order->status=='completed')--}}
-{{--                          <span class="badge badge-success">Completed</span>--}}
-{{--                        @elseif($order->status=='on-hold')--}}
-{{--                          <span class="badge badge-danger">On hold</span>--}}
-{{--                        @elseif($order->status=='failed')--}}
-{{--                          <span class="badge badge-danger">Failed</span>--}}
-{{--                        @elseif($order->status=='draft'|| $order->status=='checkout-draft')--}}
-{{--                          <span class="badge badge-dark">Draft</span>--}}
-{{--                        @elseif($order->status=='canceled')--}}
-{{--                          <span class="badge badge-warning">Canceled</span>--}}
-{{--                        @elseif($order->status=='refunded')--}}
-{{--                          <span class="badge badge-info">Refunded</span>--}}
-{{--                        @else--}}
-{{--                          <span class="badge badge-danger">{{$order->status}}</span>--}}
-{{--                        @endif--}}
-{{--                    </td>--}}
+                    <td></td>
                     <td>
                         @if($order->fullfilled_status == 1)
                             <span class="badge badge-success">Fullfilled</span>
@@ -99,19 +78,23 @@
                         @endif
                     </td>
                     <td>
-{{--                        button in badge for approve , reject and fullfill--}}
-                        <button type="button" class="btn badge badge-success order-action-btn" data-action="approve"> Approve </button>
-                        <button type="button" class="btn badge badge-danger order-action-btn" data-action="reject"> Reject </button>
-{{--                        <button type="button" class="btn badge badge-info order-action-btn" data-action="fullfilled"> FullField </button>--}}
+                        {{-- <button type="button" class="btn badge badge-success order-action-btn" data-action="approve"> Approve </button>
+                        <button type="button" class="btn badge badge-danger order-action-btn" data-action="reject"> Reject </button> --}}
+                        <form action="{{ route('Approvel', $product->id) }}" method="POST" style="display: flex; align-items: center;">
+                            @csrf
+                            <select name="is_approvel" class="form-control" style="margin-right: 10px;" onchange="enableSubmitButton(this)">
+                             
+                                <option value="1" {{ $product->is_approvel == 1 ? 'selected' : '' }}>Approved</option>
+                                <option value="2" {{ $product->is_approvel == 2 ? 'selected' : '' }}>Rejected</option>
+                            </select>
+                            <button id="submit-button-{{ $product->id }}" style="background: #132644; color: white; border-radius: 6px;" type="submit" disabled>Submit</button>
+                        </form>
                     </td>
                 </tr>
             @endforeach
           </tbody>
         </table>
-        <span style="float:right">{{$orders->links()}}</span>
-        @else
-          <h6 class="text-center">No orders found!!! Please order some products</h6>
-        @endif
+     
       </div>
     </div>
 </div>
@@ -134,18 +117,17 @@
   <script src="{{asset('backend/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 
+  
   <!-- Page level custom scripts -->
   <script src="{{asset('backend/js/demo/datatables-demo.js')}}"></script>
   <script>
-
-      $('#order-dataTable').DataTable( {
-            "columnDefs":[
-                {
-                    "orderable":false,
-                    "targets":[8]
-                }
-            ]
-        } );
+  function enableSubmitButton(selectElement) {
+            const submitButton = $(selectElement).closest('form').find('button[type="submit"]');
+            submitButton.prop('disabled', false);
+        }
+$(document).ready(function() {
+      $('#order-dataTable').DataTable();
+  });
 
         // Sweet alert
 

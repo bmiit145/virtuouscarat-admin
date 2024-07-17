@@ -151,25 +151,20 @@ class ProductController extends Controller
     }
 
 
-    public function Approvel($id) {
+    public function Approvel(Request $request, $id) {
         $aprovel = WpProduct::find($id);
+        $aprovel->is_approvel = $request->is_approvel;
+        //    $response =  WooCommerceProductController::sendDataToWooCommerce($aprovel);
 
-        if ($aprovel) { // Check if the product exists
-            if ($aprovel->is_approvel == 0) {
-                $aprovel->is_approvel = 1;
-                $response =  WooCommerceProductController::sendDataToWooCommerce($aprovel);
+        //         // check if there is an error
+        //     if (is_array($response) && isset($response['error'])) {
+        //         return back()->with('error', 'Failed to send product to WooCommerce: ' . $response['error']);
+        //         }
+        
+        $aprovel->save();
+    
 
-                // check if there is an error
-                if (is_array($response) && isset($response['error'])) {
-                    return back()->with('error', 'Failed to send product to WooCommerce: ' . $response['error']);
-                }
-            } else {
-                $aprovel->is_approvel = 0;
-            }
-
-            $aprovel->save(); // Save the changes to the database
-        }
-
+      
         // send data to woo commerce for product creation
         return back();
     }
