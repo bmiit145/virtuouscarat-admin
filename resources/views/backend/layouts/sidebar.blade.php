@@ -66,12 +66,12 @@
 </li>
 
 <!-- General settings -->
-<li class="nav-item {{ request()->is('admin/settings*') ? 'active_tab' : '' }}">
+{{-- <li class="nav-item {{ request()->is('admin/settings*') ? 'active_tab' : '' }}">
     <a class="nav-link" href="{{ route('settings') }}">
         <i class="fas fa-cog"></i>
         <span>Settings</span>
     </a>
-</li>
+</li> --}}
 
   <!-- Sidebar Toggler (Sidebar) -->
   <div class="text-center d-none d-md-inline">

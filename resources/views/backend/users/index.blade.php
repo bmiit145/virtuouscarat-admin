@@ -60,13 +60,13 @@
                       <form action="{{ route('admin-status_active', $user->id) }}" method="POST">
                         @csrf
                         @if($user->status == 'inactive')
-                            <button type="submit" style="background: red; border-radius: 10px; color: black;">
+                            <button type="submit" style="background: red; border-radius: 10px; color: black;" onclick="return confirmStatusChange('{{ $user->status }}')">
                                 {{ $user->status }} 
                             </button>
                         @else
-                          <button type="submit" style="background: green; border-radius: 10px; color: black;" disabled >
-                            {{ $user->status }} 
-                        </button>
+                            <button type="submit" style="background: green; border-radius: 10px; color: black;" onclick="return confirmStatusChange('{{ $user->status }}')">
+                                {{ $user->status }} 
+                            </button>
                         @endif
                     </form>
                     </td>
@@ -100,6 +100,12 @@
 @endpush
 
 @push('scripts')
+<script>
+  function confirmStatusChange(currentStatus) {
+      var newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+      return confirm('Are you sure you want to change the status to ' + newStatus + '?');
+  }
+</script>
 
   <!-- Page level plugins -->
   <script src="{{asset('backend/vendor/datatables/jquery.dataTables.min.js')}}"></script>
@@ -110,14 +116,13 @@
   <script src="{{asset('backend/js/demo/datatables-demo.js')}}"></script>
   <script>
       
-      $('#user-dataTable').DataTable( {
-            "columnDefs":[
-                {
-                    "orderable":false,
-                    "targets":[6,7]
-                }
-            ]
-        } );
+
+
+        $('#user-dataTable').DataTable({
+            "paging": true,    
+            "ordering": false, 
+            "info": true       
+        });
 
         // Sweet alert
 

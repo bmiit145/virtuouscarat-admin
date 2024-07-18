@@ -96,16 +96,23 @@ class UsersController extends Controller
         $user = User::findOrFail($id);
         
      
-        $user->update(['status' => 'active']);
+        if ($user->status == 'active') {
+            $user->update(['status' => 'inactive']);
+        } else {
+            $user->update(['status' => 'active']);
+        }
+            
         
 
+
         $email = $user->email;
+        if($user->status == 'active'){
  
         $link = route('login.showPassword', ['id' => $id]);
         
        
         Mail::to($email)->send(new InviteMail($link));
-        
+        }
         // Redirect back
         return back();
     }

@@ -43,7 +43,7 @@
                 @foreach($order->products as $index => $product)
                     <tr data-order_id="{{ $order->order_id }}">
                         @if($index == 0)
-                            <td rowspan="{{ $rowspan }}">{{ \Carbon\Carbon::parse($order->order_date)->format('Y-m-d') }}</td>
+                            <td rowspan="{{ $rowspan }}">{{ \Carbon\Carbon::parse($order->order_date)->format('d-m-Y') }}</td>
                             <td rowspan="{{ $rowspan }}">{{ $order->order_id }}</td>
                             <td rowspan="{{ $rowspan }}">{{ $order->billing_first_name }} {{ $order->billing_last_name }}</td>
                         @endif
@@ -170,7 +170,12 @@
             submitButton.prop('disabled', false);
         }
 $(document).ready(function() {
-      $('#order-dataTable').DataTable();
+
+      $('#order-dataTable').DataTable({
+            "paging": true,    
+            "ordering": false, 
+            "info": true       
+        });
   });
 
         // Sweet alert
