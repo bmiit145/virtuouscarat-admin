@@ -11,6 +11,10 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
+        if (\Illuminate\Support\Facades\DB::table('users')->count() > 0) {
+            return;
+        }
+
         $data=array(
             array(
                 'name'=>'CodeAstro',

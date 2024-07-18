@@ -154,20 +154,20 @@ class ProductController extends Controller
     public function Approvel(Request $request, $id) {
         $aprovel = WpProduct::find($id);
         $aprovel->is_approvel = $request->is_approvel;
-        //    $response =  WooCommerceProductController::sendDataToWooCommerce($aprovel);
+        $response =  WooCommerceProductController::sendDataToWooCommerce($aprovel);
 
-        //         // check if there is an error
-        //     if (is_array($response) && isset($response['error'])) {
-        //         return back()->with('error', 'Failed to send product to WooCommerce: ' . $response['error']);
-        //         }
-        
+                 // check if there is an error
+        if (is_array($response) && isset($response['error'])) {
+            return back()->with('error', 'Failed to send product to WooCommerce: ' . $response['error']);
+        }
         $aprovel->save();
-    
 
-      
+
+
         // send data to woo commerce for product creation
-        return back();
+        return back()->with('success', 'Product sent to WooCommerce successfully.');
     }
+
     /**
      * Update the specified resource in storage.
      *

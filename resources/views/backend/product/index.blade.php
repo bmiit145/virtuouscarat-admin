@@ -34,9 +34,9 @@
                 <th>SKU ID</th>
                   <th>Name</th>
                   <th>Category</th>
+                  <th>Vendor Name</th>
                   <th>Regular Price</th>
                   <th>Sale Price</th>
-               
                   <th>Stock Status</th>
                   <th>Stock</th>
                   <th>Status</th>
@@ -52,6 +52,7 @@
                 <td>{{$product->sku}}</td>
                   <td>{{$product->name}}</td>
                   <td>{{$product->Category->title}}</td>
+                  <td>{{$product->vendor ? $product->vendor->name : '' }}</td>
                   <td>₹{{$product->regular_price}}</td>
                   <td>₹{{$product->sale_price}}</td>
                   <td>{{$stock_status}}</td>
@@ -160,9 +161,9 @@
 <script>
   $(document).ready(function() {
         $('#product-dataTable').DataTable({
-            "paging": true,    
-            "ordering": false, 
-            "info": true       
+            "paging": true,
+            "ordering": false,
+            "info": true
         });
   });
 </script>

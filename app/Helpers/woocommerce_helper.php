@@ -73,6 +73,11 @@ function syncWooCommerceOrder($order)
 
 function syncWooCommerceOrderProducts($order)
 {
+    if($order->status == 'checkout-draft'){
+        $is_fulfilled = 101;
+    }else{
+        $is_fulfilled = 0;
+    }
     foreach ($order->line_items as $item) {
         WpOrderProduct::updateOrCreate(
             ['order_id' => $order->id, 'product_id' => $item->product_id],
@@ -82,6 +87,7 @@ function syncWooCommerceOrderProducts($order)
                 'price' => $item->price,
                 'total' => $item->total,
                 'meta_data' => json_encode($item->meta_data),
+                'is_fulfilled' => $is_fulfilled,
             ]
         );
     }

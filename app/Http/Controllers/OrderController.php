@@ -25,7 +25,11 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders=WpOrder::orderBy('order_id','DESC')->paginate(10);
+        $orders=WpOrder::
+        where('status' , '!=' , 'checkout-draft')
+        ->orderBy('order_date','DESC')
+            ->orderBy('order_id','DESC')
+            ->paginate(10);
         return view('backend.order.index')->with('orders',$orders);
     }
 

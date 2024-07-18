@@ -86,7 +86,7 @@
                                 @elseif($product->is_fulfilled == 2)
                                     <span class="btn btn-sm btn-danger" style="cursor: unset">Rejected By Vender</span>
                                 @elseif($product->is_fulfilled == 3)
-                                    <span class="btn btn-sm btn-info" style="cursor: unset">Approved</span>
+                                    <span class="btn btn-sm btn-info" style="cursor: unset">Pending By Vendor</span>
                                 @elseif($product->is_fulfilled == 4)
                                     <span class="btn btn-sm btn-danger" style="cursor: unset">Rejected</span>
                                 @elseif($product->is_fulfilled == 5)
@@ -115,21 +115,22 @@
 {{--                                    }--}}
 {{--                                @endphp--}}
                                 @php
-                                $is_actionable = $product->is_fulfilled == 1 || $product->is_fulfilled == 3 ? false : true;
+//                                $is_actionable = $product->is_fulfilled == 1 || $product->is_fulfilled == 3  ? false : true;
+                                $is_actionable = $product->is_fulfilled == 0  ? true : false;
                                 @endphp
                                 @if($product->is_fulfilled != 5)
+                                    @if($is_actionable)
                                 <form action="{{ route('order.update.product.status') }}" class="order-product-action-btn-form" method="POST" style="display: flex; align-items: center;">
                                     @csrf
                                     <input type="hidden" name="order_id" value="{{ $order->order_id }}">
                                     <input type="hidden" name="product_id" value="{{ $product->product_id }}">
                                     <select name="order-action-select" class="form-control" style="margin-right: 10px;" onchange="enableSubmitButton(this)" onfocus="enableSubmitButton(this)">
-                                        @if($is_actionable)
                                             <option value="3" {{ $product->is_fulfilled == 3 ? 'selected' : '' }}>Approved</option>
-                                        @endif
                                         <option value="4" {{ $product->is_fulfilled == 4 ? 'selected' : '' }}>Rejected</option>
                                     </select>
                                     <button id="submit-button-{{ $order->order_id }}" style="background: #132644; color: white; border-radius: 6px;" type="submit" disabled>Submit</button>
                                 </form>
+                                        @endif
                                 @endif
                             </td>
                     </tr>
@@ -172,9 +173,9 @@
 $(document).ready(function() {
 
       $('#order-dataTable').DataTable({
-            "paging": true,    
-            "ordering": false, 
-            "info": true       
+            "paging": true,
+            "ordering": false,
+            "info": true
         });
   });
 

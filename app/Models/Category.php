@@ -3,10 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Model\WpProduct;
+use App\Models\WpProduct;
 
 class Category extends Model
 {
+
     protected $fillable=['title','slug','summary','photo','status','is_parent','parent_id','added_by'];
 
     public function parent_info(){
