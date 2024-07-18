@@ -52,9 +52,9 @@
                 <td>{{$product->sku}}</td>
                   <td>{{$product->name}}</td>
                   <td>{{$product->Category->title}}</td>
-                  <td>${{$product->regular_price}}</td>
-                  <td>${{$product->sale_price}}</td>
-                  
+                  <td>₹{{$product->regular_price}}</td>
+                  <td>₹{{$product->sale_price}}</td>
+                  <td>{{$product->sku}}</td>
                   <td>{{$stock_status}}</td>
                   <td>{{$product->quantity}}</td>
                   <td>

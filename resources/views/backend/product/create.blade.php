@@ -34,7 +34,7 @@
           @enderror
         </div>
 
-        
+
         <div class="form-group">
           <label for="description" class="col-form-label">Description</label>
           <textarea class="form-control" id="description" name="description" required>{{old('description')}}</textarea>
@@ -56,11 +56,11 @@
 
         {{-- <div class="form-group">
           <label for="is_featured">Is Featured</label><br>
-          <input type="checkbox" name='is_featured' id='is_featured' value='1' checked> Yes                        
+          <input type="checkbox" name='is_featured' id='is_featured' value='1' checked> Yes
         </div> --}}
-              
+
         {{-- {{$categories}} --}}
-        
+
 
         {{-- <div class="form-group d-none" id="child_cat_div">
           <label for="child_cat_id">Sub Category</label>
@@ -73,7 +73,7 @@
         </div> --}}
 
         <div class="form-group">
-          <label for="price" class="col-form-label">Regular Price($) <span class="text-danger">*</span></label>
+          <label for="price" class="col-form-label">Regular Price(₹) <span class="text-danger">*</span></label>
           <input id="price" type="number" name="price" placeholder="Enter price" min="0"  value="{{old('price')}}" class="form-control" required>
           @error('price')
           <span class="text-danger">{{$message}}</span>
@@ -81,7 +81,7 @@
         </div>
 
         <div class="form-group">
-          <label for="sale_price" class="col-form-label">Sale Price($)</label>
+          <label for="sale_price" class="col-form-label">Sale Price(₹)</label>
           <input id="sale_price" type="number" name="sale_price" min="0" placeholder="Enter Sale Price"  value="{{old('sale_price')}}" class="form-control" required>
           @error('sale_price')
           <span class="text-danger">{{$message}}</span>
@@ -127,7 +127,7 @@
           </div>
       </div>
 
-      
+
       <div class="form-group">
         <label for="IGI_certificate" class="col-form-label">IGI Certificate link<span class="text-danger">*</span></label>
         <input id="IGI_certificate" type="text" name="IGI_certificate" placeholder="IGI Certificate Link"  value="{{old('IGI_cert')}}" class="form-control" required>
@@ -146,7 +146,7 @@
 
 
       {{-- Attribute --}}
-    
+
       @php
       $attributes = [
           'Type' => 'Lab Grown Diamond',
@@ -176,7 +176,7 @@
               <input type="text" class="form-control" name="attributes[{{ $attribute }}]" id="{{ str_replace(' ', '_', strtolower($attribute)) }}" value="{{ old('attributes.' . $attribute, $value) }}" required>
           </div>
       </div>
-      
+
       @if (($loop->iteration % 3) == 0 && !$loop->last)
           </div><div class="row">
       @endif
@@ -255,7 +255,7 @@
   <label for="mainphoto" class="col-form-label">Main Photo<span class="text-danger">*</span></label>
   <div class="input-group">
       <span class="input-group-btn">
-          <button class="btn btn-secondary text-white" type="button" onclick="document.getElementById('imageInput').click();"> 
+          <button class="btn btn-secondary text-white" type="button" onclick="document.getElementById('imageInput').click();">
               <i class="fa fa-picture-o"></i> Choose
           </button>
       </span>
@@ -415,7 +415,7 @@
   function toggleQuantityField() {
       var inStock = document.getElementById('inStock').checked;
       var quantityField = document.getElementById('quantityField');
-      
+
       if (inStock) {
           quantityField.style.display = 'block';
       } else {
