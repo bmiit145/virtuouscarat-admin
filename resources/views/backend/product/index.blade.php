@@ -61,6 +61,7 @@
                     <form action="{{ route('Approvel', $product->id) }}" method="POST" style="display: flex; align-items: center;">
                         @csrf
                         <select name="is_approvel" class="form-control" style="margin-right: 10px;" onchange="enableSubmitButton(this)">
+                            <option value="#">Select Status</option>
                             <option value="0" {{ $product->is_approvel == 0 ? 'selected' : '' }}>Pending</option>
                             <option value="1" {{ $product->is_approvel == 1 ? 'selected' : '' }}>Approved</option>
                             <option value="2" {{ $product->is_approvel == 2 ? 'selected' : '' }}>Rejected</option>
