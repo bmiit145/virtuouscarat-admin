@@ -37,9 +37,9 @@
           </thead>
             <tbody>
             @foreach($orders as $order)
-                @php
-                    $rowspan = count($order->products);
-                @endphp
+                    @php
+                        $rowspan = count($order->products);
+                    @endphp
                 @foreach($order->products as $index => $product)
                     <tr data-order_id="{{ $order->order_id }}">
                         @if($index == 0)
@@ -89,6 +89,8 @@
                                     <span class="btn btn-sm btn-info" style="cursor: unset">Approved</span>
                                 @elseif($product->is_fulfilled == 4)
                                     <span class="btn btn-sm btn-danger" style="cursor: unset">Rejected</span>
+                                @elseif($product->is_fulfilled == 5)
+                                    <span class="btn btn-sm btn-dark" style="cursor: unset">Cancelled</span>
                                 @else
                                     <span class="btn btn-sm btn-warning" style="cursor: unset">Pending</span>
                                 @endif
@@ -113,8 +115,9 @@
 {{--                                    }--}}
 {{--                                @endphp--}}
                                 @php
-                                $is_actionable = $product->is_fulfilled == 1 || $product->is_fulfilled == 2 ? false : true;
+                                $is_actionable = $product->is_fulfilled == 1 || $product->is_fulfilled == 3 ? false : true;
                                 @endphp
+                                @if($product->is_fulfilled != 5)
                                 <form action="{{ route('order.update.product.status') }}" class="order-product-action-btn-form" method="POST" style="display: flex; align-items: center;">
                                     @csrf
                                     <input type="hidden" name="order_id" value="{{ $order->order_id }}">
@@ -127,6 +130,7 @@
                                     </select>
                                     <button id="submit-button-{{ $order->order_id }}" style="background: #132644; color: white; border-radius: 6px;" type="submit" disabled>Submit</button>
                                 </form>
+                                @endif
                             </td>
                     </tr>
                 @endforeach

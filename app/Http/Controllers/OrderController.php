@@ -382,6 +382,17 @@ class OrderController extends Controller
 
         $order->save();
 
+
+        if($order->fullfilled_status == 1){
+            $status_woocommerce = 'completed';
+        }else if($order->fullfilled_status == 4){
+            $status_woocommerce = 'cancelled';
+        }
+
+        if ($order->fullfilled_status == 1 || $order->fullfilled_status == 4) {
+            $res = updateOrderStatusInWooCommerce($request->order_id, $status_woocommerce);
+        }
+
         return response()->json(['status' => 'success', 'message' => 'Product status updated successfully']);
     }
 
