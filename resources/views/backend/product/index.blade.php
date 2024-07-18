@@ -31,12 +31,12 @@
         <table class="table table-bordered table-hover" id="product-dataTable" width="100%" cellspacing="0">
           <thead>
               <tr>
-                  <th>#</th>
+                <th>SKU ID</th>
                   <th>Name</th>
                   <th>Category</th>
                   <th>Regular Price</th>
                   <th>Sale Price</th>
-                  <th>SKU ID</th>
+               
                   <th>Stock Status</th>
                   <th>Stock</th>
                   <th>Status</th>
@@ -49,12 +49,12 @@
                   $stock_status = $product->stock_status == 1 ? "In Stock" : ($product->stock_status == 0 ? "Out of Stock" : "On Backorder");
               @endphp
               <tr>
-                  <td>{{$product->id}}</td>
+                <td>{{$product->sku}}</td>
                   <td>{{$product->name}}</td>
                   <td>{{$product->Category->title}}</td>
                   <td>${{$product->regular_price}}</td>
                   <td>${{$product->sale_price}}</td>
-                  <td>{{$product->sku}}</td>
+                  
                   <td>{{$stock_status}}</td>
                   <td>{{$product->quantity}}</td>
                   <td>
@@ -160,7 +160,11 @@
 
 <script>
   $(document).ready(function() {
-      $('#product-dataTable').DataTable();
+        $('#product-dataTable').DataTable({
+            "paging": true,    
+            "ordering": false, 
+            "info": true       
+        });
   });
 </script>
 @endpush

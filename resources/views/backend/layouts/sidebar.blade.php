@@ -11,7 +11,7 @@
   <!-- Sidebar - Brand -->
   <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('admin')}}">
 
-    <img src="{{asset('images/virtuouscarat-logo.png')}}" atl="virtuouscarat-logo" style="width: 50%;background: white;">
+    <img src="{{asset('images/Group.png')}}" atl="virtuouscarat-logo" >
   </a>
 
   <!-- Divider -->
@@ -61,7 +61,7 @@
    <li class="nav-item {{ request()->is('admin/users*') ? 'active_tab' : '' }}">
     <a class="nav-link" href="{{ route('users.index') }}">
         <i class="fas fa-users"></i>
-        <span>Users</span>
+        <span>Vendor</span>
     </a>
 </li>
 
