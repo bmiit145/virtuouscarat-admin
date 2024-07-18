@@ -35,94 +35,103 @@
               <th>Action</th>
             </tr>
           </thead>
-          <tbody>
+            <tbody>
             @foreach($orders as $order)
-            @php
-                $shipping_charge=DB::table('shippings')->where('id',$order->shipping_id)->pluck('price');
-            @endphp
-                <tr data-order_id = {{ $order->order_id }}>
-                    <td>{{\Carbon\Carbon::parse($order->order_date)->format('Y-m-d') }}</td>
-                    <td>{{$order->order_id}}</td>
-                    <td>{{$order->billing_first_name}} {{$order->billing_last_name}}</td>
-                    <td>
-                        @foreach($order->products as $product)
-                            @if(!$product->product)
-                                @continue
-                            @endif
-                            <span>{{  $product->product? $product->product->name : '' }}
-                                <sub>{{ $product->product? $product->product->sku : '' }}</sub>
-                            </span><br/>
-                        @endforeach
-                    </td>
-                    <td>
-                        @foreach($order->products as $product)
-                            @if(!$product->product)
-                                @continue
-                            @endif
-                            <span>{{  $product->product? $product->product->vendor->name : '' }}
-                            </span><br/>
-                        @endforeach
-                    </td>
-                    <td>
-                        @foreach($order->products as $product)
-                            @if(!$product->product)
-                                @continue
-                            @endif
-                            <span>₹{{  $product ? $product->price : '' }}
-                                <sub>QTY {{  $product ? $product->quantity : '' }}</sub>
-                            </span><br/>
-                        @endforeach
-                    </td>
-                    <td>₹{{number_format($order->total,2)}}</td>
-                    <td>
-                        @if($order->fullfilled_status == 1)
-                            <span class="btn btn-sm btn-success" style="cursor: unset">Fullfilled</span>
-                        @elseif($order->fullfilled_status == 2)
-                            <span class="btn btn-sm btn-info" style="cursor: unset">Approved</span>
-                        @elseif($order->fullfilled_status == 3)
-                            <span class="btn btn-sm btn-success" style="cursor: unset">Approved by Vendor </span>
-                        @elseif($order->fullfilled_status == 4)
-                            <span class="btn btn-sm btn-danger" style="cursor: unset">Rejected</span>
-                        @elseif($order->fullfilled_status == 5)
-                            <span class="btn btn-sm btn-danger" style="cursor: unset">Rejected by Vendor</span>
-                        @else
-                            <span class="btn btn-sm btn-warning" style="cursor: unset">Pending</span>
+                @php
+                    $rowspan = count($order->products);
+                @endphp
+                @foreach($order->products as $index => $product)
+                    <tr data-order_id="{{ $order->order_id }}">
+                        @if($index == 0)
+                            <td rowspan="{{ $rowspan }}">{{ \Carbon\Carbon::parse($order->order_date)->format('Y-m-d') }}</td>
+                            <td rowspan="{{ $rowspan }}">{{ $order->order_id }}</td>
+                            <td rowspan="{{ $rowspan }}">{{ $order->billing_first_name }} {{ $order->billing_last_name }}</td>
                         @endif
-                    </td>
-                    <td>
-{{--                        Add toggle to  status show switch --}}
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" data-toggle="toggle" @if($order->customer_status_show) checked @endif>
-                        </div>
-                    </td>
-                    <td>
-                        @php
-                            $is_actionable = true;
-                            foreach($order->products as $product){
-                                if(!$product->product){
-                                    continue;
-                                }
-                                if($product->is_fulfilled == 1 || $product->is_fulfilled == 2){
-                                    $is_actionable = false;
-                             }
-                                }
-                        @endphp
-                        {{-- <button type="button" class="btn badge badge-success order-action-btn" data-action="approve"> Approve </button>
-                        <button type="button" class="btn badge badge-danger order-action-btn" data-action="reject"> Reject </button> --}}
-                        <form action="{{ route('order.update.status') }}" class="order-action-btn-form" method="POST" style="display: flex; align-items: center;">
-                            @csrf
-                            <select name="order-action-select" class="form-control" style="margin-right: 10px;" onchange="enableSubmitButton(this)" onfocus="enableSubmitButton(this)">
-                                @if($is_actionable)
-                                <option value="2" {{ $order->fullfilled_status == 2 ? 'selected' : '' }}>Approved</option>
+                        <td>
+                            @if($product->product)
+                                <span>{{ $product->product->name }} <sub>{{ $product->product->sku }}</sub></span>
+                            @endif
+                        </td>
+                        <td>
+                            @if($product->product)
+                                <span>{{ $product->product->vendor->name }}</span>
+                            @endif
+                        </td>
+                        <td>
+                            @if($product->product)
+                                <span>₹{{ $product->price }} <sub>QTY {{ $product->quantity }}</sub></span>
+                            @endif
+                        </td>
+                        @if($index == 0)
+                            <td rowspan="{{ $rowspan }}">₹{{ number_format($order->total, 2) }}</td>
+                            @endif
+{{--                            <td rowspan="{{ $rowspan }}">--}}
+{{--                                @if($order->fullfilled_status == 1)--}}
+{{--                                    <span class="btn btn-sm btn-success" style="cursor: unset">Fullfilled</span>--}}
+{{--                                @elseif($order->fullfilled_status == 2)--}}
+{{--                                    <span class="btn btn-sm btn-info" style="cursor: unset">Approved</span>--}}
+{{--                                @elseif($order->fullfilled_status == 3)--}}
+{{--                                    <span class="btn btn-sm btn-success" style="cursor: unset">Approved by Vendor</span>--}}
+{{--                                @elseif($order->fullfilled_status == 4)--}}
+{{--                                    <span class="btn btn-sm btn-danger" style="cursor: unset">Rejected</span>--}}
+{{--                                @elseif($order->fullfilled_status == 5)--}}
+{{--                                    <span class="btn btn-sm btn-danger" style="cursor: unset">Rejected by Vendor</span>--}}
+{{--                                @else--}}
+{{--                                    <span class="btn btn-sm btn-warning" style="cursor: unset">Pending</span>--}}
+{{--                                @endif--}}
+{{--                            </td>--}}
+                            <td>
+                                @if($product->is_fulfilled == 1)
+                                    <span class="btn btn-sm btn-success" style="cursor: unset">Approved By Vender</span>
+                                @elseif($product->is_fulfilled == 2)
+                                    <span class="btn btn-sm btn-danger" style="cursor: unset">Rejected By Vender</span>
+                                @elseif($product->is_fulfilled == 3)
+                                    <span class="btn btn-sm btn-info" style="cursor: unset">Approved</span>
+                                @elseif($product->is_fulfilled == 4)
+                                    <span class="btn btn-sm btn-danger" style="cursor: unset">Rejected</span>
+                                @else
+                                    <span class="btn btn-sm btn-warning" style="cursor: unset">Pending</span>
                                 @endif
-                                <option value="4" {{ $order->fullfilled_status == 4 ? 'selected' : '' }}>Rejected</option>
-                            </select>
-                            <button id="submit-button-{{ $product->id }}" style="background: #132644; color: white; border-radius: 6px;" type="submit" disabled>Submit</button>
-                        </form>
-                    </td>
-                </tr>
+                            </td>
+                            @if($index == 0)
+                            <td rowspan="{{ $rowspan }}">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input SwitchCustomerShow" type="checkbox" role="switch" id="SwitchCustomerShow" data-toggle="toggle" @if($order->customer_status_show) checked @endif>
+                                </div>
+                            </td>
+                            @endif
+                            <td>
+{{--                                @php--}}
+{{--                                    $is_actionable = true;--}}
+{{--                                    foreach($order->products as $product){--}}
+{{--                                        if(!$product->product){--}}
+{{--                                            continue;--}}
+{{--                                        }--}}
+{{--                                        if($product->is_fulfilled == 1 || $product->is_fulfilled == 2){--}}
+{{--                                            $is_actionable = false;--}}
+{{--                                        }--}}
+{{--                                    }--}}
+{{--                                @endphp--}}
+                                @php
+                                $is_actionable = $product->is_fulfilled == 1 || $product->is_fulfilled == 2 ? false : true;
+                                @endphp
+                                <form action="{{ route('order.update.product.status') }}" class="order-product-action-btn-form" method="POST" style="display: flex; align-items: center;">
+                                    @csrf
+                                    <input type="hidden" name="order_id" value="{{ $order->order_id }}">
+                                    <input type="hidden" name="product_id" value="{{ $product->product_id }}">
+                                    <select name="order-action-select" class="form-control" style="margin-right: 10px;" onchange="enableSubmitButton(this)" onfocus="enableSubmitButton(this)">
+                                        @if($is_actionable)
+                                            <option value="3" {{ $product->is_fulfilled == 3 ? 'selected' : '' }}>Approved</option>
+                                        @endif
+                                        <option value="4" {{ $product->is_fulfilled == 4 ? 'selected' : '' }}>Rejected</option>
+                                    </select>
+                                    <button id="submit-button-{{ $order->order_id }}" style="background: #132644; color: white; border-radius: 6px;" type="submit" disabled>Submit</button>
+                                </form>
+                            </td>
+                    </tr>
+                @endforeach
             @endforeach
-          </tbody>
+            </tbody>
         </table>
 
       </div>
@@ -215,6 +224,53 @@ $(document).ready(function() {
                     success: function(data){
                         if(data.status){
                             location.reload();
+                        }
+                    }
+                });
+            });
+
+
+
+            $('.order-product-action-btn-form').submit(function (e){
+                e.preventDefault();
+                var form = $(this);
+                var order_id = form.find('input[name="order_id"]').val();
+                var product_id = form.find('input[name="product_id"]').val();
+                var status = form.find('select[name="order-action-select"]').val();
+
+                var url = "{{ route('order.update.product.status') }}";
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        order_id: order_id,
+                        product_id: product_id,
+                        status: status
+                    },
+                    success: function(data){
+                        if(data.status){
+                            location.reload();
+                        }
+                    }
+                });
+            });
+
+
+            // change customer_status_show
+            $('.SwitchCustomerShow').change(function(){
+                var order_id = $(this).closest('tr').data('order_id');
+                var status = $(this).prop('checked') ? 1 : 0;
+                var url = "{{ route('order.update.customerShow.status') }}";
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        order_id: order_id,
+                        status: status
+                    },
+                    success: function(data){
+                        if(data.status){
+                            // location.reload();
                         }
                     }
                 });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\WpOrder;
+use App\Models\WpOrderProduct;
 use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\Order;
@@ -330,7 +331,7 @@ class OrderController extends Controller
                 $product->save();
             }
         }
-        
+
         if($request->status == 1){
             $status_woocommerce = 'completed';
        }else{
@@ -346,6 +347,57 @@ class OrderController extends Controller
         }
         else{
             return response()->json(['status'=>'error','message'=>'Error while updating order status']);
+        }
+    }
+
+
+// update product status
+    public function updateProductStatus(Request $request){
+        $wpOrderProduct = WpOrderProduct::where('order_id', $request->order_id)
+            ->where('product_id', $request->product_id)
+            ->first();
+        if (!$wpOrderProduct) {
+            return response()->json(['status' => 'error', 'message' => 'Product not found']);
+        }
+
+        $wpOrderProduct->is_fulfilled = $request->status;
+        $wpOrderProduct->save();
+
+        $order = WpOrder::where('order_id', $request->order_id)->first();
+        if (!$order) {
+            return response()->json(['status' => 'error', 'message' => 'Order not found']);
+        }
+
+        $totalProducts = $order->products()->count();
+        $fulfilledProducts = $order->products()->where('is_fulfilled', 3)->count();
+        $rejectedProducts = $order->products()->where('is_fulfilled', 4)->count();
+
+        if ($totalProducts == $fulfilledProducts) {
+            $order->fullfilled_status = 2; // All products fulfilled
+        } elseif ($totalProducts == $rejectedProducts) {
+            $order->fullfilled_status = 4; // All products rejected
+        } else {
+            $order->fullfilled_status = 6; // Partially fulfilled
+        }
+
+        $order->save();
+
+        return response()->json(['status' => 'success', 'message' => 'Product status updated successfully']);
+    }
+
+
+
+    // update order customer Show status
+    public  function  updateCustomerShowStatus(Request $request)
+    {
+        $order = WpOrder::where('order_id', $request->order_id)->first();
+        $order->customer_status_show = $request->status;
+        $status = $order->save();
+
+        if ($status) {
+            return response()->json(['status' => 'success', 'message' => 'Order status updated successfully']);
+        } else {
+            return response()->json(['status' => 'error', 'message' => 'Error while updating order status']);
         }
     }
 }

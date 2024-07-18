@@ -110,7 +110,7 @@ Route::group(['prefix'=>'/admin','middleware'=>['auth','admin']],function(){
     // user route
     Route::resource('users','UsersController');
     Route::post('/status_active/{id}','UsersController@status_active')->name('admin-status_active');
-    
+
     // Banner
     Route::resource('banner','BannerController');
     // Brand
@@ -193,6 +193,8 @@ Route::group(['prefix'=>'/admin','middleware'=>['auth','admin']],function(){
 
 Route::group(['middleware' => 'auth'], function () {
     Route::post('order/update/status' , 'OrderController@updateStatus')->name('order.update.status');
+    Route::post('order/update/product/status' , 'OrderController@updateProductStatus')->name('order.update.product.status');
+    Route::post('order/update/customerShow/status' , 'OrderController@updateCustomerShowStatus')->name('order.update.customerShow.status');
 });
 
 
