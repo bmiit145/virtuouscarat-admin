@@ -21,70 +21,55 @@
       <div class="table-responsive">
 
         <table class="table table-bordered table-hover" id="order-dataTable" width="100%" cellspacing="0">
-          <thead>
-            <tr>
-                <th>Order Date</th>
-              <th>Order No.</th>
-              <th>Customer Name</th>
-                <th>Product Name</th>
-                <th>Vendor Name</th>
-                <th>Product Price</th>
-              <th>Order Value</th>
-                <th>Vendor Status</th>
-              <th>Customer Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
+            <thead>
+                <tr>
+                    <th>Order Date</th>
+                    <th>Order No.</th>
+                    <th>Customer Name</th>
+                    <th>Product Name</th>
+                    <th>Vendor Name</th>
+                    <th>Product Price</th>
+                    <th>Order Value</th>
+                    <th>Vendor Status</th>
+                    <th>Customer Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
             <tbody>
-            @foreach($orders as $order)
+                @foreach($orders as $order)
                     @php
                         $rowspan = count($order->products);
                     @endphp
-                @foreach($order->products as $index => $product)
-                    <tr data-order_id="{{ $order->order_id }}">
-                        @if($index == 0)
-                            <td rowspan="{{ $rowspan }}">{{ \Carbon\Carbon::parse($order->order_date)->format('d-m-Y') }}</td>
-                            <td rowspan="{{ $rowspan }}">{{ $order->order_id }}</td>
-                            <td rowspan="{{ $rowspan }}">{{ $order->billing_first_name }} {{ $order->billing_last_name }}</td>
-                        @endif
-                        <td>
-                            @if($product->product)
-                                <span>{{ $product->product->name }} <sub>{{ $product->product->sku }}</sub></span>
+                    @foreach($order->products as $index => $product)
+                        <tr data-order_id="{{ $order->order_id }}">
+                            @if($index == 0)
+                                <td rowspan="{{ $rowspan }}">{{ \Carbon\Carbon::parse($order->order_date)->format('d-m-Y') }}</td>
+                                <td rowspan="{{ $rowspan }}">{{ $order->order_id }}</td>
+                                <td rowspan="{{ $rowspan }}">{{ $order->billing_first_name }} {{ $order->billing_last_name }}</td>
                             @endif
-                        </td>
-                        <td>
-                            @if($product->product)
-                                <span>{{ $product->product->vendor->name }}</span>
+                            <td>
+                                @if($product->product)
+                                    <span>{{ $product->product->name }} <sub>{{ $product->product->sku }}</sub></span>
+                                @endif
+                            </td>
+                            <td>
+                                @if($product->product)
+                                    <span>{{ $product->product->vendor->name }}</span>
+                                @endif
+                            </td>
+                            <td>
+                                @if($product->product)
+                                    <span>₹{{ $product->price }} <sub>QTY {{ $product->quantity }}</sub></span>
+                                @endif
+                            </td>
+                            @if($index == 0)
+                                <td rowspan="{{ $rowspan }}">₹{{ number_format($order->total, 2) }}</td>
                             @endif
-                        </td>
-                        <td>
-                            @if($product->product)
-                                <span>₹{{ $product->price }} <sub>QTY {{ $product->quantity }}</sub></span>
-                            @endif
-                        </td>
-                        @if($index == 0)
-                            <td rowspan="{{ $rowspan }}">₹{{ number_format($order->total, 2) }}</td>
-                            @endif
-{{--                            <td rowspan="{{ $rowspan }}">--}}
-{{--                                @if($order->fullfilled_status == 1)--}}
-{{--                                    <span class="btn btn-sm btn-success" style="cursor: unset">Fullfilled</span>--}}
-{{--                                @elseif($order->fullfilled_status == 2)--}}
-{{--                                    <span class="btn btn-sm btn-info" style="cursor: unset">Approved</span>--}}
-{{--                                @elseif($order->fullfilled_status == 3)--}}
-{{--                                    <span class="btn btn-sm btn-success" style="cursor: unset">Approved by Vendor</span>--}}
-{{--                                @elseif($order->fullfilled_status == 4)--}}
-{{--                                    <span class="btn btn-sm btn-danger" style="cursor: unset">Rejected</span>--}}
-{{--                                @elseif($order->fullfilled_status == 5)--}}
-{{--                                    <span class="btn btn-sm btn-danger" style="cursor: unset">Rejected by Vendor</span>--}}
-{{--                                @else--}}
-{{--                                    <span class="btn btn-sm btn-warning" style="cursor: unset">Pending</span>--}}
-{{--                                @endif--}}
-{{--                            </td>--}}
                             <td>
                                 @if($product->is_fulfilled == 1)
-                                    <span class="btn btn-sm btn-success" style="cursor: unset">Approved By Vender</span>
+                                    <span class="btn btn-sm btn-success" style="cursor: unset">Approved By Vendor</span>
                                 @elseif($product->is_fulfilled == 2)
-                                    <span class="btn btn-sm btn-danger" style="cursor: unset">Rejected By Vender</span>
+                                    <span class="btn btn-sm btn-danger" style="cursor: unset">Rejected By Vendor</span>
                                 @elseif($product->is_fulfilled == 3)
                                     <span class="btn btn-sm btn-info" style="cursor: unset">Pending By Vendor</span>
                                 @elseif($product->is_fulfilled == 4)
@@ -96,48 +81,39 @@
                                 @endif
                             </td>
                             @if($index == 0)
-                            <td rowspan="{{ $rowspan }}">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input SwitchCustomerShow" type="checkbox" role="switch" id="SwitchCustomerShow" data-toggle="toggle" @if($order->customer_status_show) checked @endif>
-                                </div>
-                            </td>
+                                <td rowspan="{{ $rowspan }}">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input SwitchCustomerShow" type="checkbox" role="switch" id="SwitchCustomerShow" data-toggle="toggle" @if($order->customer_status_show) checked @endif>
+                                    </div>
+                                </td>
                             @endif
                             <td>
-{{--                                @php--}}
-{{--                                    $is_actionable = true;--}}
-{{--                                    foreach($order->products as $product){--}}
-{{--                                        if(!$product->product){--}}
-{{--                                            continue;--}}
-{{--                                        }--}}
-{{--                                        if($product->is_fulfilled == 1 || $product->is_fulfilled == 2){--}}
-{{--                                            $is_actionable = false;--}}
-{{--                                        }--}}
-{{--                                    }--}}
-{{--                                @endphp--}}
                                 @php
-//                                $is_actionable = $product->is_fulfilled == 1 || $product->is_fulfilled == 3  ? false : true;
-                                $is_actionable = $product->is_fulfilled == 0  ? true : false;
+                                    $is_actionable = $product->is_fulfilled == 1 || $product->is_fulfilled == 3 ? false : true;
+                                    $is_actionable = $product->is_fulfilled == 0 ? true : false;
                                 @endphp
                                 @if($product->is_fulfilled != 5)
                                     @if($is_actionable)
-                                <form action="{{ route('order.update.product.status') }}" class="order-product-action-btn-form" method="POST" style="display: flex; align-items: center;">
-                                    @csrf
-                                    <input type="hidden" name="order_id" value="{{ $order->order_id }}">
-                                    <input type="hidden" name="product_id" value="{{ $product->product_id }}">
-                                    <select name="order-action-select" class="form-control" style="margin-right: 10px;" onchange="enableSubmitButton(this)" onfocus="enableSubmitButton(this)">
-                                            <option value="3" {{ $product->is_fulfilled == 3 ? 'selected' : '' }}>Approved</option>
-                                        <option value="4" {{ $product->is_fulfilled == 4 ? 'selected' : '' }}>Rejected</option>
-                                    </select>
-                                    <button id="submit-button-{{ $order->order_id }}" style="background: #132644; color: white; border-radius: 6px;" type="submit" disabled>Submit</button>
-                                </form>
-                                        @endif
+                                        <form action="{{ route('order.update.product.status') }}" class="order-product-action-btn-form" method="POST" style="display: flex; align-items: center;">
+                                            @csrf
+                                            <input type="hidden" name="order_id" value="{{ $order->order_id }}">
+                                            <input type="hidden" name="product_id" value="{{ $product->product_id }}">
+                                            <select name="order-action-select" class="form-control" style="margin-right: 10px;" onchange="enableSubmitButton(this)" onfocus="enableSubmitButton(this)">
+                                                <option value="#">Select status</option>
+                                                <option value="3" {{ $product->is_fulfilled == 3 ? 'selected' : '' }}>Approved</option>
+                                                <option value="4" {{ $product->is_fulfilled == 4 ? 'selected' : '' }}>Rejected</option>
+                                            </select>
+                                            <button id="submit-button-{{ $order->order_id }}" style="background: #132644; color: white; border-radius: 6px;" type="submit" disabled>Submit</button>
+                                        </form>
+                                    @endif
                                 @endif
                             </td>
-                    </tr>
+                        </tr>
+                    @endforeach
                 @endforeach
-            @endforeach
             </tbody>
         </table>
+        
 
       </div>
     </div>
