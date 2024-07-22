@@ -1,5 +1,10 @@
 @extends('backend.layouts.master')
 @section('main-content')
+<style>
+  div.dataTables_wrapper div.dataTables_length select{
+    width: 40%;
+  }
+</style>
  <!-- DataTales Example -->
  <div class="card shadow mb-4">
      <div class="row">
@@ -32,12 +37,12 @@
           <thead>
               <tr>
                 <th>SKU ID</th>
-                  <th>Name</th>
-                  <th>Category</th>
                   <th>Vendor Name</th>
-                  <th>Regular Price</th>
+                  <th>Product  Name</th>
+                  {{-- <th>Category</th> --}}
+                
+                  {{-- <th>Regular Price</th> --}}
                   <th>Sale Price</th>
-                  <th>Stock Status</th>
                   <th>Stock</th>
                   <th>Status</th>
                   <th>Action</th>
@@ -50,12 +55,10 @@
               @endphp
               <tr>
                 <td>{{$product->sku}}</td>
-                  <td>{{$product->name}}</td>
-                  <td>{{$product->Category->title}}</td>
-                  <td>{{$product->vendor ? $product->vendor->name : '' }}</td>
-                  <td>₹{{$product->regular_price}}</td>
-                  <td>₹{{$product->sale_price}}</td>
-                  <td>{{$stock_status}}</td>
+                <td>{{$product->vendor ? $product->vendor->name : '' }}</td>
+                  <td>{{$product->name}}  <sub>{{$product->Category->title}}</sub></td>
+ 
+                  <td>₹{{$product->sale_price}} <sub>₹{{$product->regular_price}}</sub> </td>
                   <td>{{$product->quantity}}</td>
                   <td>
                     <form action="{{ route('Approvel', $product->id) }}" method="POST" style="display: flex; align-items: center;">
