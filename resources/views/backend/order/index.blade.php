@@ -3,7 +3,7 @@
 @push('styles')
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" 
     rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 @endpush
 @section('main-content')
  <!-- DataTales Example -->
@@ -82,18 +82,11 @@
                                     <span class="btn btn-sm btn-warning" style="cursor: unset">Pending</span>
                                 @endif
                             </td>
-                            <!-- @if($index == 0)
-                                <td rowspan="{{ $rowspan }}">
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input SwitchCustomerShow" type="checkbox" role="switch" id="SwitchCustomerShow" data-toggle="toggle" @if($order->customer_status_show) checked @endif>
-                                    </div>
-                                </td>
-                            @endif -->
-
+                            
                             @if($index == 0)
                                 <td rowspan="{{ $rowspan }}">
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input SwitchCustomerShow" type="checkbox" role="switch" id="SwitchCustomerShow" @if($order->customer_status_show) checked @endif>
+                                        <input class="form-check-input SwitchCustomerShow" type="checkbox" role="switch" id="SwitchCustomerShow" data-toggle="toggle" @if($order->customer_status_show) checked @endif>
                                     </div>
                                 </td>
                             @endif
