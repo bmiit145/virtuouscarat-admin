@@ -4,6 +4,20 @@
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" 
     rel="stylesheet">
     {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> --}}
+    <style>
+        /* Apply a hover effect to all rows with the same data-order_id */
+        .table tbody tr {
+            transition: background-color 0.3s ease; /* Smooth transition effect */
+        }
+
+        .table tbody tr:hover {
+            background-color: #f1f1f1; /* Light grey background on hover */
+        }
+
+        .table tbody tr.highlight-hover {
+            background-color: #f1f1f1; /* Light grey background on hover */
+        }
+    </style>
 @endpush
 @section('main-content')
 
@@ -121,7 +135,7 @@
                                             <input type="hidden" name="order_id" value="{{ $order->order_id }}">
                                             <input type="hidden" name="product_id" value="{{ $product->product_id }}">
                                             <select name="order-action-select" class="form-control" style="margin-right: 10px;" onchange="enableSubmitButton(this)" onfocus="enableSubmitButton(this)">
-                                                <option value="#">Select status</option>
+                                                <option value="#">-- Select status --</option>
                                                 <option value="3" {{ $product->is_fulfilled == 3 ? 'selected' : '' }}>Approved</option>
                                                 <option value="4" {{ $product->is_fulfilled == 4 ? 'selected' : '' }}>Rejected</option>
                                             </select>
@@ -283,12 +297,6 @@ $(document).ready(function() {
                     }
                 });
             });
-        });
-    </script>
-     <script>
-        document.querySelector('.refresh_btn').addEventListener('click', function(event) {
-            event.preventDefault();
-            location.reload();
         });
     </script>
 @endpush
