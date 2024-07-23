@@ -248,7 +248,6 @@ class WooCommerceProductController extends Controller
 
         try {
 //             Retrieve the product by SKU
-
             // check env variable UPDATE_PRODUCT_METHOD is set to JOB or not by case insensitive
             if (strtolower(env('WOOCOMMERCE_UPDATE_METHOD')) == 'job') {
                 UpdateWooCommerceProduct::dispatch($sku, $data);
