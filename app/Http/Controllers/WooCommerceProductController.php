@@ -68,77 +68,118 @@ class WooCommerceProductController extends Controller
     }
 
 
+//    public static function sendDataToWooCommerce(WpProduct $product) {
+//        $data = [
+//            'name' => $product->name,
+//            'type' => 'simple',
+//            'regular_price' => (string) $product->regular_price,
+//            'sale_price' => isset($product->sale_price) ? (string) $product->sale_price : '',
+//            'description' => $product->description,
+//            'short_description' => $product->short_description,
+//            'sku' => $product->sku,
+//            'stock_status' => $product->stock_status === 1 ? 'instock' : ($product->stock_status === 0 ? 'outofstock' : 'onbackorder'),
+//            'categories' => [
+//                ['id' => $product->category_id]
+//            ],
+//            'images' => array_merge(
+//                [['src' => $product->main_photo]],
+//                array_map(function($photo) {
+//                    return ['src' => $photo];
+//                }, json_decode($product->photo_gallery) ?? [])
+//            ),
+//            'meta_data' => [
+//                ['key' => 'igi_certificate', 'value' => $product->igi_certificate],
+//                ['key' => 'vendor_id', 'value' => $product->vendor_id]
+//            ],
+//            'stock_quantity' => $product->quantity,
+//
+//            // attributes
+//            'attributes' => $product->attributes->map(function($attribute) {
+//                return [
+//                    'name' => $attribute->name,
+//                    'options' => [$attribute->value],
+//                    'position' => 0,  // Adjust position as needed
+//                    'visible' => true,  // Adjust visibility as needed
+//                    'variation' => false,  // Adjust variation as needed
+//                ];
+//            })->toArray(),
+//        ];
+//
+//        if (!self::$woocommerce) {
+//            self::$woocommerce = app(Client::class);
+//        }
+//
+//        try {
+//            $response = self::$woocommerce->post('products', $data);
+//
+//            // error handle for error from woocommerce
+//            if (is_object($response) && property_exists($response, 'error')) {
+//                return ['error' => $response->error];
+//            }
+//
+//            if (is_array($response) && isset($response['error'])) {
+//                return ['error' => $response['error']];
+//            }
+//
+//            if (is_array($response) || (is_object($response) && property_exists($response, 'id'))) {
+//                if (isset($response->id)) {
+//                    $product->wp_product_id = $response->id;
+//                    $product->save();
+//                }
+//                return $response;
+//            } else {
+//                // Handle unexpected response format
+//                return ['error' => 'Unexpected response format from WooCommerce API'];
+//            }
+//            return $response;
+//        } catch (\Exception $e) {
+//            // Handle exception or log error message
+//            \Log::error('WooCommerce API Error: ' . $e->getMessage());
+//            return ['error' => $e->getMessage()];
+//            return ['error' => "Something Wents Wrong! Product not created"];
+//        }
+//    }
+
     public static function sendDataToWooCommerce(WpProduct $product) {
-        $data = [
-            'name' => $product->name,
-            'type' => 'simple',
-            'regular_price' => (string) $product->regular_price,
-            'sale_price' => isset($product->sale_price) ? (string) $product->sale_price : '',
-            'description' => $product->description,
-            'short_description' => $product->short_description,
-            'sku' => $product->sku,
-            'stock_status' => $product->stock_status === 1 ? 'instock' : ($product->stock_status === 0 ? 'outofstock' : 'onbackorder'),
-            'categories' => [
-                ['id' => $product->category_id]
-            ],
-            'images' => array_merge(
-                [['src' => $product->main_photo]],
-                array_map(function($photo) {
-                    return ['src' => $photo];
-                }, json_decode($product->photo_gallery) ?? [])
-            ),
-            'meta_data' => [
-                ['key' => 'igi_certificate', 'value' => $product->igi_certificate],
-                ['key' => 'vendor_id', 'value' => $product->vendor_id]
-            ],
-            'stock_quantity' => $product->quantity,
+    $data = [
+        'name' => $product->name,
+        'type' => 'simple',
+        'regular_price' => (string) $product->regular_price,
+        'sale_price' => (string) $product->sale_price ?? '',
+        'description' => $product->description,
+        'short_description' => $product->short_description,
+        'sku' => $product->sku,
+        'stock_status' => ['instock', 'outofstock', 'onbackorder'][($product->stock_status ?? 2) - 1],
+        'categories' => [['id' => $product->category_id]],
+        'images' => array_merge([['src' => $product->main_photo]], array_map(fn($photo) => ['src' => $photo], json_decode($product->photo_gallery) ?? [])),
+        'meta_data' => [['key' => 'igi_certificate', 'value' => $product->igi_certificate], ['key' => 'vendor_id', 'value' => $product->vendor_id]],
+        'stock_quantity' => $product->quantity,
+        'attributes' => $product->attributes->map(fn($attribute) => [
+            'name' => $attribute->name,
+            'options' => [$attribute->value],
+            'position' => 0,
+            'visible' => true,
+            'variation' => false,
+        ])->toArray(),
+    ];
 
-            // attributes
-            'attributes' => $product->attributes->map(function($attribute) {
-                return [
-                    'name' => $attribute->name,
-                    'options' => [$attribute->value],
-                    'position' => 0,  // Adjust position as needed
-                    'visible' => true,  // Adjust visibility as needed
-                    'variation' => false,  // Adjust variation as needed
-                ];
-            })->toArray(),
-        ];
+    self::$woocommerce = self::$woocommerce ?? app(Client::class);
 
-        if (!self::$woocommerce) {
-            self::$woocommerce = app(Client::class);
+    try {
+        $response = self::$woocommerce->post('products', $data);
+        if (isset($response->error)) {
+            return ['error' => $response->error];
         }
-
-        try {
-            $response = self::$woocommerce->post('products', $data);
-
-            // error handle for error from woocommerce
-            if (is_object($response) && property_exists($response, 'error')) {
-                return ['error' => $response->error];
-            }
-
-            if (is_array($response) && isset($response['error'])) {
-                return ['error' => $response['error']];
-            }
-
-            if (is_array($response) || (is_object($response) && property_exists($response, 'id'))) {
-                if (isset($response->id)) {
-                    $product->wp_product_id = $response->id;
-                    $product->save();
-                }
-                return $response;
-            } else {
-                // Handle unexpected response format
-                return ['error' => 'Unexpected response format from WooCommerce API'];
-            }
-            return $response;
-        } catch (\Exception $e) {
-            // Handle exception or log error message
-            \Log::error('WooCommerce API Error: ' . $e->getMessage());
-            return ['error' => $e->getMessage()];
-            return ['error' => "Something Wents Wrong! Product not created"];
+        if (isset($response->id)) {
+            $product->wp_product_id = $response->id;
+            $product->save();
         }
+        return $response;
+    } catch (\Exception $e) {
+        \Log::error('WooCommerce API Error: ' . $e->getMessage());
+        return ['error' => $e->getMessage()];
     }
+}
 
 
     // function to delete product from woocommerce by sku
