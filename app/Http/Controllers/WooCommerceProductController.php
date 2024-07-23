@@ -140,7 +140,7 @@ class WooCommerceProductController extends Controller
 //        }
 //    }
 
-public static function sendDataToWooCommerce(WpProduct $product) {
+    public static function sendDataToWooCommerce(WpProduct $product) {
     $data = [
         'name' => $product->name,
         'type' => 'simple',
