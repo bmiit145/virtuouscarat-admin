@@ -1,10 +1,18 @@
 
 
 ## WOO COMMERCE COMMAND
-1. ```php artisan fetch:woocommerce-orders```
-2. ```composer dump-autoload```
-3. ```php artisan queue:work```
-4. ```php artisan storage:link```
+1. ```bash 
+   php artisan fetch:woocommerce-orders
+   ```
+2. ```bash
+    composer dump-autoload
+   ```
+3. ```bash
+    php artisan queue:work
+   ```
+4. ```bash
+    php artisan storage:link
+   ```
 
 
 ## COMPOSER COMMAND
@@ -13,3 +21,7 @@
 
 ### cron job
 1. php artisan fetch:woocommerce-orders
+
+
+### set up at server
+1. /domains/virtuouscarat.com/public_html/admin/artisan schedule:run

@@ -256,11 +256,13 @@ class ProductController extends Controller
 
 
         // Call the WooCommerce update function
-         $wooResponse = WooCommerceProductController::editProductInWooCommerce($sku, $product);
+        if ($product->is_approvel) {
+            $wooResponse = WooCommerceProductController::editProductInWooCommerce($sku, $product);
 
-        if (isset($wooResponse['error'])) {
-            // Handle WooCommerce update error
-            return redirect()->route('product.index')->with('error', 'Failed to update product in WooCommerce: ' . $wooResponse['error']);
+            if (isset($wooResponse['error'])) {
+                // Handle WooCommerce update error
+                return redirect()->route('product.index')->with('error', 'Failed to update product in WooCommerce: ' . $wooResponse['error']);
+            }
         }
 
         return redirect()->route('product.index')->with('success', 'Product updated successfully.');
