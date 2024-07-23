@@ -11,6 +11,7 @@ use App\Models\Brand;
 use App\Models\WpProduct;
 use Auth;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use Illuminate\Support\Facades\DB;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -152,20 +153,47 @@ class ProductController extends Controller
 
 
     public function Approvel(Request $request, $id) {
-        $aprovel = WpProduct::find($id);
-        $aprovel->is_approvel = $request->is_approvel;
+        // Start a database transaction
+        DB::beginTransaction();
 
-        $response =  WooCommerceProductController::sendDataToWooCommerce($aprovel);
+        try {
+            // Find the product and lock it for update
+            $aprovel = WpProduct::where('id', $id)->lockForUpdate()->first();
 
-                 // check if there is an error
-        if (is_array($response) && isset($response['error'])) {
-            return back()->with('error', 'Failed to send product to WooCommerce: ' . $response['error']);
+            // Check if the product is already approved
+            if ($aprovel->is_approvel) {
+                // Rollback the transaction if already approved
+                DB::rollBack();
+                return back()->with('error', 'Product is already approved.');
+            }
+
+            // Update the approval status
+            $aprovel->is_approvel = $request->is_approvel;
+
+            // Send data to WooCommerce
+            $response = WooCommerceProductController::sendDataToWooCommerce($aprovel);
+
+            // Check if there is an error
+            if (is_array($response) && isset($response['error'])) {
+                // Rollback the transaction on error
+                DB::rollBack();
+                return back()->with('error', 'Failed to send product to WooCommerce: ' . $response['error']);
+            }
+
+            // Save the product
+            $aprovel->save();
+
+            // Commit the transaction
+            DB::commit();
+
+            // Return success response
+            return back()->with('success', 'Product sent to WooCommerce successfully.');
+        } catch (\Exception $e) {
+            // Rollback the transaction on exception
+            DB::rollBack();
+            \Log::error('Approval Error: ' . $e->getMessage());
+            return back()->with('error', 'An error occurred during approval: ' . $e->getMessage());
         }
-        $aprovel->save();
-
-
-        // send data to woo commerce for product creation
-        return back()->with('success', 'Product sent to WooCommerce successfully.');
     }
 
     /**
