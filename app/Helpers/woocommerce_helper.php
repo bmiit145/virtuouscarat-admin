@@ -73,6 +73,29 @@ function fetchAndSyncWooCommerceOrders(Client $woocommerce)
 //}
 
 
+//function syncWooCommerceOrderProducts($order)
+//{
+//    if($order->status == 'checkout-draft'){
+//        $is_fulfilled = 101;
+//    }else{
+//        $is_fulfilled = 0;
+//    }
+//    foreach ($order->line_items as $item) {
+//        WpOrderProduct::updateOrCreate(
+//            ['order_id' => $order->id, 'product_id' => $item->product_id],
+//            [
+//                'sku' => $item->sku,
+//                'quantity' => $item->quantity,
+//                'price' => $item->price,
+//                'total' => $item->total,
+//                'meta_data' => json_encode($item->meta_data),
+//                'is_fulfilled' => $is_fulfilled,
+//            ]
+//        );
+//    }
+//}
+
+// new
 function syncWooCommerceOrder($order)
 {
     $orderData = [
@@ -117,12 +140,8 @@ function syncWooCommerceOrder($order)
 
 function syncWooCommerceOrderProducts($order)
 {
-    if($order->status == 'checkout-draft'){
-        $is_fulfilled = 101;
-    }else{
-        $is_fulfilled = 0;
-    }
-    foreach ($order->line_items as $item) {
+    $is_fulfilled = $order->status == 'checkout-draft' ? 101 : 0;
+    array_walk($order->line_items, function ($item) use ($order, $is_fulfilled) {
         WpOrderProduct::updateOrCreate(
             ['order_id' => $order->id, 'product_id' => $item->product_id],
             [
@@ -134,7 +153,7 @@ function syncWooCommerceOrderProducts($order)
                 'is_fulfilled' => $is_fulfilled,
             ]
         );
-    }
+    });
 }
 
 function deleteWooCommerceOrder($orderId)
