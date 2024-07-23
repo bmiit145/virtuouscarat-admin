@@ -53,7 +53,7 @@ class WpProduct extends Model
     }
 
     public static function getAllProduct(){
-        return WpProduct::with(['attributes',  'vendor' , 'category'])->orderBy('id','desc')->paginate(10);
+        return WpProduct::with(['attributes',  'vendor' , 'category'])->orderBy('wp_product_id','desc')->orderBy('created_at', 'desc')->paginate(10);
     }
 
 
