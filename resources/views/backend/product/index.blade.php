@@ -4,6 +4,9 @@
   div.dataTables_wrapper div.dataTables_length select{
     width: 40%;
   }
+  .no-arrow::after {
+  display: none !important;
+}
 </style>
  <!-- DataTales Example -->
  <div class="card shadow mb-4">
@@ -56,9 +59,9 @@
               <tr>
                 <td>{{$product->sku}}</td>
                 <td>{{$product->vendor ? $product->vendor->name : '' }}</td>
-                  <td>{{$product->name}}  <sub>{{$product->Category->title}}</sub></td>
+                  <td>{{$product->name}}  <sub>({{$product->Category->title}})</sub></td>
  
-                  <td>₹{{$product->sale_price}} <sub>₹{{$product->regular_price}}</sub> </td>
+                  <td>₹{{$product->sale_price}} <sub>(₹{{$product->regular_price}})</sub> </td>
                   <td>{{$product->quantity}}</td>
                   <td>
                     <form action="{{ route('Approvel', $product->id) }}" method="POST" style="display: flex; align-items: center;">
@@ -72,18 +75,25 @@
                         <button id="submit-button-{{ $product->id }}" style="background: #132644; color: white; border-radius: 6px;" type="submit" disabled>Submit</button>
                     </form>
                 </td>
-                  <td>
-                      <a href="{{route('product.edit', $product->id)}}" class="btn btn-sm float-left mr-1" style="height:30px; width:30px; border-radius:50%" data-toggle="tooltip" title="edit" data-placement="bottom">
-                          <i class="fas fa-edit"></i>
+                <td>
+                  <div style="text-align: center">
+                    <a  id="actionMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+                      <i class="fas fa-ellipsis-v"></i>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="actionMenu">
+                      <a class="dropdown-item" href="{{route('product.edit', $product->id)}}" data-toggle="tooltip" title="Edit" data-placement="bottom">
+                        <i class="fas fa-edit"></i> Edit
                       </a>
-                      <form method="POST" action="{{route('product.destroy', $product->id)}}">
-                          @csrf
-                          @method('delete')
-                          <button class="btn btn-sm dltBtn" data-id={{$product->id}} style="height:30px; width:30px; border-radius:50%" data-toggle="tooltip" data-placement="bottom" title="Delete">
-                              <i class="fas fa-trash-alt"></i>
-                          </button>
+                      <form method="POST" action="{{route('product.destroy', $product->id)}}" style="display:inline;">
+                        @csrf
+                        @method('delete')
+                        <button class="dropdown-item" type="submit" data-id={{$product->id}} data-toggle="tooltip" data-placement="bottom" title="Delete">
+                          <i class="fas fa-trash-alt"></i> Delete
+                        </button>
                       </form>
-                  </td>
+                    </div>
+                  </div>
+                </td>
               </tr>
               @endforeach
           </tbody>

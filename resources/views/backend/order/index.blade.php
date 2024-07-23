@@ -49,7 +49,9 @@
                             @endif
                             <td>
                                 @if($product->product)
-                                    <span>{{ $product->product->name }} <sub>{{ $product->product->sku }}</sub></span>
+                                    <span>{{ $product->product->name }}</span>
+                                     <sub>
+                                        ({{ $product->product->sku }})</sub>
                                 @endif
                             </td>
                             <td>
@@ -59,7 +61,8 @@
                             </td>
                             <td>
                                 @if($product->product)
-                                    <span>₹{{ $product->price }} <sub>QTY {{ $product->quantity }}</sub></span>
+                                    <span>₹{{ $product->price }} </span>
+                                    <sub> ({{ $product->quantity }})</sub>
                                 @endif
                             </td>
                             @if($index == 0)
