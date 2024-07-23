@@ -145,7 +145,7 @@ function syncWooCommerceOrderProducts($order)
         WpOrderProduct::updateOrCreate(
             ['order_id' => $order->id, 'product_id' => $item->product_id],
             [
-                'sku' => $item->sku,
+                'sku' => $item->sku??"no_sku",
                 'quantity' => $item->quantity,
                 'price' => $item->price,
                 'total' => $item->total,
