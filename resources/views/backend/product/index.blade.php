@@ -32,6 +32,7 @@
                 </label>
             </form>
         <a href="{{route('product.create')}}" class="btn btn-primary btn-sm mx-1" data-toggle="tooltip" data-placement="bottom" title="Add Product"><i class="fas fa-plus"></i> Add Product</a>
+        <a href="#" class="btn btn-primary btn-sm mx-1 refresh_btn" >   <i class="fas fa-sync"></i></a>
         </div>
     </div>
     <div class="card-body">
@@ -76,7 +77,7 @@
                     </form>
                 </td>
                 <td>
-                  <div style="text-align: center">
+                  {{-- <div style="text-align: center">
                     <a  id="actionMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
                       <i class="fas fa-ellipsis-v"></i>
                     </a>
@@ -92,7 +93,8 @@
                         </button>
                       </form>
                     </div>
-                  </div>
+                  </div> --}}
+                  <a href="#"><i class="fas fa-eye"></i></a>
                 </td>
               </tr>
               @endforeach
@@ -181,4 +183,10 @@
         });
   });
 </script>
+ <script>
+        document.querySelector('.refresh_btn').addEventListener('click', function(event) {
+            event.preventDefault();
+            location.reload();
+        });
+    </script>
 @endpush

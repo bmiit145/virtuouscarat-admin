@@ -3,9 +3,21 @@
 @push('styles')
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" 
     rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> --}}
 @endpush
 @section('main-content')
+
+<style>
+    span.toggle-handle.btn.btn-default {
+        background: #fff !important;
+    }
+    .toggle-off {
+        background: #e6e6e6 !important;
+        box-shadow: inset 0 3px 5px rgba(0,0,0,.125) !important;
+        border: 1px solid #adadad !important;
+    }
+</style>
+
  <!-- DataTales Example -->
  <div class="card shadow mb-4">
      <div class="row">
@@ -15,10 +27,13 @@
      </div>
     <div class="card-header py-3">
       <h6 class="m-0 font-weight-bold text-primary float-left">Order Lists</h6>
+      <a href="#" class="btn btn-primary btn-sm mx-1 refresh_btn" >   <i class="fas fa-sync"></i></a>
+
     </div>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    
     <div class="card-body">
       <div class="table-responsive">
 
@@ -89,7 +104,7 @@
                             @if($index == 0)
                                 <td rowspan="{{ $rowspan }}">
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input SwitchCustomerShow" type="checkbox" role="switch" id="SwitchCustomerShow" data-toggle="toggle" @if($order->customer_status_show) checked @endif>
+                                        <input class="form-check-input SwitchCustomerShow toggle_style" type="checkbox" role="switch" id="SwitchCustomerShow" data-toggle="toggle" @if($order->customer_status_show) checked @endif>
                                     </div>
                                 </td>
                             @endif
@@ -268,6 +283,12 @@ $(document).ready(function() {
                     }
                 });
             });
+        });
+    </script>
+     <script>
+        document.querySelector('.refresh_btn').addEventListener('click', function(event) {
+            event.preventDefault();
+            location.reload();
         });
     </script>
 @endpush
