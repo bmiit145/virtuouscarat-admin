@@ -42,7 +42,7 @@
                   {{-- <th>Category</th> --}}
                 
                   {{-- <th>Regular Price</th> --}}
-                  <th>Sale Price</th>
+                  <th>Sale / List Price</th>
                   <th>Stock</th>
                   <th>Status</th>
                   <th>Action</th>

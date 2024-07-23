@@ -99,7 +99,7 @@ class ProductController extends Controller
             'regular_price' => $request->price,
             'sale_price' => $request->sale_price,
             'sku' => $request->sku,
-            'stock_status' => $request->productStatus,
+            'stock_status' => 1,
             'igi_certificate' => $request->IGI_certificate,
             'main_photo' => $fullMainPhotoUrl,
             'photo_gallery' => json_encode($galleryPaths),
@@ -207,7 +207,7 @@ class ProductController extends Controller
         $product->regular_price = $request->price;
         $product->sale_price = $request->sale_price;
         $product->sku = $request->sku;
-        $product->stock_status = $request->productStatus;
+        $product->stock_status = 1;
         $product->igi_certificate = $request->IGI_certificate;
         $product->quantity = $request->quantity;
         $product->document_number = $request->document_number;
