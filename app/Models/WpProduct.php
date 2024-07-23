@@ -5,9 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\User;
 use App\Models\Category;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class WpProduct extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'wp_products';
 
     // Define the fillable attributes for mass assignment

@@ -60,5 +60,6 @@ class WooCommerceWebhookController extends Controller
 
         return response()->json(['message' => 'Order processed'], 200);
     }
+
 }
 
