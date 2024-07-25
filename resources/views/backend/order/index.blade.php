@@ -178,6 +178,12 @@
   <!-- Page level custom scripts -->
   <script src="{{asset('backend/js/demo/datatables-demo.js')}}"></script>
   <script>
+    document.querySelector('.refresh_btn').addEventListener('click', function(event) {
+        event.preventDefault();
+        location.reload();
+    });
+</script>
+  <script>
   function enableSubmitButton(selectElement) {
             const submitButton = $(selectElement).closest('form').find('button[type="submit"]');
             submitButton.prop('disabled', false);
@@ -296,6 +302,17 @@ $(document).ready(function() {
                         }
                     }
                 });
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('tr').hover(function() {
+                var orderId = $(this).data('order_id');
+                $('tr[data-order_id="' + orderId + '"]').addClass('highlight-hover');
+            }, function() {
+                var orderId = $(this).data('order_id');
+                $('tr[data-order_id="' + orderId + '"]').removeClass('highlight-hover');
             });
         });
     </script>
