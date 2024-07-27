@@ -452,75 +452,73 @@ class ProductController extends Controller
         $file = $request->file('import_file');
 
         set_time_limit(300);
-        if ($file->getClientOriginalExtension() == 'xlsx' || $file->getClientOriginalExtension() == 'xls') {
-            if ($file->getClientOriginalExtension() == 'xls') {
-                $reader = IOFactory::createReader('Xls');
-            } else {
-                $reader = IOFactory::createReader('Xlsx');
-            }
+        $extension = $file->getClientOriginalExtension();
+        if (in_array($extension, ['xlsx', 'xls'])) {
+            $reader = IOFactory::createReader($extension === 'xls' ? 'Xls' : 'Xlsx');
             $spreadsheet = $reader->load($file);
-            $sheet = $spreadsheet->getActiveSheet();
-            $rows = $sheet->toArray(null, true, true, true);
+            $rows = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+        }
+        elseif ($file->getClientOriginalExtension() == 'csv') {
+            $rows = array_map('str_getcsv', file($file));
+        }
 
-            if (empty($rows)) {
-                return redirect()->route('product.index')->with('error', 'No data found in the file.');
+        if (empty($rows)) {
+            return redirect()->route('product.index')->with('error', 'No data found in the file.');
+        }
+
+        $headers = array_shift($rows);
+        $headerMapping = $this->headerMapping;
+        $mappedHeaders = $this->mapHeaders($headers, $this->headerMapping);
+        $mappedAttributes = $this->mapAttributes($headers, $this->attributeMapping);
+        $count = 0;
+
+        foreach ($rows as $row) {
+            $data = array_combine($headers, $row);
+            $productData = [
+                'name' => $data[$mappedHeaders['name'] ?? ''] ?? $headerMapping['name']['default'] ?? null,
+                'vendor_id' => Auth::id(),
+                'description' => $data[$mappedHeaders['description'] ?? ''] ?? $headerMapping['description']['default'] ?? null,
+                'short_description' => $data[$mappedHeaders['short_description'] ?? ''] ?? $headerMapping['short_description']['default'] ?? null,
+                'sku' => $data[$mappedHeaders['sku'] ?? ''] ?? $headerMapping['sku']['default'] ?? null,
+                'stock_status' => 1,
+                'igi_certificate' => $data[$mappedHeaders['igi_certificate'] ?? ''] ?? $headerMapping['igi_certificate']['default'] ?? null,
+                'main_photo' => $data[$mappedHeaders['main_photo'] ?? ''] ?? $headerMapping['main_photo']['default'] ?? '[]',
+                'photo_gallery' => $data[$mappedHeaders['photo_gallery'] ?? ''] ?? '[]',
+                'quantity' => $data[$mappedHeaders['quantity'] ?? ''] ?? $headerMapping['quantity']['default'] ?? 1,
+                'document_number' => $data[$mappedHeaders['document_number'] ?? ''] ?? $headerMapping['document_number']['default'] ?? null,
+                'category' => $data[$mappedHeaders['category'] ?? ''] ?? $headerMapping['category']['default'] ?? 'Uncategorized',
+                'video_link' => $data[$mappedHeaders['video_link'] ?? ''] ?? $headerMapping['video_link']['default'] ?? null,
+                'location' => $data[$mappedHeaders['location'] ?? ''] ?? $headerMapping['location']['default'] ?? null,
+                'comment' => $data[$mappedHeaders['comment'] ?? ''] ?? $headerMapping['comment']['default'] ?? null,
+                'CTS' => (float)($data[$mappedHeaders['CTS'] ?? ''] ?? $headerMapping['CTS']['default'] ?? 0),
+                'RAP' => (float)($data[$mappedHeaders['RAP'] ?? ''] ?? $headerMapping['RAP']['default'] ?? 0),
+//                    'discount' => $data[$mappedHeaders['discount'] ?? ''] ?? $headerMapping['discount']['default'] ?? 0,
+                'discount' => abs((float)$data[$mappedHeaders['discount'] ?? ''] ?? $headerMapping['discount']['default'] ?? 0),
+            ];
+
+            if ($productData['sku'] == null || !is_numeric($productData['CTS']) || !is_numeric($productData['RAP']) || $productData['CTS'] == null || $productData['RAP'] == null) {
+                continue;
             }
 
-            $headers = array_shift($rows);
+            $productData['price'] = $productData['CTS'] * $productData['RAP'];
+            $productData['discounted_price'] = $productData['price'] - ($productData['price'] * $productData['discount'] / 100);
 
-            $headerMapping = $this->headerMapping;
-            $mappedHeaders = $this->mapHeaders($headers, $this->headerMapping);
-            $mappedAttributes = $this->mapAttributes($headers, $this->attributeMapping);
+            // add 10 % commission
+            $productData['regular_price'] = $productData['price'] + ($productData['price'] * 10 / 100);
+            $productData['sale_price'] = $productData['discounted_price'] + ($productData['discounted_price'] * 10 / 100);
 
-            foreach ($rows as $row) {
-                $data = array_combine($headers, $row);
+            //category_id
+            $category = Category::where('title', $data[$mappedHeaders['category'] ?? ''] ?? $headerMapping['category']['default'] ?? 'Uncategorized')->first();
+            $productData['category_id'] = $category->id ?? 15;
 
-                $productData = [
-                    'name' => $data[$mappedHeaders['name'] ?? ''] ?? $headerMapping['name']['default'] ?? null,
-                    'vendor_id' => Auth::id(),
-                    'description' => $data[$mappedHeaders['description'] ?? ''] ?? $headerMapping['description']['default'] ?? null,
-                    'short_description' => $data[$mappedHeaders['short_description'] ?? ''] ?? $headerMapping['short_description']['default'] ?? null,
-                    'sku' => $data[$mappedHeaders['sku'] ?? ''] ?? $headerMapping['sku']['default'] ?? null,
-                    'stock_status' => 1,
-                    'igi_certificate' => $data[$mappedHeaders['igi_certificate'] ?? ''] ?? $headerMapping['igi_certificate']['default'] ?? null,
-                    'main_photo' => $data[$mappedHeaders['main_photo'] ?? ''] ?? $headerMapping['main_photo']['default'] ?? '[]',
-                    'photo_gallery' => $data[$mappedHeaders['photo_gallery'] ?? ''] ?? '[]',
-                    'quantity' => $data[$mappedHeaders['quantity'] ?? ''] ?? $headerMapping['quantity']['default'] ?? 1,
-                    'document_number' => $data[$mappedHeaders['document_number'] ?? ''] ?? $headerMapping['document_number']['default'] ?? null,
-                    'category' => $data[$mappedHeaders['category'] ?? ''] ?? $headerMapping['category']['default'] ?? 'Uncategorized',
-                    'video_link' => $data[$mappedHeaders['video_link'] ?? ''] ?? $headerMapping['video_link']['default'] ?? null,
-                    'location' => $data[$mappedHeaders['location'] ?? ''] ?? $headerMapping['location']['default'] ?? null,
-                    'comment' => $data[$mappedHeaders['comment'] ?? ''] ?? $headerMapping['comment']['default'] ?? null,
-                    'CTS' => (float)($data[$mappedHeaders['CTS'] ?? ''] ?? $headerMapping['CTS']['default'] ?? 0),
-                    'RAP' => (float)($data[$mappedHeaders['RAP'] ?? ''] ?? $headerMapping['RAP']['default'] ?? 0),
-//                    'discount' => $data[$mappedHeaders['discount'] ?? ''] ?? $headerMapping['discount']['default'] ?? 0,
-                    'discount' => abs((float)$data[$mappedHeaders['discount'] ?? ''] ?? $headerMapping['discount']['default'] ?? 0),
-                ];
+            if (empty($productData['name'])) {
+                $productData['name'] = $productData['CTS'] . ' ' . $productData['category'] . ' Shaped Loose Lab Grown Diamond';
+            }
 
-                if ($productData['sku'] == null || !is_numeric($productData['CTS']) || !is_numeric($productData['RAP'])) {
-                    continue;
-                }
-
-                $productData['price'] = $productData['CTS'] * $productData['RAP'];
-                $productData['discounted_price'] = $productData['price'] - ($productData['price'] * $productData['discount'] / 100);
-
-                // add 10 % commission
-                $productData['regular_price'] = $productData['price'] + ($productData['price'] * 10 / 100);
-                $productData['sale_price'] = $productData['discounted_price'] + ($productData['discounted_price'] * 10 / 100);
-
-                //category_id
-                $category = Category::where('title', $data[$mappedHeaders['category'] ?? ''] ?? $headerMapping['category']['default'] ?? 'Uncategorized')->first();
-                $productData['category_id'] = $category->id ?? 15;
-
-                if (empty($productData['name'])) {
-                    $productData['name'] = $productData['CTS'] . ' ' . $productData['category'] . ' Shaped Loose Lab Grown Diamond';
-                }
-
-//                dd($productData);
-
-                // Create the product
-                $product = WpProduct::create($productData);
-
+            // Create the product
+            $product = WpProduct::create($productData);
+            if ($product) {
+                $count++;
                 // Map and create product attributes
                 foreach ($mappedAttributes as $dbField => $excelHeader) {
                     if (isset($data[$excelHeader])) {
@@ -531,30 +529,11 @@ class ProductController extends Controller
                         ]);
                     }
                 }
-
-//                foreach ($attributeMapping as $dbField => $excelFields) {
-//                    foreach ($excelFields as $excelField) {
-//                        if (isset($data[$excelField])) {
-//                            ProductAttribute::create([
-//                                'product_id' => $product->id,
-//                                'name' => $dbField,
-//                                'value' => $data[$excelField],
-//                            ]);
-//                            break; // Break after finding the first match
-//                        }
-//                    }
-//                }
             }
         }
 
+        return redirect()->route('product.index')->with('success! ', $count . ' Products imported successfully.');
 
-        elseif ($file->getClientOriginalExtension() == 'csv') {
-            $rows = array_map('str_getcsv', file($file));
-            $headers = array_shift($rows);
-        }
-
-
-        return redirect()->route('product.index')->with('success', 'Products imported successfully.');
     }
 
     protected function mapHeaders($headers, $headerMapping)
