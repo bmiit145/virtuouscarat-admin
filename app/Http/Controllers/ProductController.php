@@ -526,6 +526,8 @@ class ProductController extends Controller
             //category_id
             $category = Category::where('title', $data[$mappedHeaders['category'] ?? ''] ?? $headerMapping['category']['default'] ?? 'Uncategorized')->first();
             $productData['category_id'] = $category->id ?? 15;
+            $mainPhoto = $category ? Category::getProductImageLink($category) : $this->defaultImage;
+            $productData['main_photo'] = $mainPhoto;
 
             if (empty($productData['name'])) {
                 $productData['name'] = $productData['CTS'] . ' ' . $productData['category'] . ' Shaped Loose Lab Grown Diamond';
