@@ -100,19 +100,19 @@ class ProductController extends Controller
     }
 
     protected  $attributeMapping = [
-        'LOC' => ['location', 'LOC'],
-        'LAB' => ['lab', 'LAB'],
-        'SHAPE' => ['shape', 'SHAPE'],
-        'COLOR' => ['color', 'COLOR'],
-        'CLARITY' => ['clarity', 'CLARITY'],
-        'CUT' => ['cut', 'CUT'],
-        'POLISH' => ['polish', 'POLISH'],
-        'SYM' => ['sym', 'SYM'],
-        'FL' => ['fl', 'FL'],
-        'MEASUREMENT' => ['measurement', 'MEASUREMENT'],
-        'TBL' => ['tbl', 'TBL'],
-        'T.DEPTH' => ['t_depth', 'T.DEPTH'],
-        'TYPE' => ['type', 'TYPE']
+        'LOC' => ['location', 'LOC' , 'City'],
+        'LAB' => ['lab', 'LAB' , 'Lab'],
+        'SHAPE' => ['shape', 'SHAPE' , 'Shape'],
+        'COLOR' => ['color', 'COLOR' , 'Color'],
+        'CLARITY' => ['clarity', 'CLARITY' , 'Clarity'],
+        'CUT' => ['cut', 'CUT' , 'Cut Grade'],
+        'POLISH' => ['polish', 'POLISH' , 'Polish'],
+        'SYM' => ['sym', 'SYM' , 'Symmetry'],
+        'FL' => ['fl', 'FL' , 'Fluorescence Intensity'],
+        'MEASUREMENT' => ['measurement', 'MEASUREMENT' , 'Measurements'],
+        'TBL' => ['tbl', 'TBL' , 'Table Percent'],
+        'T.DEPTH' => ['t_depth', 'T.DEPTH' ,'Depth Percent'],
+        'TYPE' => ['type', 'TYPE' , 'Growth Type']
     ];
 
     /**
