@@ -15,7 +15,7 @@
             @include('backend.layouts.notification')
          </div>
      </div>
-     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+{{--     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">--}}
      <!-- Include jQuery (required for DataTables) -->
      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
      <!-- Include DataTables JS -->
@@ -27,8 +27,8 @@
             <form action="{{ route('product.import') }}" method="POST" enctype="multipart/form-data" class="mr-1">
                 @csrf
                 <label for="importFile" class="btn btn-primary btn-sm mx-1" data-toggle="tooltip" data-placement="bottom" title="Import Products" style="height: 102\
-                
-                
+
+
                 %;">
                     <i class="fas fa-file"></i> Import File
                     <input id="importFile" type="file" name="import_file" accept=".csv,.xlsx" style="display: none;" onchange="this.form.submit()">
@@ -47,7 +47,7 @@
                   <th>Vendor Name</th>
                   <th>Product  Name</th>
                   {{-- <th>Category</th> --}}
-                
+
                   {{-- <th>Regular Price</th> --}}
                   <th>Sale / List Price</th>
                   <th>Stock</th>
@@ -64,7 +64,7 @@
                 <td>{{$product->sku}}</td>
                 <td>{{$product->vendor ? $product->vendor->name : '' }}</td>
                   <td>{{$product->name}}  <sub>({{$product->Category->title}})</sub></td>
- 
+
                   <td>₹{{$product->sale_price}} <sub>(₹{{$product->regular_price}})</sub> </td>
                   <td>{{$product->quantity}}</td>
                   <td>
@@ -111,7 +111,12 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" />
   <style>
       div.dataTables_wrapper div.dataTables_paginate{
-          display: none;
+          /*display: none;*/
+      }
+
+      .dataTables_wrapper .dataTables_paginate .paginate_button {
+          padding: 0 !important;
+          margin-left: 0 !important;
       }
       .zoom {
         transition: transform .2s; /* Animation */
