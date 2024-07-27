@@ -1,9 +1,37 @@
 @extends('backend.layouts.master')
 
 @push('styles')
-    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" 
+    rel="stylesheet">
+    {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> --}}
+    <style>
+        /* Apply a hover effect to all rows with the same data-order_id */
+        .table tbody tr {
+            transition: background-color 0.3s ease; /* Smooth transition effect */
+        }
+
+        .table tbody tr:hover {
+            background-color: #f1f1f1; /* Light grey background on hover */
+        }
+
+        .table tbody tr.highlight-hover {
+            background-color: #f1f1f1; /* Light grey background on hover */
+        }
+    </style>
 @endpush
 @section('main-content')
+
+<style>
+    span.toggle-handle.btn.btn-default {
+        background: #fff !important;
+    }
+    .toggle-off {
+        background: #e6e6e6 !important;
+        box-shadow: inset 0 3px 5px rgba(0,0,0,.125) !important;
+        border: 1px solid #adadad !important;
+    }
+</style>
+
  <!-- DataTales Example -->
  <div class="card shadow mb-4">
      <div class="row">
@@ -13,10 +41,13 @@
      </div>
     <div class="card-header py-3">
       <h6 class="m-0 font-weight-bold text-primary float-left">Order Lists</h6>
+      <a href="#" class="btn btn-primary btn-sm mx-1 refresh_btn" >   <i class="fas fa-sync"></i></a>
+
     </div>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    
     <div class="card-body">
       <div class="table-responsive">
 
@@ -49,7 +80,9 @@
                             @endif
                             <td>
                                 @if($product->product)
-                                    <span>{{ $product->product->name }} <sub>{{ $product->product->sku }}</sub></span>
+                                    <span>{{ $product->product->name }}</span>
+                                     <sub>
+                                        ({{ $product->product->sku }})</sub>
                                 @endif
                             </td>
                             <td>
@@ -59,7 +92,8 @@
                             </td>
                             <td>
                                 @if($product->product)
-                                    <span>₹{{ $product->price }} <sub>QTY {{ $product->quantity }}</sub></span>
+                                    <span>₹{{ $product->price }} </span>
+                                    <sub> ({{ $product->quantity }})</sub>
                                 @endif
                             </td>
                             @if($index == 0)
@@ -80,13 +114,15 @@
                                     <span class="btn btn-sm btn-warning" style="cursor: unset">Pending</span>
                                 @endif
                             </td>
+                            
                             @if($index == 0)
                                 <td rowspan="{{ $rowspan }}">
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input SwitchCustomerShow" type="checkbox" role="switch" id="SwitchCustomerShow" data-toggle="toggle" @if($order->customer_status_show) checked @endif>
+                                        <input class="form-check-input SwitchCustomerShow toggle_style" type="checkbox" role="switch" id="SwitchCustomerShow" data-toggle="toggle" @if($order->customer_status_show) checked @endif>
                                     </div>
                                 </td>
                             @endif
+
                             <td>
                                 @php
                                     $is_actionable = $product->is_fulfilled == 1 || $product->is_fulfilled == 3 ? false : true;
@@ -99,7 +135,7 @@
                                             <input type="hidden" name="order_id" value="{{ $order->order_id }}">
                                             <input type="hidden" name="product_id" value="{{ $product->product_id }}">
                                             <select name="order-action-select" class="form-control" style="margin-right: 10px;" onchange="enableSubmitButton(this)" onfocus="enableSubmitButton(this)">
-                                                <option value="#">Select status</option>
+                                                <option value="#">-- Select status --</option>
                                                 <option value="3" {{ $product->is_fulfilled == 3 ? 'selected' : '' }}>Approved</option>
                                                 <option value="4" {{ $product->is_fulfilled == 4 ? 'selected' : '' }}>Rejected</option>
                                             </select>
@@ -141,6 +177,12 @@
 
   <!-- Page level custom scripts -->
   <script src="{{asset('backend/js/demo/datatables-demo.js')}}"></script>
+  <script>
+    document.querySelector('.refresh_btn').addEventListener('click', function(event) {
+        event.preventDefault();
+        location.reload();
+    });
+</script>
   <script>
   function enableSubmitButton(selectElement) {
             const submitButton = $(selectElement).closest('form').find('button[type="submit"]');
@@ -260,6 +302,17 @@ $(document).ready(function() {
                         }
                     }
                 });
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('tr').hover(function() {
+                var orderId = $(this).data('order_id');
+                $('tr[data-order_id="' + orderId + '"]').addClass('highlight-hover');
+            }, function() {
+                var orderId = $(this).data('order_id');
+                $('tr[data-order_id="' + orderId + '"]').removeClass('highlight-hover');
             });
         });
     </script>
