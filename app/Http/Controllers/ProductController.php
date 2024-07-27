@@ -568,4 +568,18 @@ class ProductController extends Controller
         return $mapped;
     }
 
+    // clearAllProducts
+    public function clearAllProducts()
+    {
+        // Temporarily disable foreign key checks
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+
+        // Truncate all product attributes and products
+        ProductAttribute::truncate();
+        WpProduct::truncate();
+
+        // Re-enable foreign key checks
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        return redirect()->route('product.index')->with('success', 'All products deleted successfully.');
+    }
 }

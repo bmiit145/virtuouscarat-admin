@@ -26,15 +26,16 @@
         <div class="float-right d-flex">
             <form action="{{ route('product.import') }}" method="POST" enctype="multipart/form-data" class="mr-1">
                 @csrf
-                <label for="importFile" class="btn btn-primary btn-sm mx-1" data-toggle="tooltip" data-placement="bottom" title="Import Products" style="height: 102\
-
-
-                %;">
+                <label for="importFile" class="btn btn-primary btn-sm mx-1" data-toggle="tooltip" data-placement="bottom" title="Import Products" style="height: 102%;">
                     <i class="fas fa-file"></i> Import File
                     <input id="importFile" type="file" name="import_file" accept=".csv,.xlsx" style="display: none;" onchange="this.form.submit()">
                 </label>
             </form>
-        <a href="{{route('product.create')}}" class="btn btn-primary btn-sm mx-1" data-toggle="tooltip" data-placement="bottom" title="Add Product"><i class="fas fa-plus"></i> Add Product</a>
+            <a href="{{route('product.create')}}" class="btn btn-primary btn-sm mx-1" data-toggle="tooltip" data-placement="bottom" title="Add Product"><i class="fas fa-plus"></i> Add Product</a>
+            <form method="post" action="{{ route('product.clearAll') }}">
+                @csrf
+                <button type="submit" class="btn btn-primary btn-sm mx-1" data-toggle="tooltip" data-placement="bottom" title="Delete All Products"><i class="fas fa-trash"></i> Delete All</button>
+            </form>
         <a href="#" class="btn btn-primary btn-sm mx-1 refresh_btn" >   <i class="fas fa-sync"></i></a>
         </div>
     </div>
