@@ -26,7 +26,6 @@ class CategorySeeder extends Seeder
             ['id' => 147, 'name' => 'Oval'],
             ['id' => 149, 'name' => 'Pear'],
             ['id' => 151, 'name' => 'Princess'],
-            ['id' => 175, 'name' => 'Quickship'],
             ['id' => 155, 'name' => 'Radiant'],
             ['id' => 146, 'name' => 'Round'],
         ];

@@ -53,4 +53,28 @@ class Category extends Model
         }
         return 0;
     }
+
+    public static function getProductImageLink($category){
+        $defaultImage = asset('storage/CategoryProductImage/default.jpeg');
+
+        // array of image link
+        $categoryImages = [
+                'Uncategorized' => $defaultImage,
+                'Asscher' => asset('storage/CategoryProductImage/Asscher.jpeg'),
+                'Cushion' => asset('storage/CategoryProductImage/Cushion.jpeg'),
+                'Emerald' => asset('storage/CategoryProductImage/Emerald.jpeg'),
+                'Heart' => asset('storage/CategoryProductImage/Heart.jpeg'),
+                'Marquise' => asset('storage/CategoryProductImage/Marquise.jpeg'),
+                'Oval' => asset('storage/CategoryProductImage/Oval.jpeg'),
+                'Pear' => asset('storage/CategoryProductImage/Pear.jpeg'),
+                'Princess' => 'https://virtuouscarat.com/wp-content/uploads/2024/07/WhatsApp-Image-2024-07-24-at-9.32.44-AM-2.jpeg',
+                'Radiant' => asset('storage/CategoryProductImage/Radiant.jpeg'),
+                'Round' => asset('storage/CategoryProductImage/Round.jpeg'),
+                'Trillion' => 'https://virtuouscarat.com/wp-content/uploads/2024/07/WhatsApp-Image-2024-07-24-at-9.32.44-AM-2.jpeg'
+            ];
+
+        $categoryName = $category->name;
+
+        return isset($categoryImages[$categoryName]) ? $categoryImages[$categoryName] : $defaultImage;
+    }
 }
