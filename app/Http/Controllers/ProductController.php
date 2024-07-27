@@ -24,10 +24,8 @@ class ProductController extends Controller
     protected $headerMapping;
 
     public function __construct(){
-        $this->defaultImage = 'https://virtuouscarat.com/wp-content/uploads/2024/07/WhatsApp-Image-2024-07-24-at-9.32.44-AM-2.jpeg';
+        $this->defaultImage = asset('storage/CategoryProductImage/default.jpeg');
         $this->defaultImageGallery = [
-            "https://virtuouscarat.com/wp-content/uploads/2024/07/WhatsApp-Image-2024-07-24-at-9.32.44-AM-1.jpeg",
-            "https://virtuouscarat.com/wp-content/uploads/2024/07/WhatsApp-Image-2024-07-24-at-9.32.44-AM.jpeg"
         ];
 
         $this->headerMapping = [
