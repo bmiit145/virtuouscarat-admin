@@ -154,12 +154,14 @@ class WooCommerceProductController extends Controller
         'images' => array_merge([['src' => $product->main_photo]], array_map(fn($photo) => ['src' => $photo], json_decode($product->photo_gallery) ?? [])),
         'meta_data' => [['key' => 'igi_certificate', 'value' => $product->igi_certificate], ['key' => 'vendor_id', 'value' => $product->vendor_id]],
         'stock_quantity' => $product->quantity,
+
         'attributes' => $product->attributes->map(fn($attribute) => [
-            'name' => $attribute->name,
-            'options' => [$attribute->value],
+            'name' => ucwords(strtolower($attribute->name)),
+            'slug' => strtolower(str_replace(' ', '_', $attribute->name)),
             'position' => 0,
             'visible' => true,
             'variation' => false,
+            'options' => [$attribute->value],
         ])->toArray(),
     ];
 
@@ -233,11 +235,12 @@ class WooCommerceProductController extends Controller
             // attributes
             'attributes' => $product->attributes->map(function($attribute) {
                 return [
-                    'name' => $attribute->name,
-                    'options' => [$attribute->value],
+                    'name' => ucwords(strtolower($attribute->name)),
+                    'slug' => strtolower(str_replace(' ', '_', $attribute->name)),
                     'position' => 0,  // Adjust position as needed
                     'visible' => true,  // Adjust visibility as needed
                     'variation' => false,  // Adjust variation as needed
+                    'options' => [$attribute->value],
                 ];
             })->toArray(),
         ];
