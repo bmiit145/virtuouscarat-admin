@@ -42,7 +42,7 @@ class ProductController extends Controller
                 'default' => 'No short description available.'
             ],
             'sku' => [
-                'header' => ['sku' , 'SKU' , 'Stock #' , 'RE FNO.' , 'RE FNO.Ψ' , 'Certificate #'],
+                'header' => ['sku' , 'SKU' , 'REPORTNO' , 'REPORT #' ,  'Certificate #'],
                 'default' => null
             ],
             'igi_certificate' => [
@@ -149,26 +149,37 @@ class ProductController extends Controller
 
     public function store(Request $request){
         // dd($request->all());
+
         $this->validate($request, [
             'category_id' => 'required|exists:categories,id',
             'prod_name' => 'required|string|max:255',
-            'price' => 'required|numeric',
-            'sale_price' => 'nullable|numeric|lte:price',
+//            'price' => 'required|numeric',
+//            'sale_price' => 'nullable|numeric|lte:price',
+            'CTS' => 'required|numeric',
+            'RAP' => 'required|numeric',
+            'discount' => 'nullable|numeric',
             'sku' => 'nullable|string|max:255|unique:wp_products,sku', // Replace 'products' with your actual table name
             'quantity' => 'nullable|integer|min:1',
             'IGI_certificate' => 'nullable|string|max:255',
             'photo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'gallery' => 'nullable|array',
             'gallery.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'attributes' => 'nullable|array'
+            'attributes' => 'nullable|array',
+            'attributes.*' => 'required',
+            'video_link' => 'nullable|string|max:255',
         ], [
             'category_id.required' => 'Category is required',
             'category_id.exists' => 'Selected category does not exist',
-            'prod_name.required' => 'Product name is required',
-            'price.numeric' => 'Price must be a number',
-            'sale_price.numeric' => 'Sale price must be a number',
-            'sale_price.lt' => 'Sale price must be less than regular price',
-            'sku.string' => 'SKU must be a string',
+//            'prod_name.required' => 'Product name is required',
+//            'price.numeric' => 'Price must be a number',
+//            'sale_price.numeric' => 'Sale price must be a number',
+//            'sale_price.lt' => 'Sale price must be less than regular price',
+//            'sku.string' => 'SKU must be a string',
+            'CTS.required' => 'Carat Weight is required',
+            'CTS.numeric' => 'Carat Weight must be a number',
+            'RAP.required' => 'Rate Per Carat is required',
+            'RAP.numeric' => 'Rate Per Carat must be a number',
+            'discount.numeric' => 'Discount must be a number',
             'sku.max' => 'SKU must not exceed 255 characters',
             'sku.unique' => 'SKU already exists',
             'quantity.integer' => 'Quantity must be an integer',
@@ -184,16 +195,17 @@ class ProductController extends Controller
             'attributes.array' => 'Attributes must be an array',
         ]);
 
-
-
         if ($request->hasFile('photo')) {
             $mainPhotoPath = $request->file('photo')->store('photos', 'public');
             $fullMainPhotoUrl = asset('storage/' . $mainPhotoPath);
         } else {
             $fullMainPhotoUrl = null;
         }
+
+
         $galleryPaths = [];
         if ($request->hasFile('gallery')) {
+
             foreach ($request->file('gallery') as $galleryImage) {
                 // Store the image in the 'public' disk under the 'photos' directory
                 $path = $galleryImage->store('photos', 'public');
@@ -206,22 +218,35 @@ class ProductController extends Controller
             }
         }
 
+        $price = $request->CTS * $request->RAP;
+        $discounted_price = $price - ($price * $request->discount / 100);
+
+        $regular_price = $price + ($price * 10 / 100);
+        $sale_price = $discounted_price + ($discounted_price * 10 / 100);
+
         $wpProduct = WpProduct::create([
             'vendor_id' => Auth::id(),
             'category_id' => $request->category_id,
             'name' => $request->prod_name,
             'description' => $request->description,
             'short_description' => $request->short_desc,
-            'regular_price' => $request->price,
-            'sale_price' => $request->sale_price,
+            'price' => $price,
+            'discounted_price' => $discounted_price,
+            'regular_price' => $regular_price,
+            'sale_price' => $sale_price,
+            'CTS' => $request->CTS,
+            'RAP' => $request->RAP,
+            'discount' => $request->discount,
             'sku' => $request->sku,
             'stock_status' => 1,
             'igi_certificate' => $request->IGI_certificate,
             'main_photo' => $fullMainPhotoUrl,
             'photo_gallery' => json_encode($galleryPaths),
-            'quantity' => $request->quantity,
-            'document_number' => $request->document_number,
+            'quantity' => $request->quantity ?? 1,
+            'document_number' => $request->document_number ?? 123,
+            'video_link' => $request->video_link,
         ]);
+
 
         // Add attributes if any
         if ($request->has('attributes')) {
@@ -232,8 +257,8 @@ class ProductController extends Controller
                 ]);
             }
         }
-        // dd($product);
-        return redirect('admin/product')->with('success', 'Product created successfully.');
+
+        return redirect()->route('product.index')->with('success', 'Products Created successfully.');
     }
 
 
@@ -458,7 +483,7 @@ class ProductController extends Controller
         return redirect()->route('product.index');
     }
 
-    
+
     public function  import(Request $request){
         $request->validate([
             'import_file' => 'required|mimes:csv,xlsx|max:2048',
@@ -530,7 +555,8 @@ class ProductController extends Controller
             $productData['main_photo'] = $mainPhoto;
 
             if (empty($productData['name'])) {
-                $productData['name'] = $productData['CTS'] . ' ' . $productData['category'] . ' Shaped Loose Lab Grown Diamond';
+//                $productData['name'] = $productData['CTS'] . ' ' . $productData['category'] . ' Shaped Loose Lab Grown Diamond';
+                $productData['name'] = $productData['CTS'] . ' ct ' . $productData['category'] ;
             }
 
             // Create the product

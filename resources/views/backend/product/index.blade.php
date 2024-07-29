@@ -26,7 +26,7 @@
         <div class="float-right d-flex">
             <form action="{{ route('product.import') }}" method="POST" enctype="multipart/form-data" class="mr-1">
                 @csrf
-                <label for="importFile" class="btn btn-primary btn-sm mx-1" data-toggle="tooltip" data-placement="bottom" title="Import Products" style="height: 102%;">
+                <label for="importFile" class="btn btn-primary bg-success btn-sm mx-1 border-0" data-toggle="tooltip" data-placement="bottom" title="Import Products" style="height: 102%;">
                     <i class="fas fa-file"></i> Import File
                     <input id="importFile" type="file" name="import_file" accept=".csv,.xlsx" style="display: none;" onchange="this.form.submit()">
                 </label>
@@ -34,7 +34,9 @@
             <a href="{{route('product.create')}}" class="btn btn-primary btn-sm mx-1" data-toggle="tooltip" data-placement="bottom" title="Add Product"><i class="fas fa-plus"></i> Add Product</a>
             <form method="post" action="{{ route('product.clearAll') }}">
                 @csrf
-                <button type="submit" class="btn btn-primary btn-sm mx-1" data-toggle="tooltip" data-placement="bottom" title="Delete All Products"><i class="fas fa-trash"></i> Delete All</button>
+                <button type="submit" class="btn btn-primary bg-danger border-0 btn-sm mx-1" data-toggle="tooltip" data-placement="bottom" title="Delete All Products">
+                    <span class="py-1"> <i class="fas fa-trash"></i> Delete All</span>
+                </button>
             </form>
         <a href="#" class="btn btn-primary btn-sm mx-1 refresh_btn" >   <i class="fas fa-sync"></i></a>
         </div>
@@ -44,14 +46,18 @@
         <table class="table table-bordered table-hover" id="product-dataTable" width="100%" cellspacing="0">
           <thead>
               <tr>
-                <th>SKU ID</th>
+                <th>REF No.</th>
                   <th>Vendor Name</th>
                   <th>Product  Name</th>
+                  <th>RAP</th>
+                  <th>Total Price</th>
+                  <th>Discount (%)</th>
+                  <th>Discount Price</th>
                   {{-- <th>Category</th> --}}
 
                   {{-- <th>Regular Price</th> --}}
-                  <th>Sale / List Price</th>
-                  <th>Stock</th>
+                  <th>List Price</th>
+{{--                  <th>Stock</th>--}}
                   <th>Status</th>
                   <th>Action</th>
               </tr>
@@ -65,9 +71,14 @@
                 <td>{{$product->sku}}</td>
                 <td>{{$product->vendor ? $product->vendor->name : '' }}</td>
                   <td>{{$product->name}}  <sub>({{$product->Category->title}})</sub></td>
-
-                  <td>₹{{$product->sale_price}} <sub>(₹{{$product->regular_price}})</sub> </td>
-                  <td>{{$product->quantity}}</td>
+                  <td>${{$product->RAP}}</td>
+                  <td>${{$product->price}}</td>
+                  <td>{{$product->discount}}%</td>
+                  <td>${{$product->discounted_price}}</td>
+                  <td>${{$product->sale_price}}
+{{--                      <sub>(${{$product->regular_price}})</sub> --}}
+                  </td>
+{{--                  <td>{{$product->quantity}}</td>--}}
                   <td>
                     <form action="{{ route('Approvel', $product->id) }}" method="POST" style="display: flex; align-items: center;">
                         @csrf
