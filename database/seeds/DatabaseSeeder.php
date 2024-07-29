@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
             ['id' => 151, 'name' => 'Princess', 'status' => 'active'],
             ['id' => 175, 'name' => 'Quickship', 'status' => 'active'],
             ['id' => 155, 'name' => 'Radiant', 'status' => 'active'],
-            ['id' => 146, 'name' => 'Round', 'status' => 'active'],
+            ['id' => 15, 'name' => 'Round', 'status' => 'active'],
         ];
 
         // check if products table is not empty
