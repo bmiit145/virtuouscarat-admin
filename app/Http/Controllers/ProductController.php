@@ -363,47 +363,64 @@ class ProductController extends Controller
 
    
     public function Approvel(Request $request)
-{
-    config(['database.connections.mysql.options' => [
-        \PDO::ATTR_TIMEOUT => 30, // 30 seconds timeout
-    ]]);
-
-    DB::beginTransaction();
-
-    try {
-        $products = WpProduct::where('is_approvel', 0)->get();
-
-        if ($products->isEmpty()) {
-            return response()->json(['success' => false, 'message' => 'No products available for approval.']);
-        }
-
-        foreach ($products as $product) {
-            $product = WpProduct::where('id', $product->id)->lockForUpdate()->first();
-
-            if ($product->is_approvel) {
-                DB::rollBack();
-                return response()->json(['success' => false, 'message' => 'Some products are already approved.']);
+    {
+        // Set a custom timeout for the database connection
+        config(['database.connections.mysql.options' => [
+            \PDO::ATTR_TIMEOUT => 30, // 30 seconds timeout
+        ]]);
+    
+        // Start a database transaction
+        DB::beginTransaction();
+    
+        try {
+            // Fetch all products that need to be approved
+            $products = WpProduct::where('is_approvel', 0)->get();
+    
+            if ($products->isEmpty()) {
+                return response()->json(['success' => false, 'message' => 'No products available for approval.']);
             }
-
-            $product->is_approvel = 1; // Approve the product
-            $response = WooCommerceProductController::sendDataToWooCommerce($product);
-
-            if (is_array($response) && isset($response['error'])) {
-                DB::rollBack();
-                return response()->json(['success' => false, 'message' => 'Failed to send some products to WooCommerce: ' . $response['error']]);
+    
+            foreach ($products as $product) {
+                // Lock the product for update to avoid race conditions
+                $product = WpProduct::where('id', $product->id)->lockForUpdate()->first();
+                // dd($product);
+    
+                // Check if the product is already approved
+                if ($product->is_approvel) {
+                    // Skip already approved products
+                    continue;
+                }
+    
+                // Update the approval status
+                $product->is_approvel = 1; // Approve the product
+              
+    
+                // Send data to WooCommerce
+                $response = WooCommerceProductController::sendDataToWooCommerce($product);
+    
+                if (is_array($response) && isset($response['error'])) {
+                    // Rollback the transaction on error
+                    DB::rollBack();
+                    return response()->json(['success' => false, 'message' => 'Failed to send some products to WooCommerce: ' . $response['error']]);
+                }
+    
+                // Save the product
+                $product->update();
             }
-
-            $product->save();
+    
+            // Commit the transaction if all products are processed successfully
+            DB::commit();
+    
+            // Return success response
+            return response()->json(['success' => true, 'message' => 'All products sent to WooCommerce successfully.']);
+        } catch (\Exception $e) {
+            // Rollback the transaction on exception
+            DB::rollBack();
+            \Log::error('Bulk Approval Error: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'An error occurred during bulk approval: ' . $e->getMessage()]);
         }
-
-        DB::commit();
-        return response()->json(['success' => true, 'message' => 'All products sent to WooCommerce successfully.']);
-    } catch (\Exception $e) {
-        DB::rollBack();
-        \Log::error('Bulk Approval Error: ' . $e->getMessage());
-        return response()->json(['success' => false, 'message' => 'An error occurred during bulk approval: ' . $e->getMessage()]);
     }
-}
+    
 
 
 
