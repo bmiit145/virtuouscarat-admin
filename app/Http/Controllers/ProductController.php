@@ -311,6 +311,13 @@ class ProductController extends Controller
 //    }
 
     public function Approvel(Request $request, $id) {
+
+
+        // Set a custom timeout for the database connection
+        config(['database.connections.mysql.options' => [
+            \PDO::ATTR_TIMEOUT => 30, // 10 seconds timeout
+        ]]);
+
         // Start a database transaction
         DB::beginTransaction();
 

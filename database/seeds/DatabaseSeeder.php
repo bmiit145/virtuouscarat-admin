@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
 //            });
 
         $categories = [
-//            ['id' => 15, 'name' => 'Uncategorized', 'status' => 'active'],
+            ['id' => 133, 'name' => 'Uncategorized', 'status' => 'active'],
             ['id' => 103, 'name' => 'Asscher', 'status' => 'active'],
             ['id' => 99, 'name' => 'Cushion', 'status' => 'active'],
             ['id' => 100, 'name' => 'Emerald', 'status' => 'active'],
