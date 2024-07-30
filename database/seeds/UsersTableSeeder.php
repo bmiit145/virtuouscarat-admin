@@ -24,8 +24,22 @@ class UsersTableSeeder extends Seeder
                 'status'=>'active'
             ),
             array(
-                'name'=>'Customer A',
-                'email'=>'customer@mail.com',
+                'name'=>'vendor 1',
+                'email'=>'vendor1@vc.com',
+                'password'=>Hash::make('password'),
+                'role'=>'user',
+                'status'=>'active'
+            ),
+            array(
+                'name'=>'vendor 2',
+                'email'=>'vendor2@vc.com',
+                'password'=>Hash::make('password'),
+                'role'=>'user',
+                'status'=>'active'
+            ),
+            array(
+                'name'=>'vendor 3',
+                'email'=>'vendor3@vc.com',
                 'password'=>Hash::make('password'),
                 'role'=>'user',
                 'status'=>'active'
