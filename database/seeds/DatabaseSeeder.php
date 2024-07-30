@@ -26,19 +26,19 @@ class DatabaseSeeder extends Seeder
 //            });
 
         $categories = [
-            ['id' => 15, 'name' => 'Uncategorized', 'status' => 'active'],
-            ['id' => 160, 'name' => 'Asscher', 'status' => 'active'],
-            ['id' => 5, 'name' => 'Cushion', 'status' => 'active'],
-            ['id' => 150, 'name' => 'Emerald', 'status' => 'active'],
-            ['id' => 152, 'name' => 'Heart', 'status' => 'active'],
-            ['id' => 190, 'name' => 'Loose Lab Grown Diamonds', 'status' => 'active'],
-            ['id' => 153, 'name' => 'Marquise', 'status' => 'active'],
-            ['id' => 147, 'name' => 'Oval', 'status' => 'active'],
-            ['id' => 149, 'name' => 'Pear', 'status' => 'active'],
-            ['id' => 151, 'name' => 'Princess', 'status' => 'active'],
-            ['id' => 175, 'name' => 'Quickship', 'status' => 'active'],
-            ['id' => 155, 'name' => 'Radiant', 'status' => 'active'],
-            ['id' => 146, 'name' => 'Round', 'status' => 'active'],
+//            ['id' => 15, 'name' => 'Uncategorized', 'status' => 'active'],
+            ['id' => 103, 'name' => 'Asscher', 'status' => 'active'],
+            ['id' => 99, 'name' => 'Cushion', 'status' => 'active'],
+            ['id' => 100, 'name' => 'Emerald', 'status' => 'active'],
+            ['id' => 69, 'name' => 'Heart', 'status' => 'active'],
+//            ['id' => 190, 'name' => 'Loose Lab Grown Diamonds', 'status' => 'active'],
+            ['id' => 102, 'name' => 'Marquise', 'status' => 'active'],
+            ['id' => 71, 'name' => 'Oval', 'status' => 'active'],
+            ['id' => 68, 'name' => 'Pear', 'status' => 'active'],
+            ['id' => 101, 'name' => 'Princess', 'status' => 'active'],
+//            ['id' => 175, 'name' => 'Quickship', 'status' => 'active'],
+            ['id' => 104, 'name' => 'Radiant', 'status' => 'active'],
+            ['id' => 15, 'name' => 'Round', 'status' => 'active'],
         ];
 
         foreach ($categories as $category) {
