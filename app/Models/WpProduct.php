@@ -62,10 +62,7 @@ class WpProduct extends Model
     public  function orderProduct(){
         return $this->hasMany(WpOrderProduct::class, 'product_id', 'wp_product_id');
     }
-
     public static function getAllProduct(){
         return WpProduct::with(['attributes',  'vendor' , 'category'])->orderBy('created_at', 'desc')->orderBy('wp_product_id','desc')->get();
     }
-
-
 }
