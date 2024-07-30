@@ -124,6 +124,7 @@ Route::group(['prefix'=>'/admin','middleware'=>['auth','admin']],function(){
     // Product
     Route::resource('/product','ProductController');
     Route::post('/product/import' , 'ProductController@import')->name('product.import');
+    Route::post('/product/clearAll' , 'ProductController@clearAllProducts')->name('product.clearAll');
     Route::post('/remove-gallery-image', 'ProductController@removeGalleryImage')->name('remove.gallery.image');
 
     // Route::post('/product','ProductController');

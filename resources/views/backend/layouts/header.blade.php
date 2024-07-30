@@ -39,7 +39,7 @@
 
     <img src="{{ asset('images/Group.png') }}" atl="virtuouscarat-logo" id="smallLogo" class="sidebar-logo2" style="width: 8%">
 
-  
+
   <div class="head_menu">
     <a class="{{ request()->routeIs('admin') ? 'active_tab' : '' }}" href="{{ route('admin') }}">
       <span>Dashboard</span>
@@ -50,7 +50,9 @@
     <a class="{{ request()->routeIs('order.index') ? 'active_tab' : '' }}" href="{{ route('order.index') }}">
          <span>Orders</span>
     </a>
-  
+      <a class="{{ request()->routeIs('users.index') ? 'active_tab' : '' }}" href="{{ route('users.index') }}">
+          <span>Vendors</span>
+      </a>
   </div>
 
   <!-- Topbar Navbar -->
@@ -77,7 +79,7 @@
     </li>
 
     {{-- Home page --}}
- 
+
     <div class="topbar-divider d-none d-sm-block"></div>
 
     <!-- Nav Item - User Information -->

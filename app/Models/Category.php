@@ -8,7 +8,7 @@ use App\Models\WpProduct;
 class Category extends Model
 {
 
-    protected $fillable=['title','slug','summary','photo','status','is_parent','parent_id','added_by'];
+    protected $fillable=['wp_category_id', 'title','slug','summary','photo','status','is_parent','parent_id','added_by'];
 
     public function parent_info(){
         return $this->hasOne('App\Models\Category','id','parent_id');
@@ -52,5 +52,29 @@ class Category extends Model
             return $data;
         }
         return 0;
+    }
+
+    public static function getProductImageLink($category){
+        $defaultImage = asset('storage/CategoryProductImage/default.jpeg');
+
+         // array of image link
+         $categoryImages = [
+            'Uncategorized' => $defaultImage,
+            'Asscher' => asset('storage/CategoryProductImage/Asscher.jpeg'),
+            'Cushion' => asset('storage/CategoryProductImage/Cushion.jpeg'),
+            'Emerald' => asset('storage/CategoryProductImage/Emerald.jpeg'),
+            'Heart' => asset('storage/CategoryProductImage/Heart.jpeg'),
+            'Marquise' => asset('storage/CategoryProductImage/Marquise.jpeg'),
+            'Oval' => asset('storage/CategoryProductImage/Oval.jpeg'),
+            'Pear' => asset('storage/CategoryProductImage/Pear.jpeg'),
+            'Princess' => asset('storage/CategoryProductImage/Princess.jpeg'),
+            'Radiant' => asset('storage/CategoryProductImage/Radiant.jpeg'),
+            'Round' => asset('storage/CategoryProductImage/Round.jpeg'),
+            'Trillion' => 'https://virtuouscarat.com/wp-content/uploads/2024/07/WhatsApp-Image-2024-07-24-at-9.32.44-AM-2.jpeg'
+        ];
+
+        $categoryName = $category->title;
+
+        return isset($categoryImages[$categoryName]) ? $categoryImages[$categoryName] : $defaultImage;
     }
 }

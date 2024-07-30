@@ -30,6 +30,14 @@ class WpProduct extends Model
         'vendor_id',
         'quantity',
         'document_number',
+        'CTS',
+        'RAP',
+        'price',
+        'discounted_price',
+        'discount',
+        'video_link',
+        'location',
+        'comment',
     ];
 
     public function category()
@@ -54,10 +62,7 @@ class WpProduct extends Model
     public  function orderProduct(){
         return $this->hasMany(WpOrderProduct::class, 'product_id', 'wp_product_id');
     }
-
     public static function getAllProduct(){
-        return WpProduct::with(['attributes',  'vendor' , 'category'])->orderBy('created_at', 'desc')->orderBy('wp_product_id','desc')->paginate(10);
+        return WpProduct::with(['attributes',  'vendor' , 'category'])->orderBy('created_at', 'desc')->orderBy('wp_product_id','desc')->get();
     }
-
-
 }
