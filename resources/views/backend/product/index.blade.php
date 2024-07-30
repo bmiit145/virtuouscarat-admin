@@ -36,7 +36,12 @@
                 @csrf
                 <button type="submit" class="btn btn-primary bg-danger border-0 btn-sm mx-1" data-toggle="tooltip" data-placement="bottom" title="Delete All Products">
                     <span class="py-1"> <i class="fas fa-trash"></i> Delete All</span>
+                </button><br>
+
+                <button type="button" class="btn btn-primary bg-success border-0 btn-sm mx-1" id="approve-all-btn"              data-toggle="tooltip" data-placement="bottom" title="Approve All Products">
+                  <span class="py-1"> <i class="fas fa-check"></i> Approve All</span>
                 </button>
+
             </form>
         <a href="#" class="btn btn-primary btn-sm mx-1 refresh_btn" >   <i class="fas fa-sync"></i></a>
         </div>
@@ -209,4 +214,31 @@
             location.reload();
         });
     </script>
+
+<script>
+$(document).ready(function() {
+    $('#approve-all-btn').click(function() {
+        $.ajax({
+            url: "{{ route('approve.all') }}",
+            type: 'POST',
+            data: {
+                _token: "{{ csrf_token() }}" // Include CSRF token for security
+            },
+            success: function(response) {
+                if (response.success) {
+                    alert(response.message);
+                    location.reload(); // Optional: reload the page to reflect changes
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function() {
+                alert('An error occurred while processing the request.');
+            }
+        });
+    });
+});
+</script>
 @endpush
+
+

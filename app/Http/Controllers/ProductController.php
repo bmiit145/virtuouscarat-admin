@@ -310,64 +310,120 @@ class ProductController extends Controller
 //        return back()->with('success', 'Product sent to WooCommerce successfully.');
 //    }
 
-    public function Approvel(Request $request, $id) {
+    // public function Approvel(Request $request, $id) {
 
 
+    //     // Set a custom timeout for the database connection
+    //     config(['database.connections.mysql.options' => [
+    //         \PDO::ATTR_TIMEOUT => 30, // 10 seconds timeout
+    //     ]]);
+
+    //     // Start a database transaction
+    //     DB::beginTransaction();
+
+    //     try {
+    //         // Find the product and lock it for update
+    //         $aprovel = WpProduct::where('id', $id)->lockForUpdate()->first();
+
+    //         // Check if the product is already approved
+    //         if ($aprovel->is_approvel) {
+    //             // Rollback the transaction if already approved
+    //             DB::rollBack();
+    //             return back()->with('error', 'Product is already approved.');
+    //         }
+
+    //         // Update the approval status
+    //         $aprovel->is_approvel = $request->is_approvel;
+
+    //         // Send data to WooCommerce
+    //         $response = WooCommerceProductController::sendDataToWooCommerce($aprovel);
+
+    //         // Check if there is an error
+    //         if (is_array($response) && isset($response['error'])) {
+    //             // Rollback the transaction on error
+    //             DB::rollBack();
+    //             return back()->with('error', 'Failed to send product to WooCommerce: ' . $response['error']);
+    //         }
+
+    //         // Save the product
+    //         $aprovel->save();
+
+    //         // Commit the transaction
+    //         DB::commit();
+
+    //         // Return success response
+    //         return back()->with('success', 'Product sent to WooCommerce successfully.');
+    //     } catch (\Exception $e) {
+    //         // Rollback the transaction on exception
+    //         DB::rollBack();
+    //         \Log::error('Approval Error: ' . $e->getMessage());
+    //         return back()->with('error', 'An error occurred during approval: ' . $e->getMessage());
+    //     }
+    // }
+
+   
+    public function Approvel(Request $request)
+    {
         // Set a custom timeout for the database connection
         config(['database.connections.mysql.options' => [
-            \PDO::ATTR_TIMEOUT => 30, // 10 seconds timeout
+            \PDO::ATTR_TIMEOUT => 30, // 30 seconds timeout
         ]]);
-
+    
         // Start a database transaction
         DB::beginTransaction();
-
+    
         try {
-            // Find the product and lock it for update
-            $aprovel = WpProduct::where('id', $id)->lockForUpdate()->first();
-
-            // Check if the product is already approved
-            if ($aprovel->is_approvel) {
-                // Rollback the transaction if already approved
-                DB::rollBack();
-                return back()->with('error', 'Product is already approved.');
+            // Fetch all products that need to be approved
+            $products = WpProduct::where('is_approvel', 0)->get();
+    
+            if ($products->isEmpty()) {
+                return response()->json(['success' => false, 'message' => 'No products available for approval.']);
             }
-
-            // Update the approval status
-            $aprovel->is_approvel = $request->is_approvel;
-
-            // Send data to WooCommerce
-            $response = WooCommerceProductController::sendDataToWooCommerce($aprovel);
-
-            // Check if there is an error
-            if (is_array($response) && isset($response['error'])) {
-                // Rollback the transaction on error
-                DB::rollBack();
-                return back()->with('error', 'Failed to send product to WooCommerce: ' . $response['error']);
+    
+            foreach ($products as $product) {
+                // Lock the product for update to avoid race conditions
+                $product = WpProduct::where('id', $product->id)->lockForUpdate()->first();
+                // dd($product);
+    
+                // Check if the product is already approved
+                if ($product->is_approvel) {
+                    // Skip already approved products
+                    continue;
+                }
+    
+                // Update the approval status
+                $product->is_approvel = 1; // Approve the product
+              
+    
+                // Send data to WooCommerce
+                $response = WooCommerceProductController::sendDataToWooCommerce($product);
+    
+                if (is_array($response) && isset($response['error'])) {
+                    // Rollback the transaction on error
+                    DB::rollBack();
+                    return response()->json(['success' => false, 'message' => 'Failed to send some products to WooCommerce: ' . $response['error']]);
+                }
+    
+                // Save the product
+                $product->update();
             }
-
-            // Save the product
-            $aprovel->save();
-
-            // Commit the transaction
+    
+            // Commit the transaction if all products are processed successfully
             DB::commit();
-
+    
             // Return success response
-            return back()->with('success', 'Product sent to WooCommerce successfully.');
+            return response()->json(['success' => true, 'message' => 'All products sent to WooCommerce successfully.']);
         } catch (\Exception $e) {
             // Rollback the transaction on exception
             DB::rollBack();
-            \Log::error('Approval Error: ' . $e->getMessage());
-            return back()->with('error', 'An error occurred during approval: ' . $e->getMessage());
+            \Log::error('Bulk Approval Error: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'An error occurred during bulk approval: ' . $e->getMessage()]);
         }
     }
+    
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
+
     public function update(Request $request, $id)
     {
         // return $request->all();

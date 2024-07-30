@@ -1,6 +1,19 @@
 @extends('backend.layouts.master')
 
 @section('main-content')
+<!-- Bootstrap CSS -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap Toggle CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Bootstrap Toggle JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+
+
  <!-- DataTales Example -->
  <div class="card shadow mb-4">
      <div class="row">
@@ -59,16 +72,15 @@
                     <td>
                       <form action="{{ route('admin-status_active', $user->id) }}" method="POST">
                         @csrf
-                        @if($user->status == 'inactive')
-                            <button type="submit" style="background: red; border-radius: 10px; color: black;" onclick="return confirmStatusChange('{{ $user->status }}')">
-                                {{ $user->status }} 
-                            </button>
-                        @else
-                            <button type="submit" style="background: green; border-radius: 10px; color: black;" onclick="return confirmStatusChange('{{ $user->status }}')">
-                                {{ $user->status }} 
-                            </button>
-                        @endif
-                    </form>
+                        <input type="checkbox" 
+                          data-toggle="toggle" 
+                          data-on="Active" 
+                          data-off="Inactive" 
+                          data-onstyle="success" 
+                          data-offstyle="danger" 
+                          {{ $user->status == 'active' ? 'checked' : '' }}
+                          onchange="this.form.submit()">
+                      </form>
                     </td>
                    
                     <td>

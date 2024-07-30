@@ -131,6 +131,8 @@ Route::group(['prefix'=>'/admin','middleware'=>['auth','admin']],function(){
     // Ajax for sub category
     Route::post('/category/{id}/child','CategoryController@getChildByParent');
     Route::post('/Approvel/{id}','ProductController@Approvel')->name('Approvel');
+    Route::post('/approve-all', 'ProductController@Approvel')->name('approve.all');
+
     // POST category
     Route::resource('/post-category','PostCategoryController');
     // Post tag
