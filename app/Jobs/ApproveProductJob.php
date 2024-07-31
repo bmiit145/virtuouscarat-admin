@@ -88,9 +88,7 @@ class ApproveProductJob implements ShouldQueue
             }else {
                 // Return success response
                 \Log::info('Product approved and sent to WooCommerce successfully: ' . $this->productId);
-
-                $this->output->success('Product already approved: ' . $this->productId);
-
+//                $this->output->success('Product already approved: ' . $this->productId);
             }
             $product->is_processing = 0;
             $product->save();
