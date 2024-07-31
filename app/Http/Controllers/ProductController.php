@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Imports\ProductImport;
+use App\Jobs\ApproveProductJob;
+use App\Jobs\ApproveProductsJob;
 use App\Models\ProductAttribute;
 use Illuminate\Http\Request;
 use App\Models\Product;
@@ -366,7 +368,7 @@ class ProductController extends Controller
     {
         // Set a custom timeout for the database connection
         config(['database.connections.mysql.options' => [
-            \PDO::ATTR_TIMEOUT => 30, // 30 seconds timeout
+            \PDO::ATTR_TIMEOUT => 30,
         ]]);
     
         // Start a database transaction
@@ -420,10 +422,29 @@ class ProductController extends Controller
             return response()->json(['success' => false, 'message' => 'An error occurred during bulk approval: ' . $e->getMessage()]);
         }
     }
-    
 
 
+    //approveAll using job
+    public function approveAll(Request $request){
+        $productIds = WpProduct::where('is_approvel', 0)->pluck('id')->toArray();
 
+        // dispatch the job
+        foreach ($productIds as $productId) {
+            ApproveProductJob::dispatch($productId);
+        }
+        if ($request->json()) {
+            return response()->json(['success' => true]);
+        }
+        return back()->with('success', 'All products approval process has been started.');
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function update(Request $request, $id)
     {
         // return $request->all();

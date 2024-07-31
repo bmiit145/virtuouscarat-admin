@@ -25,3 +25,14 @@
 
 ### set up at server
 1. /domains/virtuouscarat.com/public_html/admin/artisan schedule:run
+2. /domains/virtuouscarat.com/public_html/admin/artisan queue:work
+
+
+### diagnostic error or command
+1. php artisan queue:work --tries=3
+2. php artisan queue:work --tries=3 --timeout=600
+3. php artisan queue:work --tries=3 --timeout=600 --stop-when-empty
+
+#### error
+1. SHOW PROCESSLIST;
+2. KILL <1234>;

@@ -43,6 +43,10 @@
                 </button>
 
             </form>
+
+            <button type="submit" id="approve-all" class="btn btn-primary bg-success border-0 btn-sm mx-1" data-toggle="tooltip" data-placement="bottom" title="Delete All Products">
+                <span class="py-1"> <i class="fas fa-trash"></i> Approve All</span>
+            </button>
         <a href="#" class="btn btn-primary btn-sm mx-1 refresh_btn" >   <i class="fas fa-sync"></i></a>
         </div>
     </div>
@@ -214,31 +218,21 @@
             location.reload();
         });
     </script>
-
-<script>
-$(document).ready(function() {
-    $('#approve-all-btn').click(function() {
-        $.ajax({
-            url: "{{ route('approve.all') }}",
-            type: 'POST',
-            data: {
-                _token: "{{ csrf_token() }}" // Include CSRF token for security
-            },
-            success: function(response) {
-                if (response.success) {
-                    alert(response.message);
-                    location.reload(); // Optional: reload the page to reflect changes
-                } else {
-                    alert(response.message);
+    <script>
+        document.querySelector('#approve-all').addEventListener('click', function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: '{{ route('ApprovelAll') }}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    toastr.success(response.message);
                 }
-            },
-            error: function() {
-                alert('An error occurred while processing the request.');
-            }
+            });
         });
-    });
-});
-</script>
+    </script>
 @endpush
 
 

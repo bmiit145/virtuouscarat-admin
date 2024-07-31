@@ -22,7 +22,7 @@
   a.active_tab {
     color: #d0b861;
   }
-  .bg-white {
+  .bg-navbar {
       background-color: #132644 !important;
   }
   .text-gray-600{
@@ -30,7 +30,7 @@
   }
 </style>
 
-<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+<nav class="navbar navbar-expand navbar-light bg-navbar topbar mb-4 static-top shadow">
 
   <!-- Sidebar Toggle (Topbar) -->
   {{-- <button id="sidebarToggleTop" class="btn btn-link  rounded-circle mr-3">
