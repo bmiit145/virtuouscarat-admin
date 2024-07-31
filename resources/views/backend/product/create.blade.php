@@ -15,7 +15,10 @@
         }
     </style>
     <div class="card">
-        <h5 class="card-header">Add Product</h5>
+        <h5 class="card-header align-items-center">
+            <span> Add Product </span>
+            <a href="{{route('product.index')}}" class="btn btn-sm btn-primary shadow-sm float-right">Back</a>
+        </h5>
         <div class="card-body">
             <form method="post" action="{{route('product.store')}}" id="productForm" enctype="multipart/form-data">
                 {{csrf_field()}}
@@ -29,13 +32,13 @@
                     </select>
                 </div>
 
-                <div class="form-group">
-                    <label for="inputTitle" class="col-form-label">Product Name <span class="text-danger">*</span></label>
-                    <input id="inputTitle" type="text" name="prod_name" placeholder="Enter Product Name"  value="{{old('prod_name')}}" class="form-control">
-                    @error('prod_name')
-                    <span class="text-danger">{{$message}}</span>
-                    @enderror
-                </div>
+                {{--        <div class="form-group">--}}
+                {{--          <label for="inputTitle" class="col-form-label">Product Name <span class="text-danger">*</span></label>--}}
+                {{--          <input id="inputTitle" type="text" name="prod_name" placeholder="Enter Product Name"  value="{{old('prod_name')}}" class="form-control">--}}
+                {{--          @error('prod_name')--}}
+                {{--          <span class="text-danger">{{$message}}</span>--}}
+                {{--          @enderror--}}
+                {{--        </div>--}}
 
 
                 <div class="form-group">
@@ -121,15 +124,15 @@
                     <label for="discounted_price" class="col-form-label font-weight-bold text-primary">
                         Discounted Price: <span id="discountedPriceLabel">$0</span>
                     </label><br/>
-                    <label for="listed_price" class="col-form-label font-weight-bold text-primary">
-                        Listed Price: <span id="listedPriceLabel">$0</span>
-                    </label>
+                    {{--              <label for="listed_price" class="col-form-label font-weight-bold text-primary">--}}
+                    {{--                  Listed Price: <span id="listedPriceLabel">$0</span>--}}
+                    {{--              </label>--}}
                 </div>
 
                 {{-- SKU --}}
 
                 <div class="form-group">
-                    <label for="sku" class="col-form-label">SKU <span class="text-danger">*</span></label>
+                    <label for="sku" class="col-form-label">Certificate No. <span class="text-danger">*</span></label>
                     <input id="sku" type="text" name="sku" placeholder="SKU"  value="{{old('sku')}}" class="form-control">
                     @error('sku')
                     <span class="text-danger">{{$message}}</span>
@@ -190,165 +193,177 @@
                 @php
                     $attributes = [
                         'Type' => 'Lab Grown Diamond',
+                        'LAB' => 'IGI',
                         'Shape' => 'Round Brilliant',
                         'Carat Weight' => '0.38 ct',
                         'Cut' => 'Ideal',
                         'Color' => 'E',
+                        'Fancy Color' => 'YELLOW',
+                        'Fancy Color Intensity' => 'Fancy Intense',
+                        'Fancy Color Overtone' => 'GREENISH',
                         'Clarity' => 'VS1',
                         'Fluorescence' => 'None',
                         'Growth Method' => 'CVD',
                         'Polish' => 'Excellent',
                         'Symmetry' => 'Excellent',
+                        'Measurements' => '4.68-4.71 x 2.94 mm',
                         'Table' => '56.5%',
                         'Depth' => '62.5%',
-                        'Ratio' => '1.01'
+                        'Ratio' => '1.01',
+                        'BGM' => 'NO',
+                        'Laser Inscription' => 'YES',
+                        'Member Comments' => '',
+                        'Pair' => '',
+                        'H&A' => '',
+                        'Eye Clean' => 'YES',
+                        'Growth Type' => 'CVD',
                     ];
                 @endphp
 
                 <hr/>
-                <h5> Attributes </h3>
-                    <div class="row">
-                        @foreach ($attributes as $attribute => $value)
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="{{ str_replace(' ', '_', strtolower($attribute)) }}">{{ $attribute }}</label>
-                                    <input type="text" class="form-control" name="attributes[{{ $attribute }}]" id="{{ str_replace(' ', '_', strtolower($attribute)) }}" value="{{ old('attributes.' . $attribute, $value) }}"
-                                           @if ($attribute === 'Type') disabled @endif>
-                                </div>
+                <h5> Attributes </h5>
+                <div class="row">
+                    @foreach ($attributes as $attribute => $value)
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="{{ str_replace(' ', '_', strtolower($attribute)) }}">{{ $attribute }}</label>
+                                <input type="text" class="form-control" name="attributes[{{ $attribute }}]" id="{{ str_replace(' ', '_', strtolower($attribute)) }}" value="{{ old('attributes.' . $attribute, $value) }}"
+                                       @if ($attribute === 'Type') disabled @endif>
                             </div>
+                        </div>
 
-                            @if (($loop->iteration % 3) == 0 && !$loop->last)
-                    </div><div class="row">
-                        @endif
-                        @endforeach
-                    </div>
-
-
-
+                        @if (($loop->iteration % 3) == 0 && !$loop->last)
+                </div><div class="row">
+                    @endif
+                    @endforeach
+                </div>
 
 
-                    {{-- <div class="form-group">
-                      <label for="size">Size</label>
-                      <select name="size[]" class="form-control selectpicker"  multiple data-live-search="true">
-                          <option value="">--Select any size--</option>
-                          <option value="S">Small (S)</option>
-                          <option value="M">Medium (M)</option>
-                          <option value="L">Large (L)</option>
-                          <option value="XL">Extra Large (XL)</option>
-                          <option value="2XL">Double Extra Large (2XL)</option>
-                          <option value="7US">7 US</option>
-                          <option value="8US">8 US</option>
-                          <option value="9US">9 US</option>
-                          <option value="10US">10 US</option>
-                          <option value="11US">11 US</option>
-                          <option value="12US">12 US</option>
-                          <option value="13US">13 US</option>
-                      </select>
-                    </div> --}}
 
-                    {{-- <div class="form-group">
-                      <label for="brand_id">Brand</label>
-                      <select name="brand_id" class="form-control">
-                          <option value="">--Select Brand--</option>
-                         @foreach($brands as $brand)
-                          <option value="{{$brand->id}}">{{$brand->title}}</option>
-                         @endforeach
-                      </select>
-                    </div> --}}
 
-                    {{-- <div class="form-group">
-                      <label for="condition">Condition</label>
-                      <select name="condition" class="form-control">
-                          <option value="">--Select Condition--</option>
-                          <option value="default">Default</option>
-                          <option value="new">New</option>
-                          <option value="hot">Hot</option>
-                      </select>
-                    </div> --}}
 
-                    {{-- <div class="form-group">
-                      <label for="stock">Quantity <span class="text-danger">*</span></label>
-                      <input id="quantity" type="number" name="stock" min="0" placeholder="Enter quantity"  value="{{old('stock')}}" class="form-control">
-                      @error('stock')
-                      <span class="text-danger">{{$message}}</span>
-                      @enderror
-                    </div> --}}
+                {{-- <div class="form-group">
+                  <label for="size">Size</label>
+                  <select name="size[]" class="form-control selectpicker"  multiple data-live-search="true">
+                      <option value="">--Select any size--</option>
+                      <option value="S">Small (S)</option>
+                      <option value="M">Medium (M)</option>
+                      <option value="L">Large (L)</option>
+                      <option value="XL">Extra Large (XL)</option>
+                      <option value="2XL">Double Extra Large (2XL)</option>
+                      <option value="7US">7 US</option>
+                      <option value="8US">8 US</option>
+                      <option value="9US">9 US</option>
+                      <option value="10US">10 US</option>
+                      <option value="11US">11 US</option>
+                      <option value="12US">12 US</option>
+                      <option value="13US">13 US</option>
+                  </select>
+                </div> --}}
 
-                    {{-- <div class="form-group">
-                      <label for="mainphoto" class="col-form-label">Main Photo<span class="text-danger">*</span></label>
-                      <div class="input-group">
-                          <span class="input-group-btn">
-                              <a id="lfm" data-input="thumbnail" data-preview="holder" class="btn btn-secondary text-white">
-                              <i class="fa fa-picture-o"></i> Choose
-                              </a>
-                          </span>
-                      <input id="thumbnail" class="form-control" type="text" name="photo" value="{{old('photo')}}">
-                    </div>
-                    <div id="holder" style="margin-top:15px;max-height:100px;"></div>
-                      @error('photo')
-                      <span class="text-danger">{{$message}}</span>
-                      @enderror
-                    </div> --}}
+                {{-- <div class="form-group">
+                  <label for="brand_id">Brand</label>
+                  <select name="brand_id" class="form-control">
+                      <option value="">--Select Brand--</option>
+                     @foreach($brands as $brand)
+                      <option value="{{$brand->id}}">{{$brand->title}}</option>
+                     @endforeach
+                  </select>
+                </div> --}}
 
-                    <!-- Main Photo Input -->
-                    <div class="form-group">
-                        <label for="mainphoto" class="col-form-label">Main Photo<span class="text-danger">*</span></label>
-                        <div class="input-group">
+                {{-- <div class="form-group">
+                  <label for="condition">Condition</label>
+                  <select name="condition" class="form-control">
+                      <option value="">--Select Condition--</option>
+                      <option value="default">Default</option>
+                      <option value="new">New</option>
+                      <option value="hot">Hot</option>
+                  </select>
+                </div> --}}
+
+                {{-- <div class="form-group">
+                  <label for="stock">Quantity <span class="text-danger">*</span></label>
+                  <input id="quantity" type="number" name="stock" min="0" placeholder="Enter quantity"  value="{{old('stock')}}" class="form-control">
+                  @error('stock')
+                  <span class="text-danger">{{$message}}</span>
+                  @enderror
+                </div> --}}
+
+                {{-- <div class="form-group">
+                  <label for="mainphoto" class="col-form-label">Main Photo<span class="text-danger">*</span></label>
+                  <div class="input-group">
+                      <span class="input-group-btn">
+                          <a id="lfm" data-input="thumbnail" data-preview="holder" class="btn btn-secondary text-white">
+                          <i class="fa fa-picture-o"></i> Choose
+                          </a>
+                      </span>
+                  <input id="thumbnail" class="form-control" type="text" name="photo" value="{{old('photo')}}">
+                </div>
+                <div id="holder" style="margin-top:15px;max-height:100px;"></div>
+                  @error('photo')
+                  <span class="text-danger">{{$message}}</span>
+                  @enderror
+                </div> --}}
+
+                <!-- Main Photo Input -->
+                <div class="form-group">
+                    <label for="mainphoto" class="col-form-label">Main Photo<span class="text-danger">*</span></label>
+                    <div class="input-group">
       <span class="input-group-btn">
           <button class="btn btn-secondary text-white" type="button" onclick="document.getElementById('imageInput').click();">
               <i class="fa fa-picture-o"></i> Choose
           </button>
       </span>
-                            <input id="thumbnail" class="form-control" type="text" readonly>
-                        </div>
-                        <input type="file" id="imageInput" accept="image/*" style="display: none;" name="photo" onchange="previewImage(event)">
-                        <div id="holder" style="margin-top: 15px; max-height: 100px;"></div>
-                        <span id="error" class="text-danger"></span>
-                        @error('photo')
-                        <span class="text-danger">{{$message}}</span>
-                        @enderror
+                        <input id="thumbnail" class="form-control" type="text" readonly>
                     </div>
+                    <input type="file" id="imageInput" accept="image/*" style="display: none;" name="photo" onchange="previewImage(event)">
+                    <div id="holder" style="margin-top: 15px; max-height: 100px;"></div>
+                    <span id="error" class="text-danger"></span>
+                    @error('photo')
+                    <span class="text-danger">{{$message}}</span>
+                    @enderror
+                </div>
 
-                    <!-- Image Gallery Input -->
-                    <div class="form-group">
-                        <label for="gallery" class="col-form-label">Image Gallery<span class="text-danger">*</span></label>
-                        <div class="input-group">
+                <!-- Image Gallery Input -->
+                <div class="form-group">
+                    <label for="gallery" class="col-form-label">Image Gallery<span class="text-danger">*</span></label>
+                    <div class="input-group">
       <span class="input-group-btn">
           <button class="btn btn-secondary text-white" type="button" onclick="document.getElementById('galleryInput').click();">
               <i class="fa fa-picture-o"></i> Choose
           </button>
       </span>
-                            <input id="galleryThumbnail" class="form-control" type="text" readonly>
-                        </div>
-                        <input type="file" id="galleryInput" accept="image/*" style="display: none;" name="gallery[]" multiple onchange="previewGalleryImages(event)">
-                        <div id="galleryHolder" style="margin-top: 15px; max-height: 100px;"></div>
-                        @error('gallery.*')
-                        <span class="text-danger">{{$message}}</span>
-                        @enderror
+                        <input id="galleryThumbnail" class="form-control" type="text" readonly>
                     </div>
-                    <div class="form-group">
-                        <label for="video_link" class="col-form-label">Video Link<span class="text-danger">*</span></label>
-                        <input id="video_link" type="text" name="video_link" placeholder="Video Link"  value="{{old('video_link')}}" class="form-control">
-                        @error('video_link')
-                        <span class="text-danger">{{$message}}</span>
-                        @enderror
-                    </div>
+                    <input type="file" id="galleryInput" accept="image/*" style="display: none;" name="gallery[]" multiple onchange="previewGalleryImages(event)">
+                    <div id="galleryHolder" style="margin-top: 15px; max-height: 100px;"></div>
+                    @error('gallery.*')
+                    <span class="text-danger">{{$message}}</span>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label for="video_link" class="col-form-label">Video Link<span class="text-danger">*</span></label>
+                    <input id="video_link" type="text" name="video_link" placeholder="Video Link"  value="{{old('video_link')}}" class="form-control">
+                    @error('video_link')
+                    <span class="text-danger">{{$message}}</span>
+                    @enderror
+                </div>
 
 
-                    {{-- <div class="form-group">
-                      <label for="status" class="col-form-label">Status <span class="text-danger">*</span></label>
-                      <select name="status" class="form-control">
-                          <option value="active">Active</option>
-                          <option value="inactive">Inactive</option>
-                      </select>
-                      @error('status')
-                      <span class="text-danger">{{$message}}</span>
-                      @enderror
-                    </div> --}}
-                    <div class="form-group mb-3">
-                        <button type="reset" class="btn btn-warning">Reset</button>
-                        <button class="btn btn-success" type="submit">Submit</button>
-                    </div>
+                {{-- <div class="form-group">
+                  <label for="status" class="col-form-label">Status <span class="text-danger">*</span></label>
+                  <select name="status" class="form-control">
+                      <option value="active">Active</option>
+                      <option value="inactive">Inactive</option>
+                  </select>
+                  @error('status')
+                  <span class="text-danger">{{$message}}</span>
+                  @enderror
+                </div> --}}
+                <div class="form-group mb-3">
+                    <button type="reset" class="btn btn-warning">Reset</button>
+                    <button class="btn btn-success" type="submit">Submit</button>
+                </div>
             </form>
         </div>
     </div>

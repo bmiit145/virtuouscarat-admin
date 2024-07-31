@@ -99,20 +99,36 @@ class ProductController extends Controller
 
     }
 
+
     protected  $attributeMapping = [
-        'LOC' => ['location', 'LOC' , 'City'],
+        'TYPE' => ['type', 'TYPE' , 'Growth Type'],
         'LAB' => ['lab', 'LAB' , 'Lab'],
         'SHAPE' => ['shape', 'SHAPE' , 'Shape'],
-        'COLOR' => ['color', 'COLOR' , 'Color'],
-        'CLARITY' => ['clarity', 'CLARITY' , 'Clarity'],
+        'Carat Weight' => ['CTS', 'CARAT' , 'CARAT WEIGHT' , 'Weight' , 'WEIGHT' , 'WEIGHT (CTS)'],
         'CUT' => ['cut', 'CUT' , 'Cut Grade'],
+        'COLOR' => ['color', 'COLOR' , 'Color'],
+        'Fancy Color' => ['Fancy Color'],
+        'Fancy Color Intensity' => ['Fancy Color Intensity'],
+        'Fancy Color Overtone' => ['Fancy Color Overtone'],
+        'CLARITY' => ['clarity', 'CLARITY' , 'Clarity'],
+        'Fluorescence Intensity' => ['fl', 'FL' , 'Fluorescence Intensity' , 'floInt'],
+        'Growth Type' => ['Growth Type'],
         'POLISH' => ['polish', 'POLISH' , 'Polish'],
-        'SYM' => ['sym', 'SYM' , 'Symmetry'],
-        'FL' => ['fl', 'FL' , 'Fluorescence Intensity'],
+        'Symmetry' => ['sym', 'SYM' , 'Symmetry'],
         'MEASUREMENT' => ['measurement', 'MEASUREMENT' , 'Measurements'],
-        'TBL' => ['tbl', 'TBL' , 'Table Percent'],
-        'T.DEPTH' => ['t_depth', 'T.DEPTH' ,'Depth Percent'],
-        'TYPE' => ['type', 'TYPE' , 'Growth Type']
+        'TBL' => ['tbl', 'TBL' , 'Table Percent' , 'Table %' , 'TABLE %'],
+        'T.DEPTH' => ['t_depth', 'T.DEPTH' ,'Depth Percent' , 'Depth %'],
+        'Ratio' => ['Ratio'],
+        'BGM' => ['bgm', 'BGM' , 'BGM'],
+        'Laser Inscription' => ['Laser Inscription'],
+        'Member Comments' => ['Member Comments'],
+        'Pair' => ['Pair'],
+        'H&A' => ['H&A' , 'H&A'],
+        'Eye Clean' => ['Eye Clean' , 'EYECLEAN'],
+        'LOCATION' => ['location', 'LOC' , 'City'],
+        'MILKY' => ['milky', 'MILKY' , 'Milky'],
+        'LUSTER' => ['luster', 'LUSTER' , 'Luster'],
+        'TREATMENT' => ['TREATMENT']
     ];
 
     /**
@@ -253,6 +269,9 @@ class ProductController extends Controller
         // Add attributes if any
         if ($request->has('attributes')) {
             foreach ($request->input('attributes') as $name => $value) {
+                if (empty($value)) {
+                    continue;
+                }
                 $wpProduct->attributes()->create([
                     'name' => $name,
                     'value' => $value,
@@ -600,6 +619,9 @@ class ProductController extends Controller
                 // Map and create product attributes
                 foreach ($mappedAttributes as $dbField => $excelHeader) {
                     if (isset($data[$excelHeader])) {
+                        if (empty($data[$excelHeader])) {
+                            continue;
+                        }
                         ProductAttribute::create([
                             'product_id' => $product->id,
                             'name' => $dbField,
