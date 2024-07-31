@@ -73,16 +73,13 @@
                     @endphp
                     @foreach($order->products as $index => $product)
                         <tr data-order_id="{{ $order->order_id }}">
-                            @if($index == 0)
-                                <td rowspan="{{ $rowspan }}">{{ \Carbon\Carbon::parse($order->order_date)->format('d-m-Y') }}</td>
-                                <td rowspan="{{ $rowspan }}">{{ $order->order_id }}</td>
-                                <td rowspan="{{ $rowspan }}">{{ $order->billing_first_name }} {{ $order->billing_last_name }}</td>
-                            @endif
+                            <td>{{ \Carbon\Carbon::parse($order->order_date)->format('d-m-Y') }}</td>
+                            <td>{{ $order->order_id }}</td>
+                            <td>{{ $order->billing_first_name }} {{ $order->billing_last_name }}</td>
                             <td>
                                 @if($product->product)
                                     <span>{{ $product->product->name }}</span>
-                                     <sub>
-                                        ({{ $product->product->sku }})</sub>
+                                    <sub>({{ $product->product->sku }})</sub>
                                 @endif
                             </td>
                             <td>
@@ -93,12 +90,10 @@
                             <td>
                                 @if($product->product)
                                     <span>₹{{ $product->price }} </span>
-                                    <sub> ({{ $product->quantity }})</sub>
+                                    <sub>({{ $product->quantity }})</sub>
                                 @endif
                             </td>
-                            @if($index == 0)
-                                <td rowspan="{{ $rowspan }}">₹{{ number_format($order->total, 2) }}</td>
-                            @endif
+                            <td>{{ $index == 0 ? '₹'.number_format($order->total, 2) : '' }}</td>
                             <td>
                                 @if($product->is_fulfilled == 1)
                                     <span class="btn btn-sm btn-success" style="cursor: unset">Approved By Vendor</span>
@@ -114,15 +109,13 @@
                                     <span class="btn btn-sm btn-warning" style="cursor: unset">Pending</span>
                                 @endif
                             </td>
-                            
-                            @if($index == 0)
-                                <td rowspan="{{ $rowspan }}">
+                            <td>
+                                @if($index == 0)
                                     <div class="form-check form-switch">
                                         <input class="form-check-input SwitchCustomerShow toggle_style" type="checkbox" role="switch" id="SwitchCustomerShow" data-toggle="toggle" @if($order->customer_status_show) checked @endif>
                                     </div>
-                                </td>
-                            @endif
-
+                                @endif
+                            </td>
                             <td>
                                 @php
                                     $is_actionable = $product->is_fulfilled == 1 || $product->is_fulfilled == 3 ? false : true;
@@ -150,6 +143,7 @@
             </tbody>
         </table>
         
+        
 
       </div>
     </div>
@@ -159,18 +153,18 @@
 @push('styles')
   <link href="{{asset('backend/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" />
-  <style>
-      div.dataTables_wrapper div.dataTables_paginate{
-          display: none;
-      }
-  </style>
+
 @endpush
 
 @push('scripts')
 
   <!-- Page level plugins -->
-  <script src="{{asset('backend/vendor/datatables/jquery.dataTables.min.js')}}"></script>
-  <script src="{{asset('backend/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
+  {{-- <script src="{{asset('backend/vendor/datatables/jquery.dataTables.min.js')}}"></script>
+  <script src="{{asset('backend/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script> --}}
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
   <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 
@@ -183,25 +177,24 @@
         location.reload();
     });
 </script>
-  <script>
-  function enableSubmitButton(selectElement) {
-            const submitButton = $(selectElement).closest('form').find('button[type="submit"]');
-            submitButton.prop('disabled', false);
-        }
-$(document).ready(function() {
-
-      $('#order-dataTable').DataTable({
-            "paging": true,
-            "ordering": false,
-            "info": true
+ 
+<script>
+    $(document).ready(function() {
+        $('#order-dataTable').DataTable({
+            "order": [],
+            "columnDefs": [{
+                "orderable": false,
+                "targets": -1
+            }]
         });
-  });
+    });
 
-        // Sweet alert
-        function deleteData(id){
-
-        }
-  </script>
+    function enableSubmitButton(selectElement) {
+        var form = selectElement.closest('form');
+        var submitButton = form.querySelector('button[type="submit"]');
+        submitButton.disabled = false;
+    }
+</script>
   <script>
       $(document).ready(function(){
         $.ajaxSetup({
@@ -232,6 +225,7 @@ $(document).ready(function() {
       })
   </script>
 {{--  Order status--}}
+
     <script>
         $(document).ready(function(){
             $('.order-action-btn-form').submit(function(e){

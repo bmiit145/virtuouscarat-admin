@@ -8,6 +8,7 @@
   display: none !important;
 }
 </style>
+
  <!-- DataTales Example -->
  <div class="card shadow mb-4">
      <div class="row">
@@ -19,7 +20,12 @@
      <!-- Include jQuery (required for DataTables) -->
      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
      <!-- Include DataTables JS -->
-     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
     <div class="card-header py-3">
       <h6 class="m-0 font-weight-bold text-primary float-left">Product Lists</h6>
@@ -39,9 +45,61 @@
                 </button>
             </form>
 
-            <button type="submit" id="approve-all" class="btn btn-primary bg-success border-0 btn-sm mx-1" data-toggle="tooltip" data-placement="bottom" title="Delete All Products">
+            <button type="submit" id="approve-all" class="btn btn-primary bg-success border-0 btn-sm mx-1" data-toggle="tooltip" data-placement="bottom" title="Approve All Products">
                 <span class="py-1"> <i class="fas fa-trash"></i> Approve All</span>
             </button>
+
+            <button type="submit" id="approve-all" class="btn btn-primary bg-info border-0 btn-sm mx-1" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" title="Filter All Products">
+                <span class="py-1"> <i class="fas fa-filter"></i> Filter All</span>
+            </button>
+
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+              <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasRightLabel">Filters</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+              </div>
+              <div class="offcanvas-body">
+                <form>
+                  <div class="mb-3">
+                    <label for="status" class="form-label">Status</label>
+                    <select id="status" class="form-select">
+                      <option selected>-- Select Vender --</option>
+                    </select>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="tags" class="form-label">Product Start Date</label>
+                    <input type="date" class="form-control" name="start_date">
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="tags" class="form-label">Product End Date</label>
+                    <input type="date" class="form-control" name="end_date">
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="status" class="form-label">Category</label>
+                    <select id="status" class="form-select">
+                      <option value="">-- Select Category --</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                    </select>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="status" class="form-label">Stock Status</label>
+                    <select id="status" class="form-select">
+                      <option value="">-- Select Stock Status --</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                    </select>
+                  </div>
+
+                  <button type="reset" class="btn btn-light btn-sm border-0 w-100">Clear All</button>
+                </form>
+              </div>
+            </div>
+
         <a href="#" class="btn btn-primary btn-sm mx-1 refresh_btn" >   <i class="fas fa-sync"></i></a>
         </div>
     </div>
@@ -149,6 +207,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
   <!-- Page level custom scripts -->
   <script src="{{asset('backend/js/demo/datatables-demo.js')}}"></script>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+
   <script>
       // $('#product-dataTable').DataTable( {
       //   "scrollX": false,
