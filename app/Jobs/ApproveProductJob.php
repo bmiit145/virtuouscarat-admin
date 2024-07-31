@@ -47,19 +47,27 @@ class ApproveProductJob implements ShouldQueue
                 // Log if the product is not found
                 \Log::error('Product not found: ' . $this->productId);
                 DB::rollBack();
+                $product->is_processing = 0;
+                $product->save();
+                DB::commit();
+//                $this->output->error('Product not found: ' . $this->productId);
                 return;
             }
 
             // Check if the product is already approved
             if ($product->is_approvel) {
+                $product->is_processing = 0;
+                $product->save();
                 \Log::info('Product already approved: ' . $this->productId);
                 DB::commit();
+
+//                $this->output->info('Product already approved: ' . $this->productId);
                 return;
             }
 
             // Update the approval status
             $product->is_approvel = 1;
-
+            $product->is_processing = 0;
 
             // Save the product
             $product->save();
@@ -73,11 +81,20 @@ class ApproveProductJob implements ShouldQueue
             // Check if there is an error
             if (is_array($response) && isset($response['error'])) {
                 DB::rollBack();
+                $product->is_processing = 0;
+                $product->save();
+                DB::commit();
                 \Log::error('Failed to send product to WooCommerce: ' . $response['error']);
             }else {
                 // Return success response
                 \Log::info('Product approved and sent to WooCommerce successfully: ' . $this->productId);
+
+                $this->output->success('Product already approved: ' . $this->productId);
+
             }
+            $product->is_processing = 0;
+            $product->save();
+            DB::commit();
         } catch (\Exception $e) {
             // Rollback the transaction on exception
             DB::rollBack();

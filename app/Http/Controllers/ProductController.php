@@ -383,10 +383,14 @@ class ProductController extends Controller
 
     //approveAll using job
     public function approveAll(Request $request){
-        $productIds = WpProduct::where('is_approvel', 0)->pluck('id')->toArray();
+        $productIds = WpProduct::where('is_approvel', 0)
+            ->where('is_processing', 0)
+            ->pluck('id')
+            ->toArray();
 
         // dispatch the job
         foreach ($productIds as $productId) {
+            WpProduct::where('id', $productId)->update(['is_processing' => 1]);
             ApproveProductJob::dispatch($productId);
         }
         if ($request->json()) {

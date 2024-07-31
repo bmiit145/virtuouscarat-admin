@@ -38,6 +38,7 @@ class WpProduct extends Model
         'video_link',
         'location',
         'comment',
+        'is_processing'
     ];
 
     public function category()
