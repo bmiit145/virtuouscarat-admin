@@ -38,6 +38,10 @@
                     <span class="py-1"> <i class="fas fa-trash"></i> Delete All</span>
                 </button>
             </form>
+
+            <button type="submit" id="approve-all" class="btn btn-primary bg-success border-0 btn-sm mx-1" data-toggle="tooltip" data-placement="bottom" title="Delete All Products">
+                <span class="py-1"> <i class="fas fa-trash"></i> Approve All</span>
+            </button>
         <a href="#" class="btn btn-primary btn-sm mx-1 refresh_btn" >   <i class="fas fa-sync"></i></a>
         </div>
     </div>
@@ -207,6 +211,21 @@
         document.querySelector('.refresh_btn').addEventListener('click', function(event) {
             event.preventDefault();
             location.reload();
+        });
+    </script>
+    <script>
+        document.querySelector('#approve-all').addEventListener('click', function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: '{{ route('ApprovelAll') }}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    toastr.success(response.message);
+                }
+            });
         });
     </script>
 @endpush

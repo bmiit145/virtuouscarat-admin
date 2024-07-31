@@ -209,6 +209,7 @@ class WooCommerceProductController extends Controller
 //    }
 
     public static function sendDataToWooCommerce(WpProduct $product) {
+
         $existingAttributes = self::getExistingAttributes();
         $attributeMap = [];
 
