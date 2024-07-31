@@ -36,12 +36,7 @@
                 @csrf
                 <button type="submit" class="btn btn-primary bg-danger border-0 btn-sm mx-1" data-toggle="tooltip" data-placement="bottom" title="Delete All Products">
                     <span class="py-1"> <i class="fas fa-trash"></i> Delete All</span>
-                </button><br>
-
-                <button type="button" class="btn btn-primary bg-success border-0 btn-sm mx-1" id="approve-all-btn"              data-toggle="tooltip" data-placement="bottom" title="Approve All Products">
-                  <span class="py-1"> <i class="fas fa-check"></i> Approve All</span>
                 </button>
-
             </form>
 
             <button type="submit" id="approve-all" class="btn btn-primary bg-success border-0 btn-sm mx-1" data-toggle="tooltip" data-placement="bottom" title="Delete All Products">
