@@ -30,14 +30,14 @@
     <div class="card-header py-3">
       <h6 class="m-0 font-weight-bold text-primary float-left">Product Lists</h6>
         <div class="float-right d-flex">
-            <form action="{{ route('product.import') }}" method="POST" enctype="multipart/form-data" class="mr-1">
+            <!-- <form action="{{ route('product.import') }}" method="POST" enctype="multipart/form-data" class="mr-1">
                 @csrf
                 <label for="importFile" class="btn btn-primary bg-success btn-sm mx-1 border-0" data-toggle="tooltip" data-placement="bottom" title="Import Products" style="height: 102%;">
                     <i class="fas fa-file"></i> Import File
                     <input id="importFile" type="file" name="import_file" accept=".csv,.xlsx" style="display: none;" onchange="this.form.submit()">
                 </label>
-            </form>
-            <a href="{{route('product.create')}}" class="btn btn-primary btn-sm mx-1" data-toggle="tooltip" data-placement="bottom" title="Add Product"><i class="fas fa-plus"></i> Add Product</a>
+            </form> -->
+            <!-- <a href="{{route('product.create')}}" class="btn btn-primary btn-sm mx-1" data-toggle="tooltip" data-placement="bottom" title="Add Product"><i class="fas fa-plus"></i> Add Product</a> -->
             <form method="post" action="{{ route('product.clearAll') }}">
                 @csrf
                 <button type="submit" class="btn btn-primary bg-danger border-0 btn-sm mx-1" data-toggle="tooltip" data-placement="bottom" title="Delete All Products">
@@ -59,44 +59,63 @@
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
               </div>
               <div class="offcanvas-body">
-                <form>
-                  <div class="mb-3">
-                    <label for="status" class="form-label">Status</label>
-                    <select id="status" class="form-select">
-                      <option selected>-- Select Vender --</option>
-                    </select>
-                  </div>
+              <form>
+                <div class="mb-3">
+                  <label for="status" class="form-label">By Status</label>
+                  <select id="status" class="form-select">
+                    <option selected>-- Select Vendor --</option>
+                  </select>
+                </div>
 
-                  <div class="mb-3">
-                    <label for="tags" class="form-label">Product Start Date</label>
-                    <input type="date" class="form-control" name="start_date">
-                  </div>
+                <div class="mb-3">
+                  <label for="start_date" class="form-label">By Product Start Date</label>
+                  <input type="date" class="form-control" name="start_date" id="start_date">
+                </div>
 
-                  <div class="mb-3">
-                    <label for="tags" class="form-label">Product End Date</label>
-                    <input type="date" class="form-control" name="end_date">
-                  </div>
+                <div class="mb-3">
+                  <label for="end_date" class="form-label">By Product End Date</label>
+                  <input type="date" class="form-control" name="end_date" id="end_date">
+                </div>
 
-                  <div class="mb-3">
-                    <label for="status" class="form-label">Category</label>
-                    <select id="status" class="form-select">
-                      <option value="">-- Select Category --</option>
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                    </select>
-                  </div>
+                <div class="mb-3">
+                  <label for="category" class="form-label">By Category</label>
+                  <select id="category" class="form-select">
+                    <option value="">-- Select Category --</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                  </select>
+                </div>
 
-                  <div class="mb-3">
-                    <label for="status" class="form-label">Stock Status</label>
-                    <select id="status" class="form-select">
-                      <option value="">-- Select Stock Status --</option>
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                    </select>
-                  </div>
+                <div class="mb-3">
+                  <label for="stock_status" class="form-label">By Stock Status</label>
+                  <select id="stock_status" class="form-select">
+                    <option value="">-- Select Stock Status --</option>
+                    <option value="1">Pending</option>
+                    <option value="2">Approved</option>
+                    <option value="3">Rejected</option>
+                  </select>
+                </div>
 
-                  <button type="reset" class="btn btn-light btn-sm border-0 w-100">Clear All</button>
-                </form>
+                <div class="mb-3">
+                  <label for="price_range" class="form-label">By Price Range</label>
+                  <select id="price_range" class="form-select">
+                    <option value="">-- Select Price Range --</option>
+                    <option value="1">100 - 200</option>
+                    <option value="2">201 - 500</option>
+                  </select>
+                </div>
+
+                <div class="row">
+                  <div class="col-6">
+                    <button type="reset" class="btn btn-secondary btn-sm w-100">Clear All</button>
+                  </div>
+                  <div class="col-6">
+                    <button type="submit" class="btn btn-info btn-sm w-100 text-center">Apply Filter</button>
+                  </div>
+                </div>
+                
+              </form>
+
               </div>
             </div>
 

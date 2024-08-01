@@ -1,9 +1,10 @@
 @extends('backend.layouts.master')
 
 @push('styles')
-    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" 
-    rel="stylesheet">
-    {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> --}}
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> 
     <style>
         /* Apply a hover effect to all rows with the same data-order_id */
         .table tbody tr {
@@ -30,6 +31,11 @@
         box-shadow: inset 0 3px 5px rgba(0,0,0,.125) !important;
         border: 1px solid #adadad !important;
     }
+
+    .fixed-text {
+        white-space: nowrap;
+    }
+
 </style>
 
  <!-- DataTales Example -->
@@ -44,8 +50,8 @@
       <a href="#" class="btn btn-primary btn-sm mx-1 refresh_btn" >   <i class="fas fa-sync"></i></a>
 
     </div>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
     
     <div class="card-body">
@@ -54,16 +60,42 @@
         <table class="table table-bordered table-hover" id="order-dataTable" width="100%" cellspacing="0">
             <thead>
                 <tr>
-                    <th>Order Date</th>
-                    <th>Order No.</th>
-                    <th>Customer Name</th>
-                    <th>Product Name</th>
-                    <th>Vendor Name</th>
-                    <th>Product Price</th>
-                    <th>Order Value</th>
-                    <th>Vendor Status</th>
-                    <th>Customer Status</th>
-                    <th>Action</th>
+                    <th>
+                        <span class="fixed-text">Order Date</span><br>
+                    </th>
+                    <th>
+                        <span class="fixed-text">Order No.</span><br>
+                    </th>
+                    <th>
+                        <span class="fixed-text">Customer Name</span><br>
+                        <span class="fixed-text">Email Address</span><br>
+                    </th>
+                    <th>
+                        <span class="fixed-text">Product Name</span><br>
+                        Carat<br>
+                        <span class="fixed-text">Category (color, clarity, cut + Measurement)</span><br>
+                        <br>
+                    </th>
+                    <th>
+                        <span class="fixed-text">Vendor Name</span><br>
+                        <span class="fixed-text">Vendor Mobile Number</span><br>
+                    </th>
+                    <th>
+                        <span class="fixed-text">Product Price</span><br>
+                        
+                    </th>
+                    <th>
+                        <span class="fixed-text">Order Value</span><br>
+                    </th>
+                    <th>
+                        <span class="fixed-text">Vendor Status</span><br>
+                    </th>
+                    <th>
+                        <span class="fixed-text">Customer Status</span><br>
+                    </th>
+                    <th>
+                        <span class="fixed-text">Action</span><br>
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -75,22 +107,33 @@
                         <tr data-order_id="{{ $order->order_id }}">
                             <td>{{ \Carbon\Carbon::parse($order->order_date)->format('d-m-Y') }}</td>
                             <td>{{ $order->order_id }}</td>
-                            <td>{{ $order->billing_first_name }} {{ $order->billing_last_name }}</td>
+                            <td>
+                                {{ $order->billing_first_name }} {{ $order->billing_last_name }}<br>
+                                {{ $order->billing_email }}
+                            </td>
+
                             <td>
                                 @if($product->product)
-                                    <span>{{ $product->product->name }}</span>
+                                    <span class="fixed-text">{{ $product->product->name }}</span>
                                     <sub>({{ $product->product->sku }})</sub>
+                                    <span class="fixed-text">₹{{ $product->carat }} </span>
+                                    <span class="fixed-text">₹{{ $product->category }} </span>
+                                        <sub>({{ $product->color }})</sub>
+                                        <sub>({{ $product->clarity }})</sub>
+                                        <sub>({{ $product->cut }})</sub>
+                                        <sub>({{ $product->measurement }})</sub>
                                 @endif
                             </td>
                             <td>
                                 @if($product->product)
-                                    <span>{{ $product->product->vendor->name }}</span>
+                                    <span class="fixed-text">{{ $product->product->vendor->name }}</span>
+                                    <span class="fixed-text">{{ $product->product->vendor->name }}</span>
                                 @endif
                             </td>
                             <td>
                                 @if($product->product)
-                                    <span>₹{{ $product->price }} </span>
-                                    <sub>({{ $product->quantity }})</sub>
+                                    <span class="fixed-text">₹{{ $product->price }} </span>
+                                        <sub>({{ $product->quantity }})</sub>
                                 @endif
                             </td>
                             <td>{{ $index == 0 ? '₹'.number_format($order->total, 2) : '' }}</td>
@@ -112,10 +155,18 @@
                             <td>
                                 @if($index == 0)
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input SwitchCustomerShow toggle_style" type="checkbox" role="switch" id="SwitchCustomerShow" data-toggle="toggle" @if($order->customer_status_show) checked @endif>
+                                        <input class="form-check-input SwitchCustomerShow toggle_style" 
+                                            type="checkbox" 
+                                            role="switch" 
+                                            id="SwitchCustomerShow" 
+                                            data-toggle="toggle" 
+                                            data-on="On" 
+                                            data-off="Off" 
+                                            @if($order->customer_status_show) checked @endif>
                                     </div>
                                 @endif
                             </td>
+
                             <td>
                                 @php
                                     $is_actionable = $product->is_fulfilled == 1 || $product->is_fulfilled == 3 ? false : true;
@@ -127,12 +178,12 @@
                                             @csrf
                                             <input type="hidden" name="order_id" value="{{ $order->order_id }}">
                                             <input type="hidden" name="product_id" value="{{ $product->product_id }}">
-                                            <select name="order-action-select" class="form-control" style="margin-right: 10px;" onchange="enableSubmitButton(this)" onfocus="enableSubmitButton(this)">
+                                            <select name="order-action-select" class="form-control" style="margin-right: 10px; width: 200px;" onchange="enableSubmitButton(this)" onfocus="enableSubmitButton(this)">
                                                 <option value="#">-- Select status --</option>
                                                 <option value="3" {{ $product->is_fulfilled == 3 ? 'selected' : '' }}>Approved</option>
                                                 <option value="4" {{ $product->is_fulfilled == 4 ? 'selected' : '' }}>Rejected</option>
                                             </select>
-                                            <button id="submit-button-{{ $order->order_id }}" style="background: #132644; color: white; border-radius: 6px;" type="submit" disabled>Submit</button>
+                                            <button id="submit-button-{{ $order->order_id }}" style="background: #132644; color: white; border-radius: 6px; width: 100px;" type="submit" disabled>Submit</button>
                                         </form>
                                     @endif
                                 @endif
@@ -158,16 +209,14 @@
 
 @push('scripts')
 
-  <!-- Page level plugins -->
-  {{-- <script src="{{asset('backend/vendor/datatables/jquery.dataTables.min.js')}}"></script>
-  <script src="{{asset('backend/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script> --}}
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
-<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+    <!-- Page level plugins -->
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
-  <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 
   <!-- Page level custom scripts -->
   <script src="{{asset('backend/js/demo/datatables-demo.js')}}"></script>
@@ -184,7 +233,7 @@
             "order": [],
             "columnDefs": [{
                 "orderable": false,
-                "targets": -1
+                "targets": '_all'
             }]
         });
     });
@@ -308,6 +357,12 @@
                 var orderId = $(this).data('order_id');
                 $('tr[data-order_id="' + orderId + '"]').removeClass('highlight-hover');
             });
+        });
+    </script>
+
+    <script>
+        $(function() {
+            $('#SwitchCustomerShow').bootstrapToggle();
         });
     </script>
 @endpush
