@@ -7,6 +7,30 @@
   .no-arrow::after {
   display: none !important;
 }
+.table  tr th {
+        font-size: 12px;
+        font-weight: 600 !important;
+        color: rgb(63 66 82);
+        line-height: 20px !important;
+        font-style: normal !IMPORTANT;
+        font-family: "Poppins", sans-serif;
+        text-transform: uppercase;
+    }
+    .table tbody tr td {
+        font-size: 13px;
+        font-weight: 600 !important;
+        color: rgb(63 66 82);
+        line-height: 20px !important;
+        font-style: normal !IMPORTANT;
+        font-family: "Poppins", sans-serif;
+        text-transform: uppercase;
+    }
+    .table .toggle-off.btn {
+        padding-left: 20px !important;
+    }
+    thead tr th{
+      background: #efefef !important;
+    }
 </style>
 
  <!-- DataTales Example -->
@@ -147,11 +171,18 @@
               @foreach($products as $product)
               @php
                   $stock_status = $product->stock_status == 1 ? "In Stock" : ($product->stock_status == 0 ? "Out of Stock" : "On Backorder");
+
+                  $productAttributes = $product->attributes->pluck('value','name');
+                  $ProdColor = $productAttributes->get('Color', '');
+                  $prodClarity = $productAttributes->get('Clarity', '');
+                  $prodCut = $productAttributes->get('Cut', '');
+                  $prodMeasurement = $productAttributes->get('Measurement', '');
               @endphp
+
               <tr>
                 <td>{{$product->sku}}</td>
                 <td>{{$product->vendor ? $product->vendor->name : '' }}</td>
-                  <td>{{$product->name}}  <sub>({{$product->Category->title}})</sub></td>
+                  <td>{{$product->name}}  <sub>( {{$ProdColor . ' ' . $prodClarity . ' ' . $prodCut . ' ' . $prodMeasurement}} )</sub> </td>
                   <td>${{$product->RAP}}</td>
                   <td>${{$product->price}}</td>
                   <td>{{$product->discount}}%</td>
@@ -241,6 +272,7 @@
       //           }
       //       ]
       //   } );
+      
         // Sweet alert
         function deleteData(id){
         }

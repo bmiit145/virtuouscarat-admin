@@ -1,6 +1,7 @@
 @extends('backend.layouts.master')
 
 @push('styles')
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 
@@ -35,10 +36,30 @@
     .fixed-text {
         white-space: nowrap;
     }
+    .table  tr th {
+        font-size: 12px;
+        font-weight: 600 !important;
+        color: rgb(63 66 82);
+        line-height: 20px !important;
+        font-style: normal !IMPORTANT;
+        font-family: "Poppins", sans-serif;
+        text-transform: uppercase;
+    }
+    .table tbody tr td {
+        font-size: 13px;
+        font-weight: 600 !important;
+        color: rgb(63 66 82);
+        line-height: 20px !important;
+        font-style: normal !IMPORTANT;
+        font-family: "Poppins", sans-serif;
+        text-transform: uppercase;
+    }
+    .table .toggle-off.btn {
+        padding-left: 20px !important;
+    }
 
 </style>
 
- <!-- DataTales Example -->
  <div class="card shadow mb-4">
      <div class="row">
          <div class="col-md-12">
@@ -57,7 +78,7 @@
     <div class="card-body">
       <div class="table-responsive">
 
-        <table class="table table-bordered table-hover" id="order-dataTable" width="100%" cellspacing="0">
+        <table class="table table-bordered table-hover table_order_admin" id="order-dataTable" width="100%" cellspacing="0">
             <thead>
                 <tr>
                     <th>
@@ -68,17 +89,12 @@
                     </th>
                     <th>
                         <span class="fixed-text">Customer Name</span><br>
-                        <span class="fixed-text">Email Address</span><br>
                     </th>
                     <th>
                         <span class="fixed-text">Product Name</span><br>
-                        Carat<br>
-                        <span class="fixed-text">Category (color, clarity, cut + Measurement)</span><br>
-                        <br>
                     </th>
                     <th>
                         <span class="fixed-text">Vendor Name</span><br>
-                        <span class="fixed-text">Vendor Mobile Number</span><br>
                     </th>
                     <th>
                         <span class="fixed-text">Product Price</span><br>
@@ -103,30 +119,32 @@
                     @php
                         $rowspan = count($order->products);
                     @endphp
+                    
                     @foreach($order->products as $index => $product)
+                        @if($product->product)
+                            @php
+                                $productAttributes = $product->product->attributes->pluck('value','name');
+                                $ProdColor = $productAttributes->get('Color', '');
+                                $prodClarity = $productAttributes->get('Clarity', '');
+                                $prodCut = $productAttributes->get('Cut', '');
+                                $prodMeasurement = $productAttributes->get('Measurement', '');
+                            @endphp
+                        @endif
+
                         <tr data-order_id="{{ $order->order_id }}">
                             <td>{{ \Carbon\Carbon::parse($order->order_date)->format('d-m-Y') }}</td>
                             <td>{{ $order->order_id }}</td>
                             <td>
                                 {{ $order->billing_first_name }} {{ $order->billing_last_name }}<br>
-                                {{ $order->billing_email }}
                             </td>
-
                             <td>
                                 @if($product->product)
                                     <span class="fixed-text">{{ $product->product->name }}</span>
-                                    <sub>({{ $product->product->sku }})</sub>
-                                    <span class="fixed-text">₹{{ $product->carat }} </span>
-                                    <span class="fixed-text">₹{{ $product->category }} </span>
-                                        <sub>({{ $product->color }})</sub>
-                                        <sub>({{ $product->clarity }})</sub>
-                                        <sub>({{ $product->cut }})</sub>
-                                        <sub>({{ $product->measurement }})</sub>
+                                    <sub>( {{$ProdColor . ' ' . $prodClarity . ' ' . $prodCut . ' ' . $prodMeasurement}} )</sub>
                                 @endif
                             </td>
                             <td>
                                 @if($product->product)
-                                    <span class="fixed-text">{{ $product->product->vendor->name }}</span>
                                     <span class="fixed-text">{{ $product->product->vendor->name }}</span>
                                 @endif
                             </td>
@@ -209,7 +227,6 @@
 
 @push('scripts')
 
-    <!-- Page level plugins -->
     <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
@@ -273,7 +290,6 @@
           })
       })
   </script>
-{{--  Order status--}}
 
     <script>
         $(document).ready(function(){
