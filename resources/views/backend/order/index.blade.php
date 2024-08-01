@@ -1,11 +1,9 @@
 @extends('backend.layouts.master')
 
 @push('styles')
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
-    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> 
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" 
+    rel="stylesheet">
+    {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> --}}
     <style>
         /* Apply a hover effect to all rows with the same data-order_id */
         .table tbody tr {
@@ -52,14 +50,14 @@
         line-height: 20px !important;
         font-style: normal !IMPORTANT;
         font-family: "Poppins", sans-serif;
-        text-transform: uppercase;
+        /* text-transform: uppercase; */
     }
     .table .toggle-off.btn {
         padding-left: 20px !important;
     }
-
 </style>
 
+ <!-- DataTales Example -->
  <div class="card shadow mb-4">
      <div class="row">
          <div class="col-md-12">
@@ -71,47 +69,27 @@
       <a href="#" class="btn btn-primary btn-sm mx-1 refresh_btn" >   <i class="fas fa-sync"></i></a>
 
     </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
     
     <div class="card-body">
       <div class="table-responsive">
 
-        <table class="table table-bordered table-hover table_order_admin" id="order-dataTable" width="100%" cellspacing="0">
+        <table class="table table-bordered table-hover" id="order-dataTable" width="100%" cellspacing="0">
             <thead>
                 <tr>
-                    <th>
-                        <span class="fixed-text">Order Date</span><br>
-                    </th>
-                    <th>
-                        <span class="fixed-text">Order No.</span><br>
-                    </th>
-                    <th>
-                        <span class="fixed-text">Customer Name</span><br>
-                    </th>
-                    <th>
-                        <span class="fixed-text">Product Name</span><br>
-                    </th>
-                    <th>
-                        <span class="fixed-text">Vendor Name</span><br>
-                    </th>
-                    <th>
-                        <span class="fixed-text">Product Price</span><br>
-                        
-                    </th>
-                    <th>
-                        <span class="fixed-text">Order Value</span><br>
-                    </th>
-                    <th>
-                        <span class="fixed-text">Vendor Status</span><br>
-                    </th>
-                    <th>
-                        <span class="fixed-text">Customer Status</span><br>
-                    </th>
-                    <th>
-                        <span class="fixed-text">Action</span><br>
-                    </th>
+                    <span></span>
+                    <th><span class="fixed-text">Order Date</span></th>
+                    <th><span class="fixed-text">Order No.</span></th>
+                    <th><span class="fixed-text">Customer Name</span></th>
+                    <th><span class="fixed-text">Product Name</span></th>
+                    <th><span class="fixed-text">Vendor Name</span></th>
+                    <th><span class="fixed-text">Product Price</span></th>
+                    <th><span class="fixed-text">Order Value</span></th>
+                    <th><span class="fixed-text">Vendor Status</span></th>
+                    <th><span class="fixed-text">Customer Status</span></th>
+                    <th><span class="fixed-text">Action</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -119,7 +97,6 @@
                     @php
                         $rowspan = count($order->products);
                     @endphp
-                    
                     @foreach($order->products as $index => $product)
                         @if($product->product)
                             @php
@@ -130,31 +107,32 @@
                                 $prodMeasurement = $productAttributes->get('Measurement', '');
                             @endphp
                         @endif
-
                         <tr data-order_id="{{ $order->order_id }}">
-                            <td>{{ \Carbon\Carbon::parse($order->order_date)->format('d-m-Y') }}</td>
-                            <td>{{ $order->order_id }}</td>
-                            <td>
-                                {{ $order->billing_first_name }} {{ $order->billing_last_name }}<br>
-                            </td>
+                            @if($index == 0)
+                                <td rowspan="{{ $rowspan }}">{{ \Carbon\Carbon::parse($order->order_date)->format('d-m-Y') }}</td>
+                                <td rowspan="{{ $rowspan }}">{{ $order->order_id }}</td>
+                                <td rowspan="{{ $rowspan }}">{{ $order->billing_first_name }} {{ $order->billing_last_name }}</td>
+                            @endif
                             <td>
                                 @if($product->product)
-                                    <span class="fixed-text">{{ $product->product->name }}</span>
+                                    <span>{{ $product->product->name }}</span>
                                     <sub>( {{$ProdColor . ' ' . $prodClarity . ' ' . $prodCut . ' ' . $prodMeasurement}} )</sub>
                                 @endif
                             </td>
                             <td>
                                 @if($product->product)
-                                    <span class="fixed-text">{{ $product->product->vendor->name }}</span>
+                                    <span>{{ $product->product->vendor->name }}</span>
                                 @endif
                             </td>
                             <td>
                                 @if($product->product)
-                                    <span class="fixed-text">₹{{ $product->price }} </span>
-                                        <sub>({{ $product->quantity }})</sub>
+                                    <span>₹{{ $product->price }} </span>
+                                    <sub> ({{ $product->quantity }})</sub>
                                 @endif
                             </td>
-                            <td>{{ $index == 0 ? '₹'.number_format($order->total, 2) : '' }}</td>
+                            @if($index == 0)
+                                <td rowspan="{{ $rowspan }}">₹{{ number_format($order->total, 2) }}</td>
+                            @endif
                             <td>
                                 @if($product->is_fulfilled == 1)
                                     <span class="btn btn-sm btn-success" style="cursor: unset">Approved By Vendor</span>
@@ -170,6 +148,7 @@
                                     <span class="btn btn-sm btn-warning" style="cursor: unset">Pending</span>
                                 @endif
                             </td>
+                            
                             <td>
                                 @if($index == 0)
                                     <div class="form-check form-switch">
@@ -196,12 +175,12 @@
                                             @csrf
                                             <input type="hidden" name="order_id" value="{{ $order->order_id }}">
                                             <input type="hidden" name="product_id" value="{{ $product->product_id }}">
-                                            <select name="order-action-select" class="form-control" style="margin-right: 10px; width: 200px;" onchange="enableSubmitButton(this)" onfocus="enableSubmitButton(this)">
+                                            <select name="order-action-select" class="form-control" style="margin-right: 10px;" onchange="enableSubmitButton(this)" onfocus="enableSubmitButton(this)">
                                                 <option value="#">-- Select status --</option>
                                                 <option value="3" {{ $product->is_fulfilled == 3 ? 'selected' : '' }}>Approved</option>
                                                 <option value="4" {{ $product->is_fulfilled == 4 ? 'selected' : '' }}>Rejected</option>
                                             </select>
-                                            <button id="submit-button-{{ $order->order_id }}" style="background: #132644; color: white; border-radius: 6px; width: 100px;" type="submit" disabled>Submit</button>
+                                            <button id="submit-button-{{ $order->order_id }}" style="background: #132644; color: white; border-radius: 6px;" type="submit" disabled>Submit</button>
                                         </form>
                                     @endif
                                 @endif
@@ -212,7 +191,6 @@
             </tbody>
         </table>
         
-        
 
       </div>
     </div>
@@ -222,18 +200,21 @@
 @push('styles')
   <link href="{{asset('backend/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" />
-
+  <style>
+      div.dataTables_wrapper div.dataTables_paginate{
+          display: none;
+      }
+  </style>
 @endpush
 
 @push('scripts')
 
-    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+  <!-- Page level plugins -->
+  <script src="{{asset('backend/vendor/datatables/jquery.dataTables.min.js')}}"></script>
+  <script src="{{asset('backend/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+  <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
-    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 
   <!-- Page level custom scripts -->
   <script src="{{asset('backend/js/demo/datatables-demo.js')}}"></script>
@@ -243,24 +224,25 @@
         location.reload();
     });
 </script>
- 
-<script>
-    $(document).ready(function() {
-        $('#order-dataTable').DataTable({
-            "order": [],
-            "columnDefs": [{
-                "orderable": false,
-                "targets": '_all'
-            }]
-        });
-    });
+  <script>
+  function enableSubmitButton(selectElement) {
+            const submitButton = $(selectElement).closest('form').find('button[type="submit"]');
+            submitButton.prop('disabled', false);
+        }
+$(document).ready(function() {
 
-    function enableSubmitButton(selectElement) {
-        var form = selectElement.closest('form');
-        var submitButton = form.querySelector('button[type="submit"]');
-        submitButton.disabled = false;
-    }
-</script>
+      $('#order-dataTable').DataTable({
+            "paging": true,
+            "ordering": false,
+            "info": true
+        });
+  });
+
+        // Sweet alert
+        function deleteData(id){
+
+        }
+  </script>
   <script>
       $(document).ready(function(){
         $.ajaxSetup({
@@ -290,7 +272,7 @@
           })
       })
   </script>
-
+{{--  Order status--}}
     <script>
         $(document).ready(function(){
             $('.order-action-btn-form').submit(function(e){
