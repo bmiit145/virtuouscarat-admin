@@ -18,7 +18,7 @@
     }
     .table tbody tr td {
         font-size: 13px;
-        font-weight: 600 !important;
+        /*font-weight: 600 !important;*/
         color: rgb(63 66 82);
         line-height: 20px !important;
         font-style: normal !IMPORTANT;
@@ -30,6 +30,13 @@
     }
     thead tr th{
       background: #efefef !important;
+    }
+
+
+    ul , li {
+        list-style: none;
+        padding: 0;
+        margin: 0;
     }
 </style>
 
@@ -47,7 +54,7 @@
     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 
 
-   
+
     <div class="card-header py-3">
       <h6 class="m-0 font-weight-bold text-primary float-left">Product Lists</h6>
         <div class="float-right d-flex">
@@ -134,7 +141,7 @@
                     <button type="submit" class="btn btn-info btn-sm w-100 text-center">Apply Filter</button>
                   </div>
                 </div>
-                
+
               </form>
 
               </div>
@@ -148,7 +155,7 @@
         <table class="table table-bordered table-hover" id="product-dataTable" width="100%" cellspacing="0">
           <thead>
               <tr>
-                <th>REF No.</th>
+                <th>Certificate No.</th>
                   <th>Vendor Name</th>
                   <th>Product  Name</th>
                   <th>RAP</th>
@@ -178,7 +185,12 @@
 
               <tr>
                 <td>{{$product->sku}}</td>
-                <td>{{$product->vendor ? $product->vendor->name : '' }}</td>
+                <td>
+                    <ul>
+                        <li>{{$product->vendor ? $product->vendor->name : '' }}</li>
+                        <li>{{$product->vendor ? $product->vendor->phone : '' }}</li>
+                    </ul>
+                </td>
                   <td>{{$product->name}}  <sub>( {{$ProdColor . ' ' . $prodClarity . ' ' . $prodCut . ' ' . $prodMeasurement}} )</sub> </td>
                   <td>${{$product->RAP}}</td>
                   <td>${{$product->price}}</td>
@@ -229,7 +241,7 @@
                   </div> --}}
 
                   <a href="{{ route('product.view', $product->id) }}"><i class="fas fa-eye fs-4"></i></a>
-                  
+
                 </td>
               </tr>
               @endforeach
@@ -280,7 +292,7 @@
       //           }
       //       ]
       //   } );
-      
+
         // Sweet alert
         function deleteData(id){
         }
