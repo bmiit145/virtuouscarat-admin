@@ -47,7 +47,7 @@
     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 
 
-   
+
     <div class="card-header py-3">
       <h6 class="m-0 font-weight-bold text-primary float-left">Product Lists</h6>
         <div class="float-right d-flex">
@@ -134,7 +134,7 @@
                     <button type="submit" class="btn btn-info btn-sm w-100 text-center">Apply Filter</button>
                   </div>
                 </div>
-                
+
               </form>
 
               </div>
@@ -179,7 +179,9 @@
               <tr>
                 <td>{{$product->sku}}</td>
                 <td>{{$product->vendor ? $product->vendor->name : '' }}</td>
-                  <td>{{$product->name}}  <sub>( {{$ProdColor . ' ' . $prodClarity . ' ' . $prodCut . ' ' . $prodMeasurement}} )</sub> </td>
+                  <td>
+                     <span> {{$product->name}} </span><br/>
+                      <span>( {{$ProdColor . ' ' . $prodClarity . ' ' . $prodCut . ' ' . $prodMeasurement}} )</span> </td>
                   <td>${{$product->RAP}}</td>
                   <td>${{$product->price}}</td>
                   <td>{{$product->discount}}%</td>
@@ -192,10 +194,10 @@
                   <form action="{{ route('Approvel', $product->id) }}" method="POST" style="display: flex; align-items: center; width: 200px;">
                       @csrf
                       <select name="is_approvel" class="form-control" style="margin-right: 10px;" onchange="enableSubmitButton(this)">
-                          <option value="#">Select Status</option>
-                          <option value="0" {{ $product->is_approvel == 0 ? 'selected' : '' }}>Pending</option>
-                          <option value="1" {{ $product->is_approvel == 1 ? 'selected' : '' }}>Approved</option>
-                          <option value="2" {{ $product->is_approvel == 2 ? 'selected' : '' }}>Rejected</option>
+                          <option value="#">-- Select Status --</option>
+                          <option value="0" {{ $product->is_approvel == 0 ? 'selected' : '' }}>-- Pending --</option>
+                          <option value="1" {{ $product->is_approvel == 1 ? 'selected' : '' }}>-- Approved --</option>
+                          <option value="2" {{ $product->is_approvel == 2 ? 'selected' : '' }}>-- Rejected --</option>
                       </select>
                       <button id="submit-button-{{ $product->id }}" style="background: #132644; color: white; border-radius: 6px;" type="submit" disabled>Submit</button>
                   </form>
@@ -229,7 +231,7 @@
                   </div> --}}
 
                   <a href="{{ route('product.view', $product->id) }}"><i class="fas fa-eye fs-4"></i></a>
-                  
+
                 </td>
               </tr>
               @endforeach
@@ -280,7 +282,7 @@
       //           }
       //       ]
       //   } );
-      
+
         // Sweet alert
         function deleteData(id){
         }

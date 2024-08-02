@@ -8,11 +8,9 @@
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<!-- Bootstrap JS -->
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 <!-- Bootstrap Toggle JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
-
 
  <!-- DataTales Example -->
  <div class="card shadow mb-4">
@@ -48,7 +46,7 @@
             </tr>
           </thead>
           <tbody>
-            @foreach($users as $user)   
+            @foreach($users as $user)
                 <tr>
                     <td>{{$user->id}}</td>
                     <td>{{$user->name}}</td>
@@ -72,26 +70,26 @@
                     <td>
                       <form action="{{ route('admin-status_active', $user->id) }}" method="POST">
                         @csrf
-                        <input type="checkbox" 
-                          data-toggle="toggle" 
-                          data-on="Active" 
-                          data-off="Inactive" 
-                          data-onstyle="success" 
-                          data-offstyle="danger" 
+                        <input type="checkbox"
+                          data-toggle="toggle"
+                          data-on="Active"
+                          data-off="Inactive"
+                          data-onstyle="success"
+                          data-offstyle="danger"
                           {{ $user->status == 'active' ? 'checked' : '' }}
                           onchange="this.form.submit()">
                       </form>
                     </td>
-                   
+
                     <td>
                         {{-- <a href="{{route('users.edit',$user->id)}}" class="btn btn-primary btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="edit" data-placement="bottom"><i class="fas fa-edit"></i></a> --}}
                       <form method="POST" action="{{route('users.destroy',[$user->id])}}">
-                      @csrf 
+                      @csrf
                       @method('delete')
                           <button class="btn btn-danger btn-sm dltBtn" data-id={{$user->id}} style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" data-placement="bottom" title="Delete"><i class="fas fa-trash-alt"></i></button>
                         </form>
                     </td>
-                </tr>  
+                </tr>
             @endforeach
           </tbody>
         </table>
@@ -127,19 +125,19 @@
   <!-- Page level custom scripts -->
   <script src="{{asset('backend/js/demo/datatables-demo.js')}}"></script>
   <script>
-      
+
 
 
         $('#user-dataTable').DataTable({
-            "paging": true,    
-            "ordering": false, 
-            "info": true       
+            "paging": true,
+            "ordering": false,
+            "info": true
         });
 
         // Sweet alert
 
         function deleteData(id){
-            
+
         }
   </script>
   <script>

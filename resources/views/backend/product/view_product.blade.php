@@ -13,7 +13,7 @@
 </style>
 
 <div class="product-details">
-    <h1>Product Details</h1>
+    <h3>Product Details</h3>
 
     <table class="table table-bordered">
         <tr>
