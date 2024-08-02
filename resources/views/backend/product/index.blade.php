@@ -189,16 +189,25 @@
                   </td>
 {{--                  <td>{{$product->quantity}}</td>--}}
                   <td>
-                    <form action="{{ route('Approvel', $product->id) }}" method="POST" style="display: flex; align-items: center;">
-                        @csrf
-                        <select name="is_approvel" class="form-control" style="margin-right: 10px;" onchange="enableSubmitButton(this)">
-                            <option value="#">Select Status</option>
-                            <option value="0" {{ $product->is_approvel == 0 ? 'selected' : '' }}>Pending</option>
-                            <option value="1" {{ $product->is_approvel == 1 ? 'selected' : '' }}>Approved</option>
-                            <option value="2" {{ $product->is_approvel == 2 ? 'selected' : '' }}>Rejected</option>
-                        </select>
-                        <button id="submit-button-{{ $product->id }}" style="background: #132644; color: white; border-radius: 6px;" type="submit" disabled>Submit</button>
-                    </form>
+                  <form action="{{ route('Approvel', $product->id) }}" method="POST" style="display: flex; align-items: center; width: 200px;">
+                      @csrf
+                      <select name="is_approvel" class="form-control" style="margin-right: 10px;" onchange="enableSubmitButton(this)">
+                          <option value="#">Select Status</option>
+                          <option value="0" {{ $product->is_approvel == 0 ? 'selected' : '' }}>Pending</option>
+                          <option value="1" {{ $product->is_approvel == 1 ? 'selected' : '' }}>Approved</option>
+                          <option value="2" {{ $product->is_approvel == 2 ? 'selected' : '' }}>Rejected</option>
+                      </select>
+                      <button id="submit-button-{{ $product->id }}" style="background: #132644; color: white; border-radius: 6px;" type="submit" disabled>Submit</button>
+                  </form>
+
+                  <script>
+                    function enableSubmitButton(selectElement) {
+                        const form = selectElement.closest('form');
+                        const submitButton = form.querySelector('button[type="submit"]');
+                        submitButton.disabled = selectElement.value === '#';
+                    }
+                  </script>
+
                 </td>
                 <td>
                   {{-- <div style="text-align: center">
@@ -218,7 +227,9 @@
                       </form>
                     </div>
                   </div> --}}
-                  <a href="#"><i class="fas fa-eye"></i></a>
+
+                  <a href="{{ route('product.view', $product->id) }}"><i class="fas fa-eye fs-4"></i></a>
+                  
                 </td>
               </tr>
               @endforeach

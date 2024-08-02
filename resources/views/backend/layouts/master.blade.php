@@ -29,7 +29,6 @@
 
       </div>
       <!-- End of Main Content -->
-      <!-- @include('backend.layouts.footer') -->
 
 </body>
 
