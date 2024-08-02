@@ -312,74 +312,65 @@ class ProductController extends Controller
                     ->with('categories',$category)->with('items',$items);
     }
 
-    //old code
+    public function viewProduct($id) {
+        $product = WpProduct::findOrFail($id);
+        $productAttributes = $product->attributes; // Assuming the attributes are related to the product
+    
+        return view('backend.product.view_product', [
+            'product' => $product,
+            'productAttributes' => $productAttributes
+        ]);
+    }      
 
-//    public function Approvel(Request $request, $id) {
-//        $aprovel = WpProduct::find($id);
-//        $aprovel->is_approvel = $request->is_approvel;
-//
-//        $response =  WooCommerceProductController::sendDataToWooCommerce($aprovel);
-//
-//        // check if there is an error
-//        if (is_array($response) && isset($response['error'])) {
-//            return back()->with('error', 'Failed to send product to WooCommerce: ' . $response['error']);
-//        }
-//        $aprovel->save();
-//
-//
-//        // send data to woo commerce for product creation
-//        return back()->with('success', 'Product sent to WooCommerce successfully.');
-//    }
+    public function Approvel(Request $request, $id) {
 
-     public function Approvel(Request $request, $id) {
+        // Set a custom timeout for the database connection
+        config(['database.connections.mysql.options' => [
+            \PDO::ATTR_TIMEOUT => 30, // 10 seconds timeout
+        ]]);
 
-         // Set a custom timeout for the database connection
-         config(['database.connections.mysql.options' => [
-             \PDO::ATTR_TIMEOUT => 30, // 10 seconds timeout
-         ]]);
+        // Start a database transaction
+        DB::beginTransaction();
 
-         // Start a database transaction
-         DB::beginTransaction();
+        try {
+            // Find the product and lock it for update
+            $aprovel = WpProduct::where('id', $id)->lockForUpdate()->first();
 
-         try {
-             // Find the product and lock it for update
-             $aprovel = WpProduct::where('id', $id)->lockForUpdate()->first();
+            // Check if the product is already approved
+            if ($aprovel->is_approvel) {
+                // Rollback the transaction if already approved
+                DB::rollBack();
+                return back()->with('error', 'Product is already approved.');
+            }
 
-             // Check if the product is already approved
-             if ($aprovel->is_approvel) {
-                 // Rollback the transaction if already approved
-                 DB::rollBack();
-                 return back()->with('error', 'Product is already approved.');
-             }
+            // Update the approval status
+            $aprovel->is_approvel = $request->is_approvel;
 
-             // Update the approval status
-             $aprovel->is_approvel = $request->is_approvel;
+            // Send data to WooCommerce
+            $response = WooCommerceProductController::sendDataToWooCommerce($aprovel);
 
-             // Send data to WooCommerce
-             $response = WooCommerceProductController::sendDataToWooCommerce($aprovel);
+            // Check if there is an error
+            if (is_array($response) && isset($response['error'])) {
+                // Rollback the transaction on error
+                DB::rollBack();
+                return back()->with('error', 'Failed to send product to WooCommerce: ' . $response['error']);
+            }
 
-             // Check if there is an error
-             if (is_array($response) && isset($response['error'])) {
-                 // Rollback the transaction on error
-                 DB::rollBack();
-                 return back()->with('error', 'Failed to send product to WooCommerce: ' . $response['error']);
-             }
+            // Save the product
+            $aprovel->save();
 
-             // Save the product
-             $aprovel->save();
+            // Commit the transaction
+            DB::commit();
 
-             // Commit the transaction
-             DB::commit();
-
-             // Return success response
-             return back()->with('success', 'Product sent to WooCommerce successfully.');
-         } catch (\Exception $e) {
-             // Rollback the transaction on exception
-             DB::rollBack();
-             \Log::error('Approval Error: ' . $e->getMessage());
-             return back()->with('error', 'An error occurred during approval: ' . $e->getMessage());
-         }
-     }
+            // Return success response
+            return back()->with('success', 'Product sent to WooCommerce successfully.');
+        } catch (\Exception $e) {
+            // Rollback the transaction on exception
+            DB::rollBack();
+            \Log::error('Approval Error: ' . $e->getMessage());
+            return back()->with('error', 'An error occurred during approval: ' . $e->getMessage());
+        }
+    }
 
     //approveAll using job
     public function approveAll(Request $request){
