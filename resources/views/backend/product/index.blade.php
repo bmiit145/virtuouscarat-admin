@@ -193,7 +193,7 @@
                 </td>
                   <td>
                      <span> {{$product->name}} </span><br/>
-                      <span>( {{$ProdColor . ' ' . $prodClarity . ' ' . $prodCut . ' ' . $prodMeasurement}} )</span> </td>
+                      <span>( Color : {{$ProdColor . ', Clarity : ' . $prodClarity . ', Cut : ' . $prodCut . ', Measurement : ' . $prodMeasurement}} )</span> </td>
                   <td>${{$product->RAP}}</td>
                   <td>${{$product->price}}</td>
                   <td>{{$product->discount}}%</td>

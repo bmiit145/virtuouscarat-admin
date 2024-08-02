@@ -117,12 +117,13 @@
                             @if($index == 0)
                                 <td rowspan="{{ $rowspan }}">{{ \Carbon\Carbon::parse($order->order_date)->format('d-m-Y') }}</td>
                                 <td rowspan="{{ $rowspan }}">{{ $order->order_id }}</td>
-                                <td rowspan="{{ $rowspan }}">{{ $order->billing_first_name }} {{ $order->billing_last_name }}</td>
+                                <td rowspan="{{ $rowspan }}">{{ $order->billing_first_name }} {{ $order->billing_last_name }} <br> {{ $order->billing_email }}</td>
                             @endif
                             <td>
                                 @if($product->product)
+                                    <span>{{ $product->product->sku ?? '' }} <br>
                                     <span>{{ $product->product->name }}</span>
-                                    <sub>( {{$ProdColor . ' ' . $prodClarity . ' ' . $prodCut . ' ' . $prodMeasurement}} )</sub>
+                                    <span>( Color : {{$ProdColor . ', Clarity : ' . $prodClarity . ', Cut : ' . $prodCut . ', Measurement : ' . $prodMeasurement}} )</span> </td>
                                 @endif
                             </td>
                             <td>
