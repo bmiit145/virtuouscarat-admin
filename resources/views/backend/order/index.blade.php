@@ -1,7 +1,7 @@
 @extends('backend.layouts.master')
 
 @push('styles')
-    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" 
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css"
     rel="stylesheet">
     {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> --}}
     <style>
@@ -14,8 +14,15 @@
             background-color: #f1f1f1; /* Light grey background on hover */
         }
 
-        .table tbody tr.highlight-hover {
-            background-color: #f1f1f1; /* Light grey background on hover */
+        /*.table tbody tr.highlight-hover {*/
+        /*    background-color: #f1f1f1 !important;*/
+        /*}*/
+
+        :root {
+            --bs-emphasis-color-rgb : #f1f1f1;
+        }
+        .table tbody tr.highlight-hover > td{
+            background-color: #f1f1f1 !important;
         }
     </style>
 @endpush
@@ -72,7 +79,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-    
+
     <div class="card-body">
       <div class="table-responsive">
 
@@ -148,17 +155,17 @@
                                     <span class="btn btn-sm btn-warning" style="cursor: unset">Pending</span>
                                 @endif
                             </td>
-                            
+
                             <td>
                                 @if($index == 0)
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input SwitchCustomerShow toggle_style" 
-                                            type="checkbox" 
-                                            role="switch" 
-                                            id="SwitchCustomerShow" 
-                                            data-toggle="toggle" 
-                                            data-on="On" 
-                                            data-off="Off" 
+                                        <input class="form-check-input SwitchCustomerShow toggle_style"
+                                            type="checkbox"
+                                            role="switch"
+                                            id="SwitchCustomerShow"
+                                            data-toggle="toggle"
+                                            data-on="On"
+                                            data-off="Off"
                                             @if($order->customer_status_show) checked @endif>
                                     </div>
                                 @endif
@@ -190,7 +197,7 @@
                 @endforeach
             </tbody>
         </table>
-        
+
 
       </div>
     </div>
@@ -346,17 +353,17 @@ $(document).ready(function() {
             });
         });
     </script>
-    <script>
-        $(document).ready(function() {
-            $('tr').hover(function() {
-                var orderId = $(this).data('order_id');
+  <script>
+      $(document).ready(function() {
+          $('tr').hover(function() {
+              var orderId = $(this).data('order_id');
                 $('tr[data-order_id="' + orderId + '"]').addClass('highlight-hover');
-            }, function() {
+          }, function() {
                 var orderId = $(this).data('order_id');
                 $('tr[data-order_id="' + orderId + '"]').removeClass('highlight-hover');
-            });
-        });
-    </script>
+          });
+      });
+  </script>
 
     <script>
         $(function() {
