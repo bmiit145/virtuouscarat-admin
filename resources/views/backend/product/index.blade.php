@@ -18,7 +18,7 @@
     }
     .table tbody tr td {
         font-size: 13px;
-        font-weight: 600 !important;
+        /*font-weight: 600 !important;*/
         color: rgb(63 66 82);
         line-height: 20px !important;
         font-style: normal !IMPORTANT;
@@ -30,6 +30,13 @@
     }
     thead tr th{
       background: #efefef !important;
+    }
+
+
+    ul , li {
+        list-style: none;
+        padding: 0;
+        margin: 0;
     }
 </style>
 
@@ -148,7 +155,7 @@
         <table class="table table-bordered table-hover" id="product-dataTable" width="100%" cellspacing="0">
           <thead>
               <tr>
-                <th>REF No.</th>
+                <th>Certificate No.</th>
                   <th>Vendor Name</th>
                   <th>Product  Name</th>
                   <th>RAP</th>
@@ -178,7 +185,12 @@
 
               <tr>
                 <td>{{$product->sku}}</td>
-                <td>{{$product->vendor ? $product->vendor->name : '' }}</td>
+                <td>
+                    <ul>
+                        <li>{{$product->vendor ? $product->vendor->name : '' }}</li>
+                        <li>{{$product->vendor ? $product->vendor->phone : '' }}</li>
+                    </ul>
+                </td>
                   <td>
                      <span> {{$product->name}} </span><br/>
                       <span>( {{$ProdColor . ' ' . $prodClarity . ' ' . $prodCut . ' ' . $prodMeasurement}} )</span> </td>

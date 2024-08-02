@@ -13,8 +13,15 @@
             background-color: #f1f1f1; /* Light grey background on hover */
         }
 
-        .table tbody tr.highlight-hover {
-            background-color: #f1f1f1; /* Light grey background on hover */
+        /*.table tbody tr.highlight-hover {*/
+        /*    background-color: #f1f1f1 !important;*/
+        /*}*/
+
+        :root {
+            --bs-emphasis-color-rgb : #f1f1f1;
+        }
+        .table tbody tr.highlight-hover > td{
+            background-color: #f1f1f1 !important;
         }
     </style>
 @endpush
@@ -147,7 +154,6 @@
                                     <span class="btn btn-sm btn-warning" style="cursor: unset">Pending</span>
                                 @endif
                             </td>
-
                                 @if($index == 0)
                             <td rowspan="{{ $rowspan }}">
                                     <div class="form-check form-switch">
@@ -358,12 +364,12 @@ $(document).ready(function() {
             $('tr').hover(function() {
                 var orderId = $(this).data('order_id');
                 $('tr[data-order_id="' + orderId + '"]').addClass('highlight-hover');
-            }, function() {
+          }, function() {
                 var orderId = $(this).data('order_id');
                 $('tr[data-order_id="' + orderId + '"]').removeClass('highlight-hover');
-            });
-        });
-    </script>
+          });
+      });
+  </script>
 
     <script>
         $(function() {
