@@ -189,6 +189,7 @@
                     <ul>
                         <li>{{$product->vendor ? $product->vendor->name : '' }}</li>
                         <li>{{$product->vendor ? $product->vendor->phone : '' }}</li>
+                        <li>{{$product->vendor ? $product->vendor->email : '' }}</li>
                     </ul>
                 </td>
                   <td>
