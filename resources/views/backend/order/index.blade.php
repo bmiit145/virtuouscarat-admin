@@ -4,18 +4,13 @@
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> --}}
     <style>
-        /* Apply a hover effect to all rows with the same data-order_id */
         .table tbody tr {
-            transition: background-color 0.3s ease; /* Smooth transition effect */
+            transition: background-color 0.3s ease; 
         }
 
         .table tbody tr:hover {
-            background-color: #f1f1f1; /* Light grey background on hover */
+            background-color: #f1f1f1; 
         }
-
-        /*.table tbody tr.highlight-hover {*/
-        /*    background-color: #f1f1f1 !important;*/
-        /*}*/
 
         :root {
             --bs-emphasis-color-rgb : #f1f1f1;
@@ -56,26 +51,11 @@
         line-height: 20px !important;
         font-style: normal !IMPORTANT;
         font-family: "Poppins", sans-serif;
-        /* text-transform: uppercase; */
     }
     .table .toggle-off.btn {
         padding-left: 20px !important;
     }
 
-    .alert-primary{
-        background-color: #073984;
-        color: #fff;
-        border: none;
-    }
-
-    .alert-primary .alert-is_link{
-        color: #b1d0ff;
-    }
-
-    .badge.bg-primary-light {
-        background-color: #dfecff;
-        color: #6c757d;
-    }
 </style>
 
  <!-- DataTales Example -->
@@ -227,20 +207,17 @@
                             @endif
                             <td>
                                 @if($product->is_fulfilled == 1)
-                                    <span class="btn btn-sm btn-success" style="cursor: unset">Approved By Vendor</span>
+                                    <span class="badge bg-success-light rounded-pill" style="cursor: unset">Approved By Vendor</span>
                                 @elseif($product->is_fulfilled == 2)
-                                    <span class="btn btn-sm btn-danger" style="cursor: unset">Rejected By Vendor</span>
+                                    <span class="badge bg-danger-light rounded-pill" style="cursor: unset">Rejected By Vendor</span>
                                 @elseif($product->is_fulfilled == 3)
-                                    <span class="btn btn-sm btn-info" style="cursor: unset">Pending By Vendor</span>
+                                    <span class="badge bg-primary-light rounded-pill" style="cursor: unset">Pending By Vendor</span>
                                 @elseif($product->is_fulfilled == 4)
-                                    <span class="btn btn-sm btn-danger" style="cursor: unset">Rejected</span>
+                                    <span class="badge bg-danger-light rounded-pill" style="cursor: unset">Rejected</span>
                                 @elseif($product->is_fulfilled == 5)
-                                    <span class="btn btn-sm btn-dark" style="cursor: unset">Cancelled</span>
+                                    <span class="badge bg-dark rounded-pill" style="cursor: unset">Cancelled</span>
                                 @else
-                                    <!-- <span class="btn btn-sm btn-warning" style="cursor: unset">Pending</span> -->
-                                     <div class="col-sm-6">
-                                        <span class="badge bg-primary-light">Primary</span>
-                                     </div>
+                                    <span class="badge bg-warning-light rounded-pill" style="cursor: unset">Pending</span>
                                 @endif
                             </td>
                                 @if($index == 0)
