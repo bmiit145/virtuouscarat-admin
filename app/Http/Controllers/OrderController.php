@@ -57,6 +57,20 @@ class OrderController extends Controller
                  }
              }
 
+            // Apply min_weight filter
+            if ($request->has('min_weight') && $request->min_weight) {
+                $query->whereHas('products.product', function ($q) use ($request) {
+                        $q->where('CTS', '>=', $request->min_weight);
+                });
+            }
+
+            // Apply max_weight filter
+            if ($request->has('max_weight') && $request->max_weight) {
+                $query->whereHas('products.product', function ($q) use ($request) {
+                        $q->where('CTS', '<=', $request->max_weight);
+                });
+            }
+
              $orders = $query->orderBy('order_date', 'DESC')
                  ->orderBy('order_id', 'DESC')
                  ->paginate(10);
