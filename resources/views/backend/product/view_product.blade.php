@@ -13,8 +13,11 @@
     </style>
 
     <div class="product-details">
+        <div class="d-flex justify-content-between align-content-center">
         <h3>Product Details</h3>
-
+{{--        <button class="btn btn-primary" onclick="window.history.back()" style="margin-bottom: .5rem">Back</button>--}}
+        <button class="btn btn-primary" onclick="window.close();" style="margin-bottom: .5rem">Back</button>
+        </div>
         <table class="table table-bordered">
             <tr>
                 <th>SKU</th>

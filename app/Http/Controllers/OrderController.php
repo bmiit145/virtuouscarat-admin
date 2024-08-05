@@ -31,13 +31,15 @@ class OrderController extends Controller
     {
         $query =WpOrder::where('status' , '!=' , 'checkout-draft');
 
+            // date
             if ($request->has('start_date') && $request->start_date) {
                 $query->whereDate('order_date', '>=', $request->start_date);
             }
-
             if ($request->has('end_date') && $request->end_date) {
                 $query->whereDate('order_date', '<=', $request->end_date);
             }
+
+            // status
              if ($request->has('status') && $request->status) {
                  $statusMap = [
                      'pending' => 0,
@@ -455,13 +457,13 @@ class OrderController extends Controller
     {
         do {
             // Generate a password with symbols and numbers for better security
-            $password = Str::random(10); 
+            $password = Str::random(10);
             $exists = DB::table('users')->whereRaw('BINARY password = ?', [bcrypt($password)])->exists();
         } while ($exists);
 
         return $password;
     }
-    
+
     public function sendMailToCustomer($order_id, $cust_mail)
     {
         $user = DB::table('users')->where('email', $cust_mail)->first();
@@ -479,7 +481,7 @@ class OrderController extends Controller
 
         $orders = WpOrder::where('order_id' , $order_id)->get();
 
-        // FOR TESTING PURPOSE ONLY    
+        // FOR TESTING PURPOSE ONLY
         // return view('emails.order-detail')->with('orders',$orders);
 
         Mail::to($cust_mail)->send(new OrderDetailMail($orders));
@@ -493,8 +495,8 @@ class OrderController extends Controller
 
 
 
-    
-    
 
-    
+
+
+
 }
