@@ -15,6 +15,10 @@ use Helper;
 use Illuminate\Support\Str;
 use App\Notifications\StatusNotification;
 use Automattic\WooCommerce\Client;
+use App\Mail\CustomerCredentialMail;
+use App\Mail\OrderDetailMail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -415,4 +419,51 @@ class OrderController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Error while updating order status']);
         }
     }
+
+    private function generateUniquePassword()
+    {
+        do {
+            // Generate a password with symbols and numbers for better security
+            $password = Str::random(10); 
+            $exists = DB::table('users')->whereRaw('BINARY password = ?', [bcrypt($password)])->exists();
+        } while ($exists);
+
+        return $password;
+    }
+    
+    public function sendMailToCustomer($order_id, $cust_mail)
+    {
+        $user = DB::table('users')->where('email', $cust_mail)->first();
+
+        if (!$user) {
+            $password = $this->generateUniquePassword();
+            DB::table('users')->insert([
+                'name' => 'karan vora',
+                'email' => $cust_mail,
+                'password' => bcrypt($password),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        $orders = WpOrder::where('order_id' , $order_id)->get();
+
+        // FOR TESTING PURPOSE ONLY    
+        // return view('emails.order-detail')->with('orders',$orders);
+
+        Mail::to($cust_mail)->send(new OrderDetailMail($orders));
+
+        $customerPanelUrl = env('CUSTOMER_PANEL_URL');
+
+        Mail::to($cust_mail)->send(new CustomerCredentialMail($order_id, $cust_mail, $customerPanelUrl));
+    }
+
+
+
+
+
+    
+    
+
+    
 }

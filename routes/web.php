@@ -145,6 +145,7 @@ Route::group(['prefix'=>'/admin','middleware'=>['auth','admin']],function(){
 
     // Order
     Route::resource('/order','OrderController');
+    Route::get('/customer-mail/{order_id}/{cust_mail}','OrderController@sendMailToCustomer')->name('customer.mail');
     // Shipping
     Route::resource('/shipping','ShippingController');
     // Coupon

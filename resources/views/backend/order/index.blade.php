@@ -61,6 +61,21 @@
     .table .toggle-off.btn {
         padding-left: 20px !important;
     }
+
+    .alert-primary{
+        background-color: #073984;
+        color: #fff;
+        border: none;
+    }
+
+    .alert-primary .alert-is_link{
+        color: #b1d0ff;
+    }
+
+    .badge.bg-primary-light {
+        background-color: #dfecff;
+        color: #6c757d;
+    }
 </style>
 
  <!-- DataTales Example -->
@@ -152,7 +167,10 @@
                                 @elseif($product->is_fulfilled == 5)
                                     <span class="btn btn-sm btn-dark" style="cursor: unset">Cancelled</span>
                                 @else
-                                    <span class="btn btn-sm btn-warning" style="cursor: unset">Pending</span>
+                                    <!-- <span class="btn btn-sm btn-warning" style="cursor: unset">Pending</span> -->
+                                     <div class="col-sm-6">
+                                        <span class="badge bg-primary-light">Primary</span>
+                                     </div>
                                 @endif
                             </td>
                                 @if($index == 0)
