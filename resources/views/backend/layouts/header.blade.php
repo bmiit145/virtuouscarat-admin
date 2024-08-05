@@ -34,6 +34,81 @@ a.active_tab {
 .text-gray-600 {
     color: #ffffff !important;
 }
+
+
+/* button design */
+.alert-primary{ background-color: #073984; color: #fff; border: none;}
+.alert-secondary{ background-color: #383d41; color: #fff; border: none;}
+.alert-success{ background-color: #155724; color: #fff; border: none;}
+.alert-danger{background-color: #721c24; color: #fff; border: none;}
+.alert-warning{background-color: #856404; color: #fff; border: none;}
+.alert-info{background-color: #0c5460; color: #fff; border: none;}
+.alert-light{background-color: #818182; color: #fff; border: none; }
+.alert-dark{background-color: #1b1e21; color: #fff; border: none;}
+
+.badge.bg-primary-light {
+    background-color: #dfecff; 
+    color: #0d6efd; 
+    font-size: 0.75rem; 
+    padding: 0.6em 1.2em; 
+    border-radius: 1.5em; 
+}
+
+.badge.bg-secondary-light {
+    background-color: #cfd6dc; 
+    color: #444c53; 
+    font-size: 0.75rem; 
+    padding: 0.6em 1.2em; 
+    border-radius: 1.5em; 
+}
+
+.badge.bg-success-light {
+    background-color: #add8b7; 
+    color: #175f27; 
+    font-size: 0.75rem; 
+    padding: 0.6em 1.2em; 
+    border-radius: 1.5em; 
+}
+
+.badge.bg-danger-light {
+    background-color: #fbc3c8; 
+    color: #9b2531; 
+    font-size: 0.75rem; 
+    padding: 0.6em 1.2em; 
+    border-radius: 1.5em; 
+}
+
+.badge.bg-warning-light {
+    background-color: #ffedb9; 
+    color: #745e1c; 
+    font-size: 0.75rem; 
+    padding: 0.6em 1.2em; 
+    border-radius: 1.5em; 
+}
+
+.badge.bg-info-light {
+    background-color: #b1eff9; 
+    color: #106f7e; 
+    font-size: 0.75rem; 
+    padding: 0.6em 1.2em; 
+    border-radius: 1.5em; 
+}
+
+.badge.bg-light {
+    background-color: #b1eff9; 
+    color: #106f7e; 
+    font-size: 0.75rem; 
+    padding: 0.6em 1.2em; 
+    border-radius: 1.5em; 
+}
+
+.badge.bg-dark {
+    background-color: #b1eff9; 
+    color: #fff; 
+    font-size: 0.75rem; 
+    padding: 0.6em 1.2em; 
+    border-radius: 1.5em; 
+}
 </style>
 
 <nav class="navbar navbar-expand navbar-light bg-navbar topbar mb-4 static-top shadow">
