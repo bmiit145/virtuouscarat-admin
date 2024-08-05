@@ -77,9 +77,9 @@
                 <span class="py-1"> <i class="fas fa-trash"></i> Approve All</span>
             </button>
 
-            <button type="submit" id="approve-all" class="btn btn-primary bg-info border-0 btn-sm mx-1" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" title="Filter All Products">
-                <span class="py-1"> <i class="fas fa-filter"></i> Filter All</span>
-            </button>
+{{--            <button type="submit" id="approve-all" class="btn btn-primary bg-info border-0 btn-sm mx-1" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" title="Filter All Products">--}}
+{{--                <span class="py-1"> <i class="fas fa-filter"></i> Filter All</span>--}}
+{{--            </button>--}}
 
             <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
               <div class="offcanvas-header">
