@@ -65,6 +65,21 @@ class ApproveProductJob implements ShouldQueue
                 return;
             }
 
+
+            // check if the product is already in wooCommerce
+            $sku = $product->sku;
+            $wooProduct = WooCommerceProductController::getProductBySku($sku);
+            if ($wooProduct && isset($wooProduct[0])) {
+                $product->wp_product_id = $wooProduct[0]->id;
+                $product->is_approvel = 1;
+                $product->is_processing = 0;
+                $product->save();
+                DB::commit();
+                \Log::info('Product already in wooCommerce : ' . $this->productId);
+                return ;
+            }
+
+
             // Update the approval status
             $product->is_approvel = 1;
             $product->is_processing = 0;

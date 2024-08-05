@@ -211,7 +211,9 @@
                           <option value="1" {{ $product->is_approvel == 1 ? 'selected' : '' }}>-- Approved --</option>
                           <option value="2" {{ $product->is_approvel == 2 ? 'selected' : '' }}>-- Rejected --</option>
                       </select>
-                      <button id="submit-button-{{ $product->id }}" style="background: #132644; color: white; border-radius: 6px;" type="submit" disabled>Submit</button>
+                      @if($product->is_approvel == 0)
+                        <button id="submit-button-{{ $product->id }}" style="background: #132644; color: white; border-radius: 6px;" type="submit" disabled>Submit</button>
+                      @endif
                   </form>
 
                   <script>
