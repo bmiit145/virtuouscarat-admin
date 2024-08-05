@@ -5,11 +5,11 @@
     {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> --}}
     <style>
         .table tbody tr {
-            transition: background-color 0.3s ease; 
+            transition: background-color 0.3s ease;
         }
 
         .table tbody tr:hover {
-            background-color: #f1f1f1; 
+            background-color: #f1f1f1;
         }
 
         :root {
@@ -111,6 +111,19 @@
 
                         <!-- Attributes Filter -->
 
+                        <!-- Category -->
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Category</label>
+                            <select id="status" class="form-select" name="category">
+                                <option value="">-- Select Status --</option>
+                                @foreach($FilterCategories as $category)
+                                    <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
+                                        {{ $category->title }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
                         <!-- Caret Weight -->
                         <div class="d-flex mb-3">
                             <div class="mx-1">
@@ -122,7 +135,6 @@
                                 <input type="number" class="form-control" name="max_weight" id="max_weight" min="0" step="any" value="{{ request('max_weight') }}">
                             </div>
                         </div>
-
 
                         <!-- Action Buttons -->
                         <div class="row">
@@ -457,7 +469,13 @@ $(document).ready(function() {
     </script>
   <script>
       function resetForm() {
-          document.getElementById('filterForm').reset();
+          // document.getElementById('filterForm').reset();
+
+          var form = document.getElementById('filterForm');
+            var elements = form.elements;
+            for (var i = 0, len = elements.length; i < len; ++i) {
+                elements[i].value = '';
+            }
       }
   </script>
 @endpush
