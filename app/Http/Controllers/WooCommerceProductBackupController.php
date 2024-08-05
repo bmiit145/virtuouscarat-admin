@@ -8,7 +8,7 @@ use Automattic\WooCommerce\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
-class WooCommerceProductController extends Controller
+class WooCommerceProductBackupController extends Controller
 {
 //    protected  $woocommerce;
     protected static $woocommerce;
