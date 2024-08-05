@@ -12,6 +12,7 @@ use App\Models\Category;
 use App\Models\Brand;
 use App\Models\WpProduct;
 use Auth;
+use Illuminate\Support\Facades\Session;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\DB;
 
@@ -589,8 +590,16 @@ class ProductController extends Controller
         $mappedAttributes = $this->mapAttributes($headers, $this->attributeMapping);
         $count = 0;
 
+        $duplicateSkus = [];
         foreach ($rows as $row) {
             $data = array_combine($headers, $row);
+            // find duplicate sku
+            $sku = $data[$mappedHeaders['sku'] ?? ''] ?? $headerMapping['sku']['default'] ?? null;
+            if($sku != null && WpProduct::where('sku', $sku)->exists()){
+                $duplicateSkus[] = $sku;
+                continue;
+            }
+
             $productData = [
                 'name' => $data[$mappedHeaders['name'] ?? ''] ?? $headerMapping['name']['default'] ?? null,
                 'vendor_id' => Auth::id(),
@@ -655,6 +664,9 @@ class ProductController extends Controller
             }
         }
 
+        if (!empty($duplicateSkus)) {
+            Session::flash('duplicateSkus', $duplicateSkus);
+        }
         return redirect()->route('product.index')->with('success! ', $count . ' Products imported successfully.');
 
     }

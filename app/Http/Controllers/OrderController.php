@@ -406,6 +406,13 @@ class OrderController extends Controller
     public  function  updateCustomerShowStatus(Request $request)
     {
         $order = WpOrder::where('order_id', $request->order_id)->first();
+        if (!$order) {
+            return response()->json(['status' => 'error', 'message' => 'Order not found']);
+        }
+        // status must be > 2
+        if( $order->fullfilled_status < 3){
+            return response()->json(['status' => 'error', 'message' => 'Order not fulfilled yet']);
+        }
         $order->customer_status_show = $request->status;
         $status = $order->save();
 

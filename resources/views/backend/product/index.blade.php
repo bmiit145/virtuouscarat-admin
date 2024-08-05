@@ -350,7 +350,7 @@
             location.reload();
         });
     </script>
-    <script>
+         <script>
         document.querySelector('#approve-all').addEventListener('click', function(event) {
             event.preventDefault();
             $.ajax({
@@ -364,6 +364,23 @@
                 }
             });
         });
+    </script>
+
+    <script>
+    // duplicate SKUs model which will be shown when duplicate SKUs are found in the uploaded file as got by duplicateSkus session of laravel
+    @if(session('duplicateSkus'))
+        var duplicateSkus = @json(session('duplicateSkus'));
+        var duplicateSkusModel = '';
+        duplicateSkus.forEach(function(sku) {
+            duplicateSkusModel += sku + '<br>';
+        });
+        swal({
+            title: "Duplicate SKUs Found",
+            text: duplicateSkusModel,
+            icon: "warning",
+            dangerMode: true,
+        });
+    @endif
     </script>
 @endpush
 

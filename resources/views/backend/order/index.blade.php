@@ -165,6 +165,7 @@
                                             data-toggle="toggle"
                                             data-on="On"
                                             data-off="Off"
+                                               @if($order->fullfilled_status < 3) disabled @endif
                                             @if($order->customer_status_show) checked @endif >
                                     </div>
                             </td>
@@ -214,7 +215,9 @@
 
 @push('styles')
   <link href="{{asset('backend/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" />
+
   <style>
       div.dataTables_wrapper div.dataTables_paginate{
           display: none;
@@ -287,6 +290,7 @@ $(document).ready(function() {
           })
       })
   </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 {{--  Order status--}}
     <script>
         $(document).ready(function(){
@@ -340,6 +344,7 @@ $(document).ready(function() {
 
             // change customer_status_show
             $('.SwitchCustomerShow').change(function(){
+                $this = $(this);
                 var order_id = $(this).closest('tr').data('order_id');
                 var status = $(this).prop('checked') ? 1 : 0;
                 var url = "{{ route('order.update.customerShow.status') }}";
@@ -351,15 +356,23 @@ $(document).ready(function() {
                         status: status
                     },
                     success: function(data){
-                        if(data.status){
-                            // location.reload();
+                        if (data.status == 'error') {
+                            // Revert the switch state if there's an error
+                            toastr.error(data.message);
+                            location.reload();
+                        } else {
+                            toastr.success('Status updated successfully');
                         }
+                    },
+                    error: function() {
+                        // Revert the switch state in case of a request failure
+                        toastr.error('An error occurred while updating the status');
+                        location.reload();
                     }
                 });
             });
         });
     </script>
-
     <script>
         $(document).ready(function() {
             $('tr').hover(function() {
