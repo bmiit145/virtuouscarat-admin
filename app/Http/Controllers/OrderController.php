@@ -27,13 +27,37 @@ class OrderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $orders=WpOrder::
-        where('status' , '!=' , 'checkout-draft')
-        ->orderBy('order_date','DESC')
-            ->orderBy('order_id','DESC')
-            ->paginate(10);
+        $query =WpOrder::where('status' , '!=' , 'checkout-draft');
+
+            if ($request->has('start_date') && $request->start_date) {
+                $query->whereDate('order_date', '>=', $request->start_date);
+            }
+
+            if ($request->has('end_date') && $request->end_date) {
+                $query->whereDate('order_date', '<=', $request->end_date);
+            }
+             if ($request->has('status') && $request->status) {
+                 $statusMap = [
+                     'pending' => 0,
+                     'approved_by_vendor' => 1,
+                     'pending_by_vendor' => 2,
+                     'rejected' => 4,
+                     'rejected_by_vendor' => 5,
+                     'cancelled' => 7,
+                 ];
+
+                 $reqStatus = $statusMap[$request->status] ?? null;
+
+                 if ($reqStatus !== null) {
+                     $query->where('fullfilled_status', $reqStatus);
+                 }
+             }
+
+             $orders = $query->orderBy('order_date', 'DESC')
+                 ->orderBy('order_id', 'DESC')
+                 ->paginate(10);
         return view('backend.order.index')->with('orders',$orders);
     }
 
@@ -410,6 +434,13 @@ class OrderController extends Controller
     public  function  updateCustomerShowStatus(Request $request)
     {
         $order = WpOrder::where('order_id', $request->order_id)->first();
+        if (!$order) {
+            return response()->json(['status' => 'error', 'message' => 'Order not found']);
+        }
+        // status must be > 2
+        if( $order->fullfilled_status < 3){
+            return response()->json(['status' => 'error', 'message' => 'Order not fulfilled yet']);
+        }
         $order->customer_status_show = $request->status;
         $status = $order->save();
 

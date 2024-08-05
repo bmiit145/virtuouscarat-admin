@@ -12,6 +12,7 @@ use App\Models\Category;
 use App\Models\Brand;
 use App\Models\WpProduct;
 use Auth;
+use Illuminate\Support\Facades\Session;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\DB;
 
@@ -315,24 +316,52 @@ class ProductController extends Controller
     public function viewProduct($id) {
         $product = WpProduct::findOrFail($id);
         $productAttributes = $product->attributes; // Assuming the attributes are related to the product
-    
+
         return view('backend.product.view_product', [
             'product' => $product,
             'productAttributes' => $productAttributes
         ]);
-    }      
+    }
 
     public function Approvel(Request $request, $id) {
 
         // Set a custom timeout for the database connection
         config(['database.connections.mysql.options' => [
-            \PDO::ATTR_TIMEOUT => 30, // 10 seconds timeout
+            \PDO::ATTR_TIMEOUT => 50,
         ]]);
 
         // Start a database transaction
         DB::beginTransaction();
 
         try {
+            $product = WpProduct::where('id', $id)->first();
+
+            if (!$product) {
+                // Rollback the transaction if product not found
+                DB::rollBack();
+                return back()->with('error', 'Product not found.');
+            }
+
+            // check if the product is already in wooCommerce
+            $sku = $product->sku;
+            $wooProduct = WooCommerceProductController::getProductBySku($sku);
+            if ($wooProduct && isset($wooProduct[0])) {
+                $product->wp_product_id = $wooProduct[0]->id;
+                $product->is_approvel = 1;
+                $product->save();
+                DB::commit();
+                return back()->with('error', 'Product is already in WooCommerce.');
+            }
+
+            // reject the product
+            if ($request->is_approvel == 2) {
+                $product = WpProduct::where('id', $id)->first();
+                $product->is_approvel = 2;
+                $product->save();
+                DB::commit();
+                return back()->with('success', 'Product rejected successfully.');
+            }
+
             // Find the product and lock it for update
             $aprovel = WpProduct::where('id', $id)->lockForUpdate()->first();
 
@@ -561,8 +590,16 @@ class ProductController extends Controller
         $mappedAttributes = $this->mapAttributes($headers, $this->attributeMapping);
         $count = 0;
 
+        $duplicateSkus = [];
         foreach ($rows as $row) {
             $data = array_combine($headers, $row);
+            // find duplicate sku
+            $sku = $data[$mappedHeaders['sku'] ?? ''] ?? $headerMapping['sku']['default'] ?? null;
+            if($sku != null && WpProduct::where('sku', $sku)->exists()){
+                $duplicateSkus[] = $sku;
+                continue;
+            }
+
             $productData = [
                 'name' => $data[$mappedHeaders['name'] ?? ''] ?? $headerMapping['name']['default'] ?? null,
                 'vendor_id' => Auth::id(),
@@ -627,6 +664,9 @@ class ProductController extends Controller
             }
         }
 
+        if (!empty($duplicateSkus)) {
+            Session::flash('duplicateSkus', $duplicateSkus);
+        }
         return redirect()->route('product.index')->with('success! ', $count . ' Products imported successfully.');
 
     }

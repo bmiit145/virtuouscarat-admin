@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Jobs\bulkStatusChange;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -32,7 +33,7 @@ class UsersController extends Controller
         return view('backend.users.create');
     }
 
-    
+
 
     /**
      * Store a newly created resource in storage.
@@ -43,7 +44,7 @@ class UsersController extends Controller
     public function store(Request $request)
     {
         $this->validate($request,
-        
+
         [
             'name'=>'string|required|max:30',
             'email'=>'string|required|unique:users',
@@ -95,24 +96,22 @@ class UsersController extends Controller
     {
         // Retrieve the user object by ID
         $user = User::findOrFail($id);
-        
-     
+
         if ($user->status == 'active') {
             $user->update(['status' => 'inactive']);
+            bulkStatusChange::dispatch($id , 'hidden');
         } else {
             $user->update(['status' => 'active']);
+            bulkStatusChange::dispatch($id, 'visible');
         }
-            
-        
-
 
         $email = $user->email;
         if($user->status == 'active'){
- 
+
         $link = route('login.showPassword', ['id' => $id]);
-        
-       
+
         Mail::to($email)->send(new InviteMail($link));
+
         }
         // Redirect back
         return back();
@@ -138,7 +137,7 @@ class UsersController extends Controller
         // dd($request->all());
         $data=$request->all();
         // dd($data);
-        
+
         $status=$user->fill($data)->save();
         if($status){
             request()->session()->flash('success','Successfully updated');

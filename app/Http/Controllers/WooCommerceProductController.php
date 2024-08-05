@@ -383,4 +383,54 @@ class WooCommerceProductController extends Controller
         }
     }
 
+
+    // put product to private status in woocommerce
+    public static function changeProductVisibility($wp_product_id , $status = 'hidden') {
+        if (!self::$woocommerce) {
+            self::$woocommerce = app(Client::class);
+        }
+
+        try {
+            $response = self::$woocommerce->get('products/' . $wp_product_id);
+            if (isset($response->id)) {
+
+                $valid_visibilities = ['visible', 'catalog', 'search', 'hidden'];
+
+                if (!in_array($status, $valid_visibilities)) {
+//                    $status = 'hidden';
+                    return ['error' => 'Invalid visibility status'];
+                }
+
+                // Update the product visibility
+                $data = ['catalog_visibility' => $status];
+
+                $response = self::$woocommerce->put('products/' . $wp_product_id, $data);
+                return $response;
+            } else {
+                return ['error' => 'Product not found'];
+            }
+        } catch (\Exception $e) {
+            // Handle exception or log error message
+            \Log::error('WooCommerce API Error: ' . $e->getMessage());
+            return ['error' => $e->getMessage()];
+        }
+    }
+
+
+    public  static  function getProductBySku($sku) {
+        if (!self::$woocommerce) {
+            self::$woocommerce = app(Client::class);
+        }
+
+        try {
+            $response = self::$woocommerce->get('products', ['sku' => $sku]);
+            return $response;
+
+        } catch (\Exception $e) {
+            // Handle exception or log error message
+            \Log::error('WooCommerce API Error: ' . $e->getMessage());
+            return ['error' => $e->getMessage()];
+        }
+    }
+
 }
