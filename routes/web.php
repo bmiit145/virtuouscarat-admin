@@ -101,6 +101,10 @@ Route::get('payment/success', 'PayPalController@success')->name('payment.success
 
 
 
+// customer mail send
+Route::get('/customer-mail/{order_id}/{cust_mail}','OrderController@sendMailToCustomer')->name('customer.mail');
+
+
 // Backend section start
 Route::group(['prefix'=>'/admin','middleware'=>['auth','admin']],function(){
     Route::get('/','AdminController@index')->name('admin');
@@ -145,7 +149,6 @@ Route::group(['prefix'=>'/admin','middleware'=>['auth','admin']],function(){
 
     // Order
     Route::resource('/order','OrderController');
-    Route::get('/customer-mail/{order_id}/{cust_mail}','OrderController@sendMailToCustomer')->name('customer.mail');
     // Shipping
     Route::resource('/shipping','ShippingController');
     // Coupon

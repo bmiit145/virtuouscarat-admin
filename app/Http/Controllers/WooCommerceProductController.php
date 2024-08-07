@@ -503,3 +503,13 @@ class WooCommerceProductController extends Controller
     }
 
 }
+
+
+//<!-- Debugging: Output all product meta data -->
+//<h2><?php echo esc_html__( 'Product Meta Data', 'woocommerce' ); ?><!--</h2>-->
+<!--<pre>-->
+<?php
+//$meta_data = get_post_meta( $product->get_id() );
+//print_r( $meta_data );
+//?>
+<!--</pre>-->

@@ -20,7 +20,7 @@
         </div>
         <table class="table table-bordered">
             <tr>
-                <th>SKU</th>
+                <th>Certificate No.</th>
                 <td>{{ $product->sku ?? 'N/A' }}</td>
             </tr>
             <tr>

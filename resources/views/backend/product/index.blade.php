@@ -245,7 +245,7 @@
                     </div>
                   </div> --}}
 
-                  <a target="_blank" href="{{ route('product.view', $product->id) }}"><i class="fas fa-eye fs-4"></i></a>
+                  <a target="_blank" href="{{ route('product.view', $product->id) }}" style="color: #51535a"><i class="fas fa-eye fs-4"></i></a>
 
                 </td>
               </tr>

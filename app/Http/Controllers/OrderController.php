@@ -495,12 +495,12 @@ class OrderController extends Controller
         return $password;
     }
 
-    public function sendMailToCustomer($order_id, $cust_mail)
+    public static function sendMailToCustomer($order_id, $cust_mail)
     {
         $user = DB::table('users')->where('email', $cust_mail)->first();
 
         if (!$user) {
-            $password = $this->generateUniquePassword();
+            $password = self::generateUniquePassword();
             DB::table('users')->insert([
                 'name' => 'karan vora',
                 'email' => $cust_mail,
