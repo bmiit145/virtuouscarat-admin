@@ -140,9 +140,9 @@ function syncWooCommerceOrder($order)
     syncWooCommerceOrderProducts($order);
 
     // send mail to customer
-    if($order->status == 'processing'){
-        OrderController::sendMailToCustomer($order->id , $order->billing->email);
-    }
+//    if($order->status == 'processing'){
+//        OrderController::sendMailToCustomer($order->id , $order->billing->email);
+//    }
 }
 
 function syncWooCommerceOrderProducts($order)

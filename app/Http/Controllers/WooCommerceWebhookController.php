@@ -35,6 +35,11 @@ class WooCommerceWebhookController extends Controller
                 break;
             default:
                 syncWooCommerceOrder($orderObject);
+
+                if($orderObject->status == 'processing'){
+                    OrderController::sendMailToCustomer($orderObject->id , $orderObject->billing->email);
+                }
+
                 $message = 'Order processed';
                 break;
         }
