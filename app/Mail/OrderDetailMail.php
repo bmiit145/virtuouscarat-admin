@@ -20,6 +20,7 @@ class OrderDetailMail extends Mailable
     public function build()
     {
         return $this->view('emails.order-detail')
+                    ->subject('Order Details')
                     ->with([
                         'orders' => $this->orders,
                     ]);

@@ -34,6 +34,7 @@ class CustomerCredentialMail extends Mailable
     public function build()
     {
         return $this->view('emails.customer_credentials')
+                    ->subject('Dashboard Credentials')
                     ->with([
                         'order_id' => $this->order_id,
                         'cust_mail' => $this->cust_mail,

@@ -484,7 +484,7 @@ class OrderController extends Controller
         }
     }
 
-    private function generateUniquePassword()
+    private static function generateUniquePassword()
     {
         do {
             // Generate a password with symbols and numbers for better security
@@ -517,7 +517,7 @@ class OrderController extends Controller
 
         Mail::to($cust_mail)->send(new OrderDetailMail($orders));
 
-        $customerPanelUrl = env('CUSTOMER_PANEL_URL');
+        $customerPanelUrl = env('CUSTOMER_PANEL_URL' , 'https://customer.virtuouscarat.com/');
 
         Mail::to($cust_mail)->send(new CustomerCredentialMail($order_id, $cust_mail, $customerPanelUrl));
     }
