@@ -104,6 +104,10 @@ Route::get('payment/success', 'PayPalController@success')->name('payment.success
 // customer mail send
 Route::get('/customer-mail/{order_id}/{cust_mail}','OrderController@sendMailToCustomer')->name('customer.mail');
 
+// Password Change
+Route::get('change-password', 'AdminController@changePassword')->name('change.password.form');
+Route::post('change-password', 'AdminController@changPasswordStore')->name('change.password');
+
 
 // Backend section start
 Route::group(['prefix'=>'/admin','middleware'=>['auth','admin']],function(){
@@ -161,10 +165,8 @@ Route::group(['prefix'=>'/admin','middleware'=>['auth','admin']],function(){
     Route::get('/notification/{id}','NotificationController@show')->name('admin.notification');
     Route::get('/notifications','NotificationController@index')->name('all.notification');
     Route::delete('/notification/{id}','NotificationController@delete')->name('notification.delete');
-    // Password Change
-    Route::get('change-password', 'AdminController@changePassword')->name('change.password.form');
-    Route::post('change-password', 'AdminController@changPasswordStore')->name('change.password');
 });
+
 
 // User section start
 //Route::group(['prefix'=>'/user','middleware'=>['user']],function(){

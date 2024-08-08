@@ -12,18 +12,20 @@ class CustomerCredentialMail extends Mailable
 
     public $order_id;
     public $cust_mail;
-    public $customerPanelUrl;
+    public $psw;
+    public  $remember_token;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($order_id, $cust_mail, $customerPanelUrl)
+    public function __construct($order_id, $cust_mail , $psw , $remember_token)
     {
         $this->order_id = $order_id;
         $this->cust_mail = $cust_mail;
-        $this->customerPanelUrl = $customerPanelUrl;
+        $this->psw = $psw;
+        $this->remember_token = $remember_token;
     }
 
     /**
@@ -33,12 +35,16 @@ class CustomerCredentialMail extends Mailable
      */
     public function build()
     {
+        $customerPanelUrl = env('CUSTOMER_PANEL_URL' , 'https://customer.virtuouscarat.com/');
+        $customerPanelUrl = rtrim($customerPanelUrl, '/');
+        $reset_password_url = $customerPanelUrl . '/showPassword/' . $this->remember_token;
         return $this->view('emails.customer_credentials')
                     ->subject('Dashboard Credentials')
                     ->with([
                         'order_id' => $this->order_id,
                         'cust_mail' => $this->cust_mail,
-                        'customerPanelUrl' => $this->customerPanelUrl,
+                        'psw' => $this->psw,
+                        'reset_password_url' => $reset_password_url
                     ]);
     }
 }

@@ -21,6 +21,7 @@ use App\Mail\CustomerCredentialMail;
 use App\Mail\OrderDetailMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
+use Hash;
 
 class OrderController extends Controller
 {
@@ -499,15 +500,17 @@ class OrderController extends Controller
     {
         $user = DB::table('users')->where('email', $cust_mail)->first();
 
+        $psw = null;
         if (!$user) {
             $password = self::generateUniquePassword();
             DB::table('users')->insert([
                 'name' => 'karan vora',
                 'email' => $cust_mail,
-                'password' => bcrypt($password),
+                'password' => Hash::make($password),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
+            $psw = $password;
         }
 
         $orders = WpOrder::where('order_id' , $order_id)->get();
@@ -517,9 +520,14 @@ class OrderController extends Controller
 
         Mail::to($cust_mail)->send(new OrderDetailMail($orders));
 
-        $customerPanelUrl = env('CUSTOMER_PANEL_URL' , 'https://customer.virtuouscarat.com/');
+        $remember_token = Str::random(60);
+        if($user->remember_token !=  null){
+            $remember_token = $user->remember_token;
+        }
+        
+        DB::table('users')->where('email', $cust_mail)->update(['remember_token' => $remember_token]);
 
-        Mail::to($cust_mail)->send(new CustomerCredentialMail($order_id, $cust_mail, $customerPanelUrl));
+        Mail::to($cust_mail)->send(new CustomerCredentialMail($order_id, $cust_mail , $psw, $remember_token));
     }
 
 

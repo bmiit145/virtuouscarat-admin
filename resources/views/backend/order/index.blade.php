@@ -211,7 +211,7 @@
                             <td>
                                 @if($product->product)
                                     <span>₹{{ $product->price }} </span>
-                                    <sub> ({{ $product->quantity }})</sub>
+                                    <!-- <sub> ({{ $product->quantity }})</sub> -->
                                 @endif
                             </td>
                             @if($index == 0)
