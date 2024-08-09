@@ -135,6 +135,7 @@ Route::group(['prefix'=>'/admin','middleware'=>['auth','admin']],function(){
     Route::post('/product/clearAll' , 'ProductController@clearAllProducts')->name('product.clearAll');
     Route::post('/remove-gallery-image', 'ProductController@removeGalleryImage')->name('remove.gallery.image');
     Route::get('/product/view/{id}', 'ProductController@viewProduct')->name('product.view');
+    Route::get('/product/deactivate/{id}', 'ProductController@deactivateProduct')->name('product.deactivate');
 
     // Route::post('/product','ProductController');
     // Ajax for sub category

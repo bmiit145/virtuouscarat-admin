@@ -204,6 +204,7 @@
                   </td>
 {{--                  <td>{{$product->quantity}}</td>--}}
                   <td>
+                      @if($product->is_approvel != 4)
                   <form action="{{ route('Approvel', $product->id) }}" method="POST" style="display: flex; align-items: center; width: 200px;">
                       @csrf
                       <select name="is_approvel" class="form-control" style="margin-right: 10px;" onchange="enableSubmitButton(this)">
@@ -216,6 +217,9 @@
                         <button id="submit-button-{{ $product->id }}" style="background: #132644; color: white; border-radius: 6px;" type="submit" disabled>Submit</button>
                       @endif
                   </form>
+                          @else
+                          <span class="badge bg-danger-light rounded-pill" style="cursor: unset">Deactivated</span>
+                      @endif
 
                   <script>
                     function enableSubmitButton(selectElement) {
@@ -246,7 +250,11 @@
                   </div> --}}
 
                   <a target="_blank" href="{{ route('product.view', $product->id) }}" style="color: #51535a"><i class="fas fa-eye fs-4"></i></a>
-
+                    @if($product->is_approvel == 1)
+                        <a href="{{ route('product.deactivate', $product->id) }}" style="color: #6e0707" data-toggle="tooltip" data-placement="bottom" title="Deactivate Product">
+                            <i class="fas fa-ban fs-4"></i>
+                        </a>
+                    @endif
                 </td>
               </tr>
               @endforeach

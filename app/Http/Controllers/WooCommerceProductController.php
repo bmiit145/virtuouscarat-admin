@@ -333,7 +333,9 @@ class WooCommerceProductController extends Controller
             ['key' => 'vendor_id', 'value' => $product->vendor_id],
             ['key' => 'video_link', 'value' => $product->video_link]
         ],
-        'stock_quantity' => $product->quantity,
+        'manage_stock' => true,
+        'stock_quantity' => 1,
+        'sold_individually' => true,
         'attributes' => $attributes,
     ];
 
@@ -484,7 +486,6 @@ class WooCommerceProductController extends Controller
             return ['error' => $e->getMessage()];
         }
     }
-
 
     public  static  function getProductBySku($sku) {
         if (!self::$woocommerce) {

@@ -776,4 +776,25 @@ class ProductController extends Controller
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         return redirect()->route('product.index')->with('success', 'All products deleted successfully.');
     }
+
+
+    // deactivated product
+    public function deactivateProduct($id)
+    {
+        $product = WpProduct::findOrFail($id);
+        if (!$product) {
+            return redirect()->route('product.index')->with('error', 'Product not found.');
+        }
+
+
+        $response = WooCommerceProductController::changeProductVisibility($product->wp_product_id, 'hidden');
+        if (is_array($response) && isset($response['error'])) {
+            return redirect()->route('product.index')->with('error', 'Failed to deactivate product in WooCommerce: ' . $response['error']);
+        }
+
+        $product->is_approvel = 4;
+        $product->save();
+
+        return redirect()->route('product.index')->with('success', 'Product deactivated successfully.');
+    }
 }

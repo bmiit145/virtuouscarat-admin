@@ -163,8 +163,8 @@
             <thead>
                 <tr>
                     <span></span>
-                    <th><span class="fixed-text">Order Date</span></th>
-                    <th><span class="fixed-text">Order No.</span></th>
+                    <th><span class="fixed-text">Order Info</span></th>
+{{--                    <th><span class="fixed-text">Order No.</span></th>--}}
                     <th><span class="fixed-text">Customer Name</span></th>
                     <th><span class="fixed-text">Product Name</span></th>
                     <th><span class="fixed-text">Vendor Name</span></th>
@@ -192,20 +192,21 @@
                         @endif
                         <tr data-order_id="{{ $order->order_id }}">
                             @if($index == 0)
-                                <td rowspan="{{ $rowspan }}">{{ \Carbon\Carbon::parse($order->order_date)->format('d-m-Y') }}</td>
-                                <td rowspan="{{ $rowspan }}">{{ $order->order_id }}</td>
+                                <td rowspan="{{ $rowspan }}">{{ \Carbon\Carbon::parse($order->order_date)->format('d-m-Y') }} <br/> {{ $order->order_id }} </td>
+{{--                                <td rowspan="{{ $rowspan }}">{{ $order->order_id }}</td>--}}
                                 <td rowspan="{{ $rowspan }}">{{ $order->billing_first_name }} {{ $order->billing_last_name }} <br> {{ $order->billing_email }}</td>
                             @endif
-                            <td>
+
+                            <td title="Color : {{$ProdColor . ', Clarity : ' . $prodClarity . ', Cut : ' . $prodCut . ', Measurement : ' . $prodMeasurement}}">
                                 @if($product->product)
                                     <span>{{ $product->product->sku ?? '' }} <br>
                                     <span>{{ $product->product->name }}</span>
-                                    <span>( Color : {{$ProdColor . ', Clarity : ' . $prodClarity . ', Cut : ' . $prodCut . ', Measurement : ' . $prodMeasurement}} )</span> </td>
                                 @endif
                             </td>
                             <td>
                                 @if($product->product)
-                                    <span>{{ $product->product->vendor->name }}</span>
+                                    <span>{{ $product->product->vendor->name }}</span><br/>
+                                    <span>{{ $product->product->vendor->phone }}</span>
                                 @endif
                             </td>
                             <td>
