@@ -1,5 +1,6 @@
 @extends('backend.layouts.master')
-@section('title','Ecommerce Laravel || DASHBOARD')
+@section('title','Virtuouscarat | Dashboard')
+
 @section('main-content')
 <div class="container-fluid">
     @include('backend.layouts.notification')
