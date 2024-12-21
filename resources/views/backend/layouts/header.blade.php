@@ -34,6 +34,81 @@ a.active_tab {
 .text-gray-600 {
     color: #ffffff !important;
 }
+
+
+/* button design */
+.alert-primary{ background-color: #073984; color: #fff; border: none;}
+.alert-secondary{ background-color: #383d41; color: #fff; border: none;}
+.alert-success{ background-color: #155724; color: #fff; border: none;}
+.alert-danger{background-color: #721c24; color: #fff; border: none;}
+.alert-warning{background-color: #856404; color: #fff; border: none;}
+.alert-info{background-color: #0c5460; color: #fff; border: none;}
+.alert-light{background-color: #818182; color: #fff; border: none; }
+.alert-dark{background-color: #1b1e21; color: #fff; border: none;}
+
+.badge.bg-primary-light {
+    background-color: #dfecff; 
+    color: #0d6efd; 
+    font-size: 0.75rem; 
+    padding: 0.6em 1.2em; 
+    border-radius: 1.5em; 
+}
+
+.badge.bg-secondary-light {
+    background-color: #cfd6dc; 
+    color: #444c53; 
+    font-size: 0.75rem; 
+    padding: 0.6em 1.2em; 
+    border-radius: 1.5em; 
+}
+
+.badge.bg-success-light {
+    background-color: #add8b7; 
+    color: #175f27; 
+    font-size: 0.75rem; 
+    padding: 0.6em 1.2em; 
+    border-radius: 1.5em; 
+}
+
+.badge.bg-danger-light {
+    background-color: #fbc3c8; 
+    color: #9b2531; 
+    font-size: 0.75rem; 
+    padding: 0.6em 1.2em; 
+    border-radius: 1.5em; 
+}
+
+.badge.bg-warning-light {
+    background-color: #ffedb9; 
+    color: #745e1c; 
+    font-size: 0.75rem; 
+    padding: 0.6em 1.2em; 
+    border-radius: 1.5em; 
+}
+
+.badge.bg-info-light {
+    background-color: #b1eff9; 
+    color: #106f7e; 
+    font-size: 0.75rem; 
+    padding: 0.6em 1.2em; 
+    border-radius: 1.5em; 
+}
+
+.badge.bg-light {
+    background-color: #b1eff9; 
+    color: #106f7e; 
+    font-size: 0.75rem; 
+    padding: 0.6em 1.2em; 
+    border-radius: 1.5em; 
+}
+
+.badge.bg-dark {
+    background-color: #b1eff9; 
+    color: #fff; 
+    font-size: 0.75rem; 
+    padding: 0.6em 1.2em; 
+    border-radius: 1.5em; 
+}
 </style>
 
 <nav class="navbar navbar-expand navbar-light bg-navbar topbar mb-4 static-top shadow">
@@ -65,27 +140,13 @@ a.active_tab {
     <!-- Topbar Navbar -->
     <ul class="navbar-nav ml-auto">
 
-        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
-        <li class="nav-item dropdown no-arrow d-sm-none">
-            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-search fa-fw"></i>
-            </a>
-            <!-- Dropdown - Messages -->
-            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
-                aria-labelledby="searchDropdown">
-                <form class="form-inline mr-auto w-100 navbar-search">
-                    <div class="input-group">
-                        <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
-                            aria-label="Search" aria-describedby="basic-addon2">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary" type="button">
-                                <i class="fas fa-search fa-sm"></i>
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
+        <li class="nav-item dropdown no-arrow">
+            <form id="logout-form" action="{{ route('login.logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="nav-link">
+                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i> {{ __('Logout') }}
+                </button>
+            </form>
         </li>
 
         {{-- Home page --}}
@@ -94,7 +155,6 @@ a.active_tab {
 
         <!-- Nav Item - User Information -->
         <!-- Visit 'codeastro' for more projects -->
-
 
         <li class="nav-item dropdown no-arrow">
             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button"
@@ -131,7 +191,6 @@ a.active_tab {
                 </form>
             </div>
         </li>
-
 
     </ul>
 

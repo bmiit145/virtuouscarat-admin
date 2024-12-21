@@ -8,7 +8,7 @@ use Automattic\WooCommerce\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
-class WooCommerceProductController extends Controller
+class WooCommerceProductBackupController extends Controller
 {
 //    protected  $woocommerce;
     protected static $woocommerce;
@@ -328,14 +328,8 @@ class WooCommerceProductController extends Controller
         'stock_status' => ['instock', 'outofstock', 'onbackorder'][($product->stock_status ?? 2) - 1],
         'categories' => [['id' => $product->category->wp_category_id]],
         'images' => array_merge([['src' => $product->main_photo]], array_map(fn($photo) => ['src' => $photo], json_decode($product->photo_gallery) ?? [])),
-        'meta_data' => [
-            ['key' => 'igi_certificate', 'value' => $product->igi_certificate],
-            ['key' => 'vendor_id', 'value' => $product->vendor_id],
-            ['key' => 'video_link', 'value' => $product->video_link]
-        ],
-        'manage_stock' => true,
-        'stock_quantity' => 1,
-        'sold_individually' => true,
+        'meta_data' => [['key' => 'igi_certificate', 'value' => $product->igi_certificate], ['key' => 'vendor_id', 'value' => $product->vendor_id]],
+        'stock_quantity' => $product->quantity,
         'attributes' => $attributes,
     ];
 
@@ -487,6 +481,7 @@ class WooCommerceProductController extends Controller
         }
     }
 
+
     public  static  function getProductBySku($sku) {
         if (!self::$woocommerce) {
             self::$woocommerce = app(Client::class);
@@ -504,13 +499,3 @@ class WooCommerceProductController extends Controller
     }
 
 }
-
-
-//<!-- Debugging: Output all product meta data -->
-//<h2><?php echo esc_html__( 'Product Meta Data', 'woocommerce' ); ?><!--</h2>-->
-<!--<pre>-->
-<?php
-//$meta_data = get_post_meta( $product->get_id() );
-//print_r( $meta_data );
-//?>
-<!--</pre>-->

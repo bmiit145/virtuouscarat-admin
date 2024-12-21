@@ -79,6 +79,15 @@ class WpOrder extends Model
     public $timestamps = true;
 
 
+    public static function countActiveOrder(){
+        $data=WpOrder::count();
+        if($data){
+            return $data;
+        }
+        return 0;
+    }
+
+
     public function products()
     {
         return $this->hasMany(WpOrderProduct::class, 'order_id', 'order_id');

@@ -3,6 +3,8 @@
 use App\Models\WpOrder;
 use App\Models\WpOrderProduct;
 use Automattic\WooCommerce\Client;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\OrderController;
 
 function fetchAndSyncWooCommerceOrders(Client $woocommerce)
 {
@@ -136,6 +138,11 @@ function syncWooCommerceOrder($order)
     WpOrder::updateOrCreate(['order_id' => $order->id], $orderData);
 
     syncWooCommerceOrderProducts($order);
+
+    // send mail to customer
+//    if($order->status == 'processing'){
+//        OrderController::sendMailToCustomer($order->id , $order->billing->email);
+//    }
 }
 
 function syncWooCommerceOrderProducts($order)

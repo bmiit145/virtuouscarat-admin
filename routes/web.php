@@ -101,6 +101,14 @@ Route::get('payment/success', 'PayPalController@success')->name('payment.success
 
 
 
+// customer mail send
+Route::get('/customer-mail/{order_id}/{cust_mail}','OrderController@sendMailToCustomer')->name('customer.mail');
+
+// Password Change
+Route::get('change-password', 'AdminController@changePassword')->name('change.password.form');
+Route::post('change-password', 'AdminController@changPasswordStore')->name('change.password');
+
+
 // Backend section start
 Route::group(['prefix'=>'/admin','middleware'=>['auth','admin']],function(){
     Route::get('/','AdminController@index')->name('admin');
@@ -127,6 +135,7 @@ Route::group(['prefix'=>'/admin','middleware'=>['auth','admin']],function(){
     Route::post('/product/clearAll' , 'ProductController@clearAllProducts')->name('product.clearAll');
     Route::post('/remove-gallery-image', 'ProductController@removeGalleryImage')->name('remove.gallery.image');
     Route::get('/product/view/{id}', 'ProductController@viewProduct')->name('product.view');
+    Route::get('/product/deactivate/{id}', 'ProductController@deactivateProduct')->name('product.deactivate');
 
     // Route::post('/product','ProductController');
     // Ajax for sub category
@@ -157,10 +166,8 @@ Route::group(['prefix'=>'/admin','middleware'=>['auth','admin']],function(){
     Route::get('/notification/{id}','NotificationController@show')->name('admin.notification');
     Route::get('/notifications','NotificationController@index')->name('all.notification');
     Route::delete('/notification/{id}','NotificationController@delete')->name('notification.delete');
-    // Password Change
-    Route::get('change-password', 'AdminController@changePassword')->name('change.password.form');
-    Route::post('change-password', 'AdminController@changPasswordStore')->name('change.password');
 });
+
 
 // User section start
 //Route::group(['prefix'=>'/user','middleware'=>['user']],function(){

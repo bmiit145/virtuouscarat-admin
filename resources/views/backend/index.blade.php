@@ -1,5 +1,6 @@
 @extends('backend.layouts.master')
-@section('title','Ecommerce Laravel || DASHBOARD')
+@section('title','Virtuouscarat | Dashboard')
+
 @section('main-content')
 <div class="container-fluid">
     @include('backend.layouts.notification')
@@ -21,9 +22,9 @@
                 <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Order</div>
                 <div class="row no-gutters align-items-center">
                   <div class="col-auto">
-                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{\App\Models\Order::countActiveOrder()}}</div>
+                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{\App\Models\WpOrder::countActiveOrder()}}</div>
                   </div>
-                  
+
                 </div>
               </div>
               <div class="col-auto">
@@ -41,7 +42,7 @@
             <div class="row no-gutters align-items-center">
               <div class="col mr-2">
                 <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Products</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800">{{\App\Models\Product::countActiveProduct()}}</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{\App\Models\WpProduct::countActiveProduct()}}</div>
               </div>
               <div class="col-auto">
                 <i class="fas fa-cubes fa-2x text-gray-300"></i>
@@ -98,7 +99,7 @@
                   <div class="col-auto">
                     <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{\App\Models\Order::countNewReceivedOrder()}}</div>
                   </div>
-                  
+
                 </div>
               </div>
               <div class="col-auto">
@@ -119,7 +120,7 @@
                   <div class="col-auto">
                     <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{\App\Models\Order::countProcessingOrder()}}</div>
                   </div>
-                  
+
                 </div>
               </div>
               <div class="col-auto">
@@ -140,7 +141,7 @@
                   <div class="col-auto">
                     <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{\App\Models\Order::countDeliveredOrder()}}</div>
                   </div>
-                  
+
                 </div>
               </div>
               <div class="col-auto">
@@ -161,7 +162,7 @@
                   <div class="col-auto">
                     <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{\App\Models\Order::countCancelledOrder()}}</div>
                   </div>
-                  
+
                 </div>
               </div>
               <div class="col-auto">
@@ -180,7 +181,7 @@
           <!-- Card Header - Dropdown -->
           <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
             <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
-            
+
           </div>
           <!-- Card Body -->
           <div class="card-body">
@@ -190,7 +191,7 @@
           </div>
         </div>
       </div>
-    
+
       <!-- Pie Chart -->
       <div class="col-xl-4 col-lg-5">
         <div class="card shadow mb-4">

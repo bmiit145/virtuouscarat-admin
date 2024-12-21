@@ -4,7 +4,6 @@
 <head>
     <title>Ecommerce Laravel - Login Panel</title>
     @include('backend.layouts.head')
-
 </head>
 
 <body class="bg-gradient-info" style="HEIGHT: 100vh;">
@@ -55,15 +54,15 @@
                                                 </span>
                                             @enderror
                                         </div>
-                                       
+
                                         <button type="submit" class="btn btn-success btn-user btn-block">
                                             Update
                                         </button>
                                     </form>
 
-                                    
 
-                                    
+
+
                                 </div>
                             </div>
                         </div>

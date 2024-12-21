@@ -12,6 +12,7 @@ use App\Models\Category;
 use App\Models\Brand;
 use App\Models\WpProduct;
 use Auth;
+use Illuminate\Support\Facades\Session;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\DB;
 
@@ -322,83 +323,141 @@ class ProductController extends Controller
         ]);
     }
 
+//    public function Approvel(Request $request, $id) {
+//
+//        // Set a custom timeout for the database connection
+//        config(['database.connections.mysql.options' => [
+//            \PDO::ATTR_TIMEOUT => 120,
+//        ]]);
+//
+//        // Start a database transaction
+//        DB::beginTransaction();
+//
+//        try {
+//            $product = WpProduct::where('id', $id)->first();
+//
+//            if (!$product) {
+//                // Rollback the transaction if product not found
+//                DB::rollBack();
+//                return back()->with('error', 'Product not found.');
+//            }
+//
+//            // check if the product is already in wooCommerce
+//            $sku = $product->sku;
+//            $wooProduct = WooCommerceProductController::getProductBySku($sku);
+//            if ($wooProduct && isset($wooProduct[0])) {
+//                $product->wp_product_id = $wooProduct[0]->id;
+//                $product->is_approvel = 1;
+//                $product->save();
+//                DB::commit();
+//                return back()->with('error', 'Product is already in WooCommerce.');
+//            }
+//
+//            // reject the product
+//            if ($request->is_approvel == 2) {
+//                $product = WpProduct::where('id', $id)->first();
+//                $product->is_approvel = 2;
+//                $product->save();
+//                DB::commit();
+//                return back()->with('success', 'Product rejected successfully.');
+//            }
+//
+//            // Find the product and lock it for update
+//            $aprovel = WpProduct::where('id', $id)->lockForUpdate()->first();
+//
+//            // Check if the product is already approved
+//            if ($aprovel->is_approvel) {
+//                // Rollback the transaction if already approved
+//                DB::rollBack();
+//                return back()->with('error', 'Product is already approved.');
+//            }
+//
+//            // Update the approval status
+//            $aprovel->is_approvel = $request->is_approvel;
+//
+//            // Send data to WooCommerce
+//            $response = WooCommerceProductController::sendDataToWooCommerce($aprovel);
+//
+//            // Check if there is an error
+//            if (is_array($response) && isset($response['error'])) {
+//                // Rollback the transaction on error
+//                DB::rollBack();
+//                return back()->with('error', 'Failed to send product to WooCommerce: ' . $response['error']);
+//            }
+//
+//            // Save the product
+//            $aprovel->save();
+//
+//            // Commit the transaction
+//            DB::commit();
+//
+//            // Return success response
+//            return back()->with('success', 'Product sent to WooCommerce successfully.');
+//        } catch (\Exception $e) {
+//            DB::rollBack();
+//            \Log::error('Approval Error: ' . $e->getMessage());
+//            return back()->with('error', 'An error occurred during approval: ' . $e->getMessage());
+//        } finally {
+//            DB::commit();
+//        }
+//    }
+
+
     public function Approvel(Request $request, $id) {
+    try {
+        $product = WpProduct::find($id);
 
-        // Set a custom timeout for the database connection
-        config(['database.connections.mysql.options' => [
-            \PDO::ATTR_TIMEOUT => 50,
-        ]]);
+        if (!$product) {
+            return back()->with('error', 'Product not found.');
+        }
 
-        // Start a database transaction
-        DB::beginTransaction();
+        if ($product->is_processing) {
+            return back()->with('error', 'Product is already in processing.');
+        }
 
-        try {
-            $product = WpProduct::where('id', $id)->first();
+        $product->is_processing = 1;
+        $product->save();
 
-            if (!$product) {
-                // Rollback the transaction if product not found
-                DB::rollBack();
-                return back()->with('error', 'Product not found.');
-            }
+        $sku = $product->sku;
+        $wooProduct = WooCommerceProductController::getProductBySku($sku);
+        if ($wooProduct && isset($wooProduct[0])) {
+            $product->update([
+                'wp_product_id' => $wooProduct[0]->id,
+                'is_approvel' => 1,
+                'is_processing' => 0
+            ]);
+            return back()->with('error', 'Product is already in WooCommerce.');
+        }
 
-            // check if the product is already in wooCommerce
-            $sku = $product->sku;
-            $wooProduct = WooCommerceProductController::getProductBySku($sku);
-            if ($wooProduct && isset($wooProduct[0])) {
-                $product->wp_product_id = $wooProduct[0]->id;
-                $product->is_approvel = 1;
-                $product->save();
-                DB::commit();
-                return back()->with('error', 'Product is already in WooCommerce.');
-            }
+        if ($request->is_approvel == 2) {
+            $product->update(['is_approvel' => 2, 'is_processing' => 0]);
+            return back()->with('success', 'Product rejected successfully.');
+        }
 
-            // reject the product
-            if ($request->is_approvel == 2) {
-                $product = WpProduct::where('id', $id)->first();
-                $product->is_approvel = 2;
-                $product->save();
-                DB::commit();
-                return back()->with('success', 'Product rejected successfully.');
-            }
+        if ($product->is_approvel) {
+            $product->update(['is_processing' => 0]);
+            return back()->with('error', 'Product is already approved.');
+        }
 
-            // Find the product and lock it for update
-            $aprovel = WpProduct::where('id', $id)->lockForUpdate()->first();
+        $product->is_approvel = $request->is_approvel;
+        $response = WooCommerceProductController::sendDataToWooCommerce($product);
 
-            // Check if the product is already approved
-            if ($aprovel->is_approvel) {
-                // Rollback the transaction if already approved
-                DB::rollBack();
-                return back()->with('error', 'Product is already approved.');
-            }
+        if (is_array($response) && isset($response['error'])) {
+            $product->update(['is_processing' => 0]);
+            return back()->with('error', 'Failed to send product to WooCommerce: ' . $response['error']);
+        }
 
-            // Update the approval status
-            $aprovel->is_approvel = $request->is_approvel;
-
-            // Send data to WooCommerce
-            $response = WooCommerceProductController::sendDataToWooCommerce($aprovel);
-
-            // Check if there is an error
-            if (is_array($response) && isset($response['error'])) {
-                // Rollback the transaction on error
-                DB::rollBack();
-                return back()->with('error', 'Failed to send product to WooCommerce: ' . $response['error']);
-            }
-
-            // Save the product
-            $aprovel->save();
-
-            // Commit the transaction
-            DB::commit();
-
-            // Return success response
-            return back()->with('success', 'Product sent to WooCommerce successfully.');
-        } catch (\Exception $e) {
-            // Rollback the transaction on exception
-            DB::rollBack();
-            \Log::error('Approval Error: ' . $e->getMessage());
-            return back()->with('error', 'An error occurred during approval: ' . $e->getMessage());
+        $product->save();
+        return back()->with('success', 'Product sent to WooCommerce successfully.');
+    } catch (\Exception $e) {
+        \Log::error('Approval Error: ' . $e->getMessage());
+        return back()->with('error', 'An error occurred during approval: ' . $e->getMessage());
+    } finally {
+        if ($product) {
+            $product->update(['is_processing' => 0]);
         }
     }
+}
 
     //approveAll using job
     public function approveAll(Request $request){
@@ -589,8 +648,16 @@ class ProductController extends Controller
         $mappedAttributes = $this->mapAttributes($headers, $this->attributeMapping);
         $count = 0;
 
+        $duplicateSkus = [];
         foreach ($rows as $row) {
             $data = array_combine($headers, $row);
+            // find duplicate sku
+            $sku = $data[$mappedHeaders['sku'] ?? ''] ?? $headerMapping['sku']['default'] ?? null;
+            if($sku != null && WpProduct::where('sku', $sku)->exists()){
+                $duplicateSkus[] = $sku;
+                continue;
+            }
+
             $productData = [
                 'name' => $data[$mappedHeaders['name'] ?? ''] ?? $headerMapping['name']['default'] ?? null,
                 'vendor_id' => Auth::id(),
@@ -655,6 +722,9 @@ class ProductController extends Controller
             }
         }
 
+        if (!empty($duplicateSkus)) {
+            Session::flash('duplicateSkus', $duplicateSkus);
+        }
         return redirect()->route('product.index')->with('success! ', $count . ' Products imported successfully.');
 
     }
@@ -705,5 +775,26 @@ class ProductController extends Controller
         // Re-enable foreign key checks
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         return redirect()->route('product.index')->with('success', 'All products deleted successfully.');
+    }
+
+
+    // deactivated product
+    public function deactivateProduct($id)
+    {
+        $product = WpProduct::findOrFail($id);
+        if (!$product) {
+            return redirect()->route('product.index')->with('error', 'Product not found.');
+        }
+
+
+        $response = WooCommerceProductController::changeProductVisibility($product->wp_product_id, 'hidden');
+        if (is_array($response) && isset($response['error'])) {
+            return redirect()->route('product.index')->with('error', 'Failed to deactivate product in WooCommerce: ' . $response['error']);
+        }
+
+        $product->is_approvel = 4;
+        $product->save();
+
+        return redirect()->route('product.index')->with('success', 'Product deactivated successfully.');
     }
 }

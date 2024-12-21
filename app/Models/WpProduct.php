@@ -38,8 +38,19 @@ class WpProduct extends Model
         'video_link',
         'location',
         'comment',
-        'is_processing'
+        'is_processing',
+        'is_approvel'
     ];
+
+
+    public static function countActiveProduct()
+    {
+        $data = WpProduct::where('is_approvel', 1)->count();
+        if ($data) {
+            return $data;
+        }
+        return 0;
+    }
 
     public function category()
     {

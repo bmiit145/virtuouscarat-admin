@@ -77,9 +77,9 @@
                 <span class="py-1"> <i class="fas fa-trash"></i> Approve All</span>
             </button>
 
-            <button type="submit" id="approve-all" class="btn btn-primary bg-info border-0 btn-sm mx-1" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" title="Filter All Products">
-                <span class="py-1"> <i class="fas fa-filter"></i> Filter All</span>
-            </button>
+{{--            <button type="submit" id="approve-all" class="btn btn-primary bg-info border-0 btn-sm mx-1" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" title="Filter All Products">--}}
+{{--                <span class="py-1"> <i class="fas fa-filter"></i> Filter All</span>--}}
+{{--            </button>--}}
 
             <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
               <div class="offcanvas-header">
@@ -189,6 +189,7 @@
                     <ul>
                         <li>{{$product->vendor ? $product->vendor->name : '' }}</li>
                         <li>{{$product->vendor ? $product->vendor->phone : '' }}</li>
+                        <li>{{$product->vendor ? $product->vendor->email : '' }}</li>
                     </ul>
                 </td>
                   <td>
@@ -203,6 +204,7 @@
                   </td>
 {{--                  <td>{{$product->quantity}}</td>--}}
                   <td>
+                      @if($product->is_approvel != 4)
                   <form action="{{ route('Approvel', $product->id) }}" method="POST" style="display: flex; align-items: center; width: 200px;">
                       @csrf
                       <select name="is_approvel" class="form-control" style="margin-right: 10px;" onchange="enableSubmitButton(this)">
@@ -215,6 +217,9 @@
                         <button id="submit-button-{{ $product->id }}" style="background: #132644; color: white; border-radius: 6px;" type="submit" disabled>Submit</button>
                       @endif
                   </form>
+                          @else
+                          <span class="badge bg-danger-light rounded-pill" style="cursor: unset">Deactivated</span>
+                      @endif
 
                   <script>
                     function enableSubmitButton(selectElement) {
@@ -244,8 +249,12 @@
                     </div>
                   </div> --}}
 
-                  <a href="{{ route('product.view', $product->id) }}"><i class="fas fa-eye fs-4"></i></a>
-
+                  <a target="_blank" href="{{ route('product.view', $product->id) }}" style="color: #51535a"><i class="fas fa-eye fs-4"></i></a>
+                    @if($product->is_approvel == 1)
+                        <a href="{{ route('product.deactivate', $product->id) }}" style="color: #6e0707" data-toggle="tooltip" data-placement="bottom" title="Deactivate Product">
+                            <i class="fas fa-ban fs-4"></i>
+                        </a>
+                    @endif
                 </td>
               </tr>
               @endforeach
@@ -276,15 +285,13 @@
 @endpush
 @push('scripts')
   <!-- Page level plugins -->
-  <script src="{{asset('backend/vendor/datatables/jquery.dataTables.min.js')}}"></script>
-  <script src="{{asset('backend/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
-  <!-- Page level custom scripts -->
-  <script src="{{asset('backend/js/demo/datatables-demo.js')}}"></script>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js" integrity="sha512-pax4MlgXjHEPfCwcJLQhigY7+N8rt6bVvWLFyUMuxShv170X53TRzGPmPkZmGBhk+jikR8WBM4yl7A9WMHHqvg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="{{asset('backend/vendor/datatables/jquery.dataTables.min.js')}}"></script>
+  <script src="{{asset('backend/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
 
   <script>
       // $('#product-dataTable').DataTable( {
@@ -351,7 +358,7 @@
             location.reload();
         });
     </script>
-    <script>
+         <script>
         document.querySelector('#approve-all').addEventListener('click', function(event) {
             event.preventDefault();
             $.ajax({
@@ -365,6 +372,23 @@
                 }
             });
         });
+    </script>
+
+    <script>
+    // duplicate SKUs model which will be shown when duplicate SKUs are found in the uploaded file as got by duplicateSkus session of laravel
+    @if(session('duplicateSkus'))
+        var duplicateSkus = @json(session('duplicateSkus'));
+        var duplicateSkusModel = '';
+        duplicateSkus.forEach(function(sku) {
+            duplicateSkusModel += sku + '<br>';
+        });
+        swal({
+            title: "Duplicate SKUs Found",
+            text: duplicateSkusModel,
+            icon: "warning",
+            dangerMode: true,
+        });
+    @endif
     </script>
 @endpush
 
